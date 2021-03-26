@@ -22,7 +22,7 @@ title: 5-SH
 email: llll_lll_lll@naver.com
 description: >- # this means to ignore newlines until "baseurl:"
   개발 블로그
-baseurl: "/blog" # the subpath of your site, e.g. /blog
+baseurl: "/" # the subpath of your site, e.g. /blog
 # url: "http://ejjoo.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: 5-Sh
 highlighter: rouge
