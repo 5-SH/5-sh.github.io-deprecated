@@ -41,7 +41,7 @@ ref: javascript
   > 생성자 함수는new 키워드 사용해 객체를 새엉하고 초기화 하는 함수다.   
   > 생성자 함수를 통해 생성된 개체를 인스턴스라 하고, Object 외에 String, Number, Boolean, Array, Date 등 빌트인 생성자 함수가 있다.   
   > 생성자 함수는 파스칼 케이스를 사용한다.   
-
+  >
   >```javascript
   >const person = new Object();
   >person.name = 'abc';
@@ -68,7 +68,7 @@ ref: javascript
 ### 4. 객체 프로퍼티 접근
   #### 4-1) 프로퍼티 키
   >프로퍼티 키는 일반적으로 문자열(빈 문자열 포함)을 지정한다. 자바스크립트에서 유효한 이름이 아닌 경우 따옴표를 사용한다.   
-
+  >
   >```javascript
   >const person = {
   >  'first-name': 'a',
@@ -80,7 +80,6 @@ ref: javascript
   #### 4-2) 프로퍼티 값 읽기
   > 프로퍼티 값은 마침표와 대괄호를 사용해 접근할 수 있다. 대괄호에 들어가는 프로퍼티 이름은 문자열 이어야 한다.   
   > 객체에 존재하지 않는 프로퍼티를 참조하면 undefined 를 반환한다.   
-
   > ```javascript
   > console.log(person['fisrt-name']);
   > console.log(person.gender);
@@ -92,7 +91,6 @@ ref: javascript
        
   #### 4-4) 프로퍼티 삭제
   > delete 연산자를 사용해 프로퍼티를 삭제할 수 있다.
-
   > ```javascript
   > const person = {
   >     'first-name': 'a',
@@ -102,8 +100,7 @@ ref: javascript
   > ```   
   
   #### 4-5) for-in 문
-  > for-in 문을 사용해 객체에 포함된 모든 프로퍼티에 대해 반복문을 수행할 수 있다.   
-
+  > for-in 문을 사용해 객체에 포함된 모든 프로퍼티에 대해 반복문을 수행할 수 있다.
   >```javascript
   >const person = {
   >    'first-name': 'a',
