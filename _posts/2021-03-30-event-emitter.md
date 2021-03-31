@@ -55,4 +55,4 @@ ref: node.js
     ```   
     
 - ### 옵저버 패턴과 EventEmitter 관계
-    <img src="./img/FT_2021-03-31%2002_47_08.864.png" width="80%">
+    ![FT_2021-03-31 02_47_08 864](https://user-images.githubusercontent.com/13375810/113038478-89bd2980-91d1-11eb-9d5b-1c8304e4c310.png)
