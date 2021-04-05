@@ -41,7 +41,7 @@ ref: DB, JDBC
   DB Connection url 의 Properties 설정 시 아래 설정값을 통해 timeout 시간을 지정할 수 있다.  
     
 | 속성명 | 타입 | 설명 |  
-|---|---|---|  
-| login_timeout | int | 소켓의 read timeout 을 지정한다. <\br>소켓을 생성할 때부터 DB 연결 생성이 완료될 때까지 적용된다. <br>DB 연결 생성이 완료된 뒤에는 read_timeout 속성이 적용된다. <br>설정값이 0 인 경우 timeout 을 발생시키지 않는다.(단위: ms, 기본값: 0) |  
+|---|:---:|---|  
+| login_timeout | int | 소켓의 read timeout 을 지정한다. <br>소켓을 생성할 때부터 DB 연결 생성이 완료될 때까지 적용된다. <br>DB 연결 생성이 완료된 뒤에는 read_timeout 속성이 적용된다. <br>설정값이 0 인 경우 timeout 을 발생시키지 않는다.(단위: ms, 기본값: 0) |  
 | read_timeout | int | DB 연결이 완료된 이후 소켓의 read timeout 을 지정한다. <br>설정값이 9일 경우 timeout 을 발생시키지 않는다. (단위: ms, 기본값: 0) |
   
