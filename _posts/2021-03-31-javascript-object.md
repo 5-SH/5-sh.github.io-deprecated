@@ -2,7 +2,7 @@
 layout: post
 title: javascipt 의 객체란?
 date: 2021-03-31 23:05:00 +0900
-categories: javascript
+categories: Javascript
 ref: javascript
 ---
 
