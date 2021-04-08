@@ -1,13 +1,14 @@
 ---
 layout: post
 title: 스토리지 관리와 LVM
-date: 2021-04-308 19:40:00 +0900
+date: 2021-04-30 19:40:00 +0900
 categories: Linux
 ref: linux, lvm
 ---
 
+출처: https://youngmind.tistory.com/entry/CentOS-%EA%B0%95%EC%A2%8C-PART-1-8-%EC%8A%A4%ED%86%A0%EB%A6%AC%EC%A7%80-%EA%B4%80%EB%A6%AC-%E3%85%A3%E3%85%8D
+
 # 스토리지 관리와 LVM
-  출처: https://youngmind.tistory.com/entry/CentOS-%EA%B0%95%EC%A2%8C-PART-1-8-%EC%8A%A4%ED%86%A0%EB%A6%AC%EC%A7%80-%EA%B4%80%EB%A6%AC-%E3%85%A3%E3%85%8D
 
   LVM 은 Logical Volume Manager 로, centos 에서 기본으로 제공되는 볼륨 매니저이다.
   LVM 은 디스크를 논리적으로 구성해 논리적인그룹들을 묶거나 유연하게 확장 또는 제거 할 수 있도록 도와준다.
