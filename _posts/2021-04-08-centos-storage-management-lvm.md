@@ -2,7 +2,7 @@
 layout: post
 title: 스토리지 관리와 LVM
 date: 2021-04-308 19:40:00 +0900
-categories: linux
+categories: Linux
 ref: linux, lvm
 ---
 
