@@ -25,7 +25,12 @@ https://jeonghwan-kim.github.io/node/2017/08/12/node-stream-you-need-to-know-3.h
 const fs = require("fs");
 const file = fs.createWriteStream("./big.file");
 for (let i = 0; i < 1e6; i++) {
-  file.write( "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n" );
+  file.write( `Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+   tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+   nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis 
+   aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
+   nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui 
+   officia deserunt mollit anim id est laborum.\n` );
   }
 }
 
@@ -128,7 +133,7 @@ process.stdin.pipe(outStream);
   write 메소드는 세 개의 인자가 필요하다.
   - chunk : 보통 버퍼
   - encoding : 인코딩 타입, 보통 무시할 수 있음
-  - callback : 데이터 청크를 처맇ㄴ 뒤 호출되는 함수
+  - callback : 데이터 청크를 처리한 뒤 호출되는 함수
 
 #### 2. 읽기 스트림 구현
 ```javascript
@@ -153,10 +158,10 @@ const inStream = new Readable( {
     if (this.currentCharCode > 90) this.push(null)
   }
 });
-
+```
 #### 3. Duplex 스트림 구현
   duplex stream 을 사용하면 한 객체로 읽기/쓰기 가능한 스트림을 만들 수 있다.   
-  읽기/쓰기는 서로 독립적이고 두 기능을 하나의 객체로 그룹핑한 것이다.
+  읽기/쓰기는 서로 독립적이고 두 기능을 하나의 객체로 그룹핑한 것이다.   
 ```javascript
 const { Duplex } = require("stream");
 const inoutStream = new Duplex({ 
