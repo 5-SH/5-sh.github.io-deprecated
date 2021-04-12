@@ -6,11 +6,13 @@ categories: Nodejs
 ref: node.js, stearm, file
 ---
 
+출처 : https://betterprogramming.pub/a-memory-friendly-way-of-reading-files-in-node-js-a45ad0cc7bb6
+
 # Node.js 에서 메모리를 효과적으로 사용해 파일을 읽는 방법
 파일을 읽는 대표적인 방법 세가지   
 - fs.readFile, fs.readFileSync 빌트인 함수 사용
 - fs.createReadSteram 스트림을 활용해 읽어오기
-- fs.read 빌트인 함수와 shared buffer 를 활용해 file read 함수를 만들어 읽어오기`
+- fs.read 빌트인 함수와 shared buffer 를 활용해 file read 함수를 만들어 읽어오기
 
 ## 1. 배경
   세 가지 파일 read 코드를 사용해 1GB 의 파일을 10MB chunk 로 읽어 처리하는 node.js 어플리케이션을 실행한다.
