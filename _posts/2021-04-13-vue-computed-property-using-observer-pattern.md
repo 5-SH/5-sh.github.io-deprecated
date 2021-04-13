@@ -12,7 +12,7 @@ ref: javascript, observer pattern, computed
     status 함수는 age 가 18을 넘으면 adult, 안 넘으면 minor 를 리턴한다
   - person.age 가 변경되면 status 함수를 호출할 필요 없이 자동으로   
     status 값이 변경되도록 하고 싶다.(종속성 대상의 변화 추적)
- 
+    
  ## 1. reactive.js
  ```javascript
 const { DependencyTracker } = require('./dependency');
