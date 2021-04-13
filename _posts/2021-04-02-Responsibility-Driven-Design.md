@@ -2,8 +2,8 @@
 layout: post
 title: 책임 주도 설계
 date: 2021-04-02 02:30:00 +0900
-categories: object
-ref: object
+categories: Object
+ref: Object
 ---
 
 # 책임 주도 설계
