@@ -13,7 +13,7 @@ ref: javascript, observer pattern, computed
   - person.age 가 변경되면 status 함수를 호출할 필요 없이 자동으로   
     status 값이 변경되도록 하고 싶다.(종속성 대상의 변화 추적)
     
- ## 1. reactive.js
+## 1. reactive.js
  ```javascript
 const { DependencyTracker } = require('./dependency');
  
