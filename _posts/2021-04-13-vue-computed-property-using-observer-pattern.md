@@ -14,7 +14,7 @@ ref: javascript, observer pattern, computed
     status 값이 변경되도록 하고 싶다.(종속성 대상의 변화 추적)
     
 ## 1. reactive.js
- ```javascript
+```javascript
 const { DependencyTracker } = require('./dependency');
  
 module.exports = {
