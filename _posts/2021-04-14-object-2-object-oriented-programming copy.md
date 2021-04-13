@@ -7,4 +7,4 @@ ref: Object
 ---
 # 오브젝트 - 코드로 이해하는 객체지향 설계 정리
 ## 2. 객체지향 프로그래밍
-![object-2-object-oriented-programming](https://user-images.githubusercontent.com/13375810/114574525-4a540a00-9cb4-11eb-970e-2a4f073bdb4c.png)
+![object-2-object-oriented-programming](https://user-images.githubusercontent.com/13375810/114575134-d9f9b880-9cb4-11eb-800b-cb585bf3cd7f.png)
