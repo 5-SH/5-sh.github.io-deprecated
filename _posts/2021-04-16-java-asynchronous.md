@@ -70,9 +70,9 @@ ref: Java, Asynchronous, Future
   20:43:11.706 [main] INFO com.example.study.FutureEx - Exit
   ```
   
-    Future 로 비동기 작업의 결과를 가져올 때는 get 메서드를 사용한다.   
-    get 메서드를 사용하면 비동기 작업이 완료될 때 까지 해당 스레드가 blocking 된다.   
-    Future 는 완료를 기다리고 계산 결과를 반환하는 get 메소드와 연산이 완료 되었는지 확인하는 isDone 메소드를 제공한다.
+  Future 로 비동기 작업의 결과를 가져올 때는 get 메서드를 사용한다.   
+  get 메서드를 사용하면 비동기 작업이 완료될 때 까지 해당 스레드가 blocking 된다.   
+  Future 는 완료를 기다리고 계산 결과를 반환하는 get 메소드와 연산이 완료 되었는지 확인하는 isDone 메소드를 제공한다.
     
   ```java
   @slf4j
