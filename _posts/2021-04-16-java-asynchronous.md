@@ -36,11 +36,11 @@ ref: Java, Asynchronous, Future
   20:35:55.888 [pool-1-thread-1] INFO com.example.study.FutureEx - Async
   ```
   
-  ## 2. Future
-    Future 는 비동기 계산의 결과를 나타내는 Interface 이다. Java 에서 비동기 작업을 수항핸다는 것은   
-    현재 진행 중인 스레드가 아닌 별도의 스레드에서 작업을 수행한다는 의미이다.   
-    비동기 작업에서 결과를 반환하고 싶을 때는 runnable 대신 callable interface 를 이용하면 결과 값을 사용하면 결과 값을 return 할 수 있다.   
-    그리고 예외를 비동기 코드를 처리하는스레드 안에서 처리하지 않고 밖으로 던질 수 있다.   
+## 2. Future
+  Future 는 비동기 계산의 결과를 나타내는 Interface 이다. Java 에서 비동기 작업을 수항핸다는 것은   
+  현재 진행 중인 스레드가 아닌 별도의 스레드에서 작업을 수행한다는 의미이다.   
+  비동기 작업에서 결과를 반환하고 싶을 때는 runnable 대신 callable interface 를 이용하면 결과 값을 사용하면 결과 값을 return 할 수 있다.   
+  그리고 예외를 비동기 코드를 처리하는스레드 안에서 처리하지 않고 밖으로 던질 수 있다.   
       
 ####  Future 에서 제공하는 메소드
   - V get() : Callable 등 작업의 실행이 완료될 때 까지 블로킹되고 완료되면 결과값을 리턴한다.
@@ -56,7 +56,7 @@ ref: Java, Asynchronous, Future
       ExecutorService es = Executors.newCachedThreadPool();
       Future<String> f = ex.submint(() -> {
         Thread.sleep(2000);
-        log.info('"Async");
+        log.info("Async");
         return "Hello";
       });
       log.info(f.get());
@@ -101,10 +101,9 @@ ref: Java, Asynchronous, Future
   00:26:02.509 [main] INFO com.example.study.FutureEx - Hello
   ```
     
-  ## 3. FutureTask
-  
-   FutureTask 는 비동기 작업을 생성한다. 비동기 작업 생성과 실행을 동시에 한 위의 코드와 다르게   
-   비동기 작업의 생성과 실행을 분리해 진행할 수 있다.
+## 3. FutureTask
+  FutureTask 는 비동기 작업을 생성한다. 비동기 작업 생성과 실행을 동시에 한 위의 코드와 다르게   
+  비동기 작업의 생성과 실행을 분리해 진행할 수 있다.
    
 ```java
 @slf4j
