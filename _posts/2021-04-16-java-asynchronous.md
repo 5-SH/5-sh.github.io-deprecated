@@ -6,9 +6,9 @@ categories: Java
 ref: Java, Asynchronous, Future
 ---
 
-출처: https://gunju-ko.github.io/java/2018/07/05/Future.html
-출처: https://codechacha.com/ko/java-completable-future/
-출처: https://jongmin92.github.io/2019/03/31/Java/java-async-1/
+출처: https://gunju-ko.github.io/java/2018/07/05/Future.html   
+출처: https://codechacha.com/ko/java-completable-future/   
+출처: https://jongmin92.github.io/2019/03/31/Java/java-async-1/   
 
 # 자바의 비동기 기술
 
