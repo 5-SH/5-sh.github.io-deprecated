@@ -9,7 +9,8 @@ ref: DB
 # 오라클 Tablespace 와 Datafile
 
 ## 1. Tablespce 와 Datafile 개요
-  오라클은 data 를 논리적으로 tablespace 에 물리적으로는 datafile 에 저장한다.   
+  오라클은 data 를 논리적으로 tablespace 에 물리적으로는 datafile 에 저장한다.  
+   
 ![Screenshot_20210422-115149_Samsung Internet](https://user-images.githubusercontent.com/13375810/115649596-92cd9080-a362-11eb-9533-3629b8352ab2.jpg)   
 
   Database, tablespace, datafile 은 긴밀하게 연결되어 있다.
