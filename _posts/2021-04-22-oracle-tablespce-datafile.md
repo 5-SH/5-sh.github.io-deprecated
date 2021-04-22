@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 오라클 테이블스페이스
-date: 2021-04-22 11:40:00 + 0900
+date: 2021-04-22 12:40:00 + 0900
 categories: DB
 ref: DB
 ---
