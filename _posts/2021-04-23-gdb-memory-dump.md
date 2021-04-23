@@ -17,7 +17,7 @@ ref: Dev, linux
 
   이 부분을 gdb 를 이용해 메모리 덤프를 뜬다. 아래 명령어로 gdb 접속후 메모리 덤프 명령어를 실행한다.   
   __gdb -p `<pid`>__   
-  __dump memory `<덤프를 저장할 위치`> `<메모리 시작 주소`> `<메모리 끝 주소`>__
+  __dump memory `<덤프를 저장할 위치`> `<메모리 시작 주소`> `<메모리 끝 주소`>__   
   ex) dump memory /root/dump_1 0x7fbbc689a000 0x7fbbc77ac000   
      
   그리고 덤프가 완료되면 파일을 strings 명령어로 확인 할 수 있다가
