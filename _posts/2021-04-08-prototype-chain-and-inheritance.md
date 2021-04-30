@@ -16,7 +16,7 @@ ref: Javascript, js, class
   call() 메소드는 주어진 this 값 및 각각 전달된 인수와 함께 함수를 호출한다.   
   this 는 현재 객체를 참조하며 call() 은 인수 목록을, apply() 는 인수 배열 하나를 받는다.   
   
-  #### 객체의 생성자 연결에 call 사용
+#### 객체의 생성자 연결에 call 사용
   ```javascript
   function Product(name, price) {
     this.name = name;
@@ -32,7 +32,7 @@ ref: Javascript, js, class
   // output: 'robot'
   ```
   
-  #### 함수 호출 및 'this'를 위한 문맥 지정에 call 사용
+#### 함수 호출 및 'this'를 위한 문맥 지정에 call 사용
   ```javascript
   function greet() {
     var reply = [this.animal, 'sleep', this.sleepDuration].join(' ');
