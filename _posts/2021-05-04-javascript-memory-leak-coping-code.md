@@ -94,7 +94,7 @@ setInterval(replaceThing, 1000);
 ```
 클로저 함수에서 발생하는 메모리 누수에 대한 자세한 설명은 아래 링크를 참고한다.   
 
-[자바스크립트 클로저 메모리 누수](https://5-sh.github.io/javascript/2021/04/27/javascript-closure-memory-leak.html/)
+[자바스크립트 클로저 메모리 누수](https://5-sh.github.io/javascript/2021/04/27/javascript-closure-memory-leak.html)
 
 ## 7. 흔한 메모리 누수 - DOM 에서 벗어난 요소 참조
 테이블 내 열의 내용을 빠르게 업데이트하고 싶어 셀에 대한 참조를 배열이나 변수에 저장하면, 동일한 DOM 요소에 대해 두 개의 참조가 존재한다.   
