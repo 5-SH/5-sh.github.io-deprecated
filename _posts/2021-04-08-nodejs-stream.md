@@ -10,7 +10,7 @@ https://jeonghwan-kim.github.io/node/2017/08/07/node-stream-you-need-to-know-2.h
 https://jeonghwan-kim.github.io/node/2017/08/12/node-stream-you-need-to-know-3.html   
 
 #  Node.js 스트림
-  스트림은 배열이나 문자열 같은 데이터 컬렉션 이다. 한 번에 모든 데이터를 읽은 수 없지만   
+  스트림은 배열이나 문자열 같은 데이터 컬렉션이다. 한 번에 모든 데이터를 읽은 수 없지만   
   외부 소스에서 data 를 한 번에 한 chunk 씩 읽어와 큰 데이터를 다룰 때 유리하다.
   
   - Stream 인터페이스를 구현한 노드의 내장 모듈   
@@ -99,7 +99,7 @@ readableSrc.pipe(transformStream1).pipe(transforStream2).pipe(finalWritableDest)
   ___일시정지 / 흐름 모드___   
   - 기본적으로 readable stream 은 일시정지 모드에서 시작한다.   
   - 필요에 따라 흐름 모드로 변경되거나 일시정지 모드로 돌아갈 수 있다.    
-  - readable stream 이 일시정지 모드일 때 read() 메소드를 호춣 스트림을 읽을 수 있다.   
+  - readable stream 이 일시정지 모드일 때 read() 메소드를 호출 스트림을 읽을 수 있다.   
   - 하지만 흐름 모드일 경우 데이터가 연속적으로 흐르고 있기 때문에 기다려야 한다.   
   - 흐름 모드일 때 데이터를 수신할 사용자가 없으면 사라진다.   
   - 따라서 흐름 모드에서 읽을 스트림이 있을 경우 data 이벤트 핸들러가 필요하다.   
@@ -120,7 +120,7 @@ const { Writable } = require('stream');
 class myWritableStream extends Writable { ... }
 
 // Writable 생성자로 객체 생성
-// 데이터 청크를 보내기 위한 wirte 함수 필수 옵션
+// 데이터 청크를 보내기 위한 write 함수 필수 옵션
 const outStream = new Writable({
   write(chunk, encoding, callback) {
     console.log(chunk.toString());
@@ -138,7 +138,7 @@ process.stdin.pipe(outStream);
 #### 2. 읽기 스트림 구현
 ```javascript
 const { Readable } = require('stream');
-const inSteram = nwe Readable({ });
+const inSteram = new Readable({ });
 
 inStream.push('ABCDEFGHIJKLM');
 inStream.push('NOPQRSTUVWXYZ');
@@ -186,7 +186,7 @@ process.stdin.pipe(inoutStream).pipe(process.stdout);
   아래 예제는 ',' 로 구분된 문자열을 js object 로 매핑하는 동작을 한다.   
   "a,b,c,d" 문자열은 {a:b, c:d} 가 된다.
 ```javascript
-const { Transform } = require('steram');
+const { Transform } = require('stream');
 
 const commaSplitter = new Transform({
   readableObjectMode: true,
