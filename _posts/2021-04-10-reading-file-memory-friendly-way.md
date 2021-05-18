@@ -91,7 +91,7 @@ async function* generateChunks(filePath, size) {
       end = size - (bytesRead - stats.size);
     }
     
-    yeild sharedBuffer.slice(0, end);
+    yield sharedBuffer.slice(0, end);
   }
 }
 
