@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Node.js addon 을 개발하는 방법
-date: 2021-06-20 12:00:00 + 0900
+date: 2021-06-30 12:00:00 + 0900
 categories: Dev
 ref: Nodejs, addon
 ---
@@ -10,7 +10,7 @@ ref: Nodejs, addon
 ## 1. napi
 기존 v8, libuv, nan 을 사용해 개발한 addon 모듈은 API/ABI 안정성이 보장되지 못하고 Node.js 주요 릴리즈마다 재컴파일 해야한다.   
 napi 는 v8 같은 js 런타임에 독립적이고 API/ABI 안정성이 보장된다. 그리고 Node.js 버전마다 재컴파일 하지 않아도 된다.   
-```c
+```cpp
 #include <assert.h>
 #include <node_api.h> 
 static napi_value Method(napi_env env, napi_callback_info info) { 
@@ -36,7 +36,7 @@ static napi_value Init(napi_env env, napi_value exports) {
 NAPI_MODULE(NODE_GYP_MODULE_NAME, Init)
 ```
 #### + node-addon-api 모듈
-```c
+```cpp
 #include <napi.h> 
 
 Napi::String Method(const Napi::CallbackInfo& info) { 
@@ -54,7 +54,7 @@ NODE_API_MODULE(hello, Init)
 napi 활용을 단순화 하는 헤더 전용 래퍼 클래스
 
 ## 2. v8, libuv 라이브러리
-```c
+```cpp
 // hello.cc 
 #include <node.h> 
 
@@ -82,7 +82,7 @@ namespace demo {
 
 ## 3. nan
 Native abstractions for Node, 옛날에 사용하던 방법 
-```c
+```cpp
 #include <nan.h> 
 
 void Method(const Nan::FunctionCallbackInfo<v8::Value>& info) { 
