@@ -25,11 +25,11 @@ V8 엔진의 heap 메모리 구조는 아래와 같다.
 상대적으로 작은 객체(1~8MB 객체)가 할당되고 할당 포인터가 New Space 의 끝에 도달하면 Minor GC 가 트리거 된다. Minor GC 과정은 Scavenger 라고 불리고 체니의 알고리즘으로 구현되어 있다. 이 과정은 빈번히 발생되고 스레드를 사용해 병렬로 동작해 매우 빠르다.   
 New Space 는 To space 와 From space 로 구성되어 있다. 대부분의 할당은 From space 에서 이루어지고 From space 가 가득차면 Minor GC 에 의해 메모리 회수가 일어난다.   
 
-> 1. To space 에 새로 할당할 메모리 공간이 부족하면 Minor GC 는 From space 와 To space 역할이 바뀐다. 그리고 참조가 끊긴 객체에 할당된 메모리 공간을 회수하고 남은 객체는 연속된 메모리 공간으로 압축하고 할당한다.
+> 1. To space 에 새로 할당할 메모리 공간이 부족하면 Minor GC 는 From space 와 To space 역할이 바뀐다. 그리고 참조가 끊긴 객체에 할당된 메모리 공간을 회수하고 남은 객체는 연속된 메모리 공간으로 압축하고 할당한다.   
 ![Screenshot_20210513-214941_Samsung Internet](https://user-images.githubusercontent.com/13375810/118127839-23b0fc80-b435-11eb-9a8d-bbf92c1de179.jpg)
 ![Screenshot_20210513-215011_Samsung Internet](https://user-images.githubusercontent.com/13375810/118127920-34fa0900-b435-11eb-8cec-a98d942614c3.jpg)
 
-> 2. 이후 다시 To space 에 메모리가 부족한 상황이 발생하면 To, From space 의 역할을 바꾸고 From space 에서 살아남은 객체들을 단편화를 해결해 To space 로 옮긴다. 이 때, Minor GC 에서 2 번 이상 살아남은 객체들은 Old Space 로 이동한다. 다른 객체를 참조하는 포인터를 가진 객체는 pointer space 에 Raw Data 만을 가진 객체들은 Data space 에 위치 시킨다.
+> 2. 이후 다시 To space 에 메모리가 부족한 상황이 발생하면 To, From space 의 역할을 바꾸고 From space 에서 살아남은 객체들을 단편화를 해결해 To space 로 옮긴다. 이 때, Minor GC 에서 2 번 이상 살아남은 객체들은 Old Space 로 이동한다. 다른 객체를 참조하는 포인터를 가진 객체는 pointer space 에 Raw Data 만을 가진 객체들은 Data space 에 위치 시킨다.   
 ![Screenshot_20210513-215426_Samsung Internet](https://user-images.githubusercontent.com/13375810/118128397-cc5f5c00-b435-11eb-8ecf-4acad91af694.jpg)
 ![Screenshot_20210513-215501_Samsung Internet](https://user-images.githubusercontent.com/13375810/118128460-e0a35900-b435-11eb-84bb-1d94abd06ed1.jpg)
 ![Screenshot_20210513-215527_Samsung Internet](https://user-images.githubusercontent.com/13375810/118128502-f1ec6580-b435-11eb-8f9e-9b8a545d6d41.jpg)
