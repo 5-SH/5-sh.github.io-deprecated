@@ -18,8 +18,17 @@ unixODBC 에서 Pool 을 설정하고, node.js 에서 odbc module 로 pool 을 �
 하지만 RDBMS 는 최대 4개의 세션만 활용하고 1~4 사이의 pool size 에서 성능이 좋아지지만 pool size 5 부터는 성능의 이익이 없었다.   
 
 ### 3. 원인
-RDBMS 는 멀티스레딩 개념의 언어(C++, JAVA 등) 과 함께 발전해 왔다. 그리고 ODBC, JDBC 등 RDBMS 연결체는 멀티스레딩 환경으로 작성되었다. 따라서 pool 에서 세션을 가져와 쿼리 요청을 하는 과정은 멀티스레딩으로 진행된다.   
-Node.js 는 싱글스레드 기반이고 멀티스레딩이 필요한 경우 worker_therad 를 활용해야 한다. Node.js 의 worker_thread 기본 값이 4로 설정되어 있고 때문에 RDBMS 에서 최대로 사용하는 세션의 개수가 4개 였다.   
+Node.js 는 이벤트 루프의 blokcing 을 막기 위해 기본적으로 I/O 관련 작업을 멀티 스레드 구조인 OS 커널 또는 libuv 의 thread pool 에서 처리한다.   
+블로킹 작업들을 OS 커널 또는 libuv 의 thread pool 에서 수행하고 완료되면 콜백 함수로 이벤트 루프에 전달한다.   
+이벤트 루프의 블로킹을 모두 다른 곳으로 넘겼는데 이렇게 넘기는 것을 offloading 이라고 한다.   
+커널에서 비동기를 지원하는 작업은 libuv 에서 커널의 함수를 호출해 처리하고,   
+해당하지 않는 작업들은 libuv 의 thread(worker_thread)가 수행한다. 워커 스레드는 작업을 완료할 때 까지 블로킹 된다.   
+
+![1_C5sCYUM9gPUs7ftDkqnqzg](https://user-images.githubusercontent.com/13375810/125323162-70ec1480-e379-11eb-911e-f9d9e5dc5dc0.png)
+
+<br/>
+pool 에서 세션을 가져와 쿼리 요청을 하는 Database Process 는 worker_thread 에서 진행된다.   
+Node.js 의 worker_thread 기본 값이 4로 설정되어 있기 때문에 RDBMS 에서 최대로 사용하는 세션의 개수가 4개 였다.   
 Node.js 실행 시 worker thread 의 사이즈를 늘려서 사용하면 RDBMS 의 세션을 pool size 만큼 사용할 수 있다.   
 예를 들어 UV_THREADPOOL_SIZE 값을 최대 값인 128 로 설정해 Node.js 를 실행하고 pool size 가 100 인 경우, RDBMS 에서 세션이 최대 100개 까지 ACTIVE 상태로 동작하는 것을 확인할 수 있다.   
 <br/>
