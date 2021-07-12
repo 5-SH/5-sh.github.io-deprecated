@@ -18,9 +18,6 @@ permalink: /about/
 >   - GitHub | https://github.com/5-SH
 >   - Blog | https://5-sh.github.io/   
 
-
-<br/>
-
 # ■ Skills
 > ### 언어
 >   - JavaScript
@@ -45,8 +42,6 @@ permalink: /about/
 >   - Git
 >   - Slack
 >   - SVN
-
-<br/>
 
 # ■ Work Experience & Projects
 ## [현대건설 스마트홈 IoT 서비스(Hi-oT)](https://www.hyundai.co.kr/TechInnovation/Etc/Hiot.hub   )
@@ -83,8 +78,6 @@ permalink: /about/
 >  - 프론트엔드 기술 검증 (Angular, React, Vue.js)
 >  - 대시보드 웹서비스 개발 (Vue.js)
 
-<br/>
-
 # ■ Personal Education & Articles
 ### 1. 아키텍처 & 패턴
 >   - [JAVA 로 작성한 엔터프라이즈 어플리케이션 아키텍처 코드](https://github.com/5-SH/Enterprise_Application_Architecture)
@@ -104,8 +97,6 @@ permalink: /about/
 >   - [Node.js 에서 pool 을 사용하면 pool size 만큼 RDBMS 에서 활용하지 않는 이유](https://5-sh.github.io/nodejs/2021/06/23/unixODBC-pool-nodejs-session-pool.html)
 >   - [자바스크립트 클로저 메모리 누수](https://5-sh.github.io/javascript/2021/04/27/javascript-closure-memory-leak.html)
 >   - [V8 엔진의 heap 메모리 구조와 메모리 사용량이 계속 증가하는 이유](https://5-sh.github.>io/nodejs/2021/05/13/v8-heap-memory-and-why-memory-usage-keep-on-growing.html)
-
-<br/>
 
 # ■ Awards
 ### 1. GIF 2015 웨어러블 해커톤 대회 미래창조과학부장관상 수상   
