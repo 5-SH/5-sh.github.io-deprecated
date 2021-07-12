@@ -84,7 +84,7 @@ permalink: /about/
 >   - [JAVA 로 작성한 디자인 패턴 코드](https://github.com/5-SH/design_pattern_java)
 >   - [CQRS 패턴을 활용한 이벤트 드리븐 아키텍처](https://github.com/5-SH/java_cqrs)
  
-### 2. 객체지향 && 함수형 프로그래밍
+### 2. 객체지향 & 함수형 프로그래밍
 >   - [Objects - 코드로 이해하는 객체지향 설계](https://github.com/5-SH/Objects)
 >   - [함수형 프로그래밍과 JavaScript ES6+ 기초편](https://github.com/5-SH/Objects)
 >   - [함수형 프로그래밍과 JavaScript ES6+ 응용편](https://github.com/5-SH/functional_promgramming_application)
