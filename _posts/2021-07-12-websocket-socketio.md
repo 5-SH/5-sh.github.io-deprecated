@@ -2,7 +2,7 @@
 layout: post
 title: WebSocket 과 Socket.io
 date: 2021-07-12 23:00:00 + 0900
-categories: Network
+categories: Web
 ref: WebSocket, Socket.io
 ---
 
