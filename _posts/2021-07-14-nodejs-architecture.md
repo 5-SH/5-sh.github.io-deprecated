@@ -17,7 +17,7 @@ ref: Node.js, Architecture
 
 JavaScript 는 하나의 메인 스레드와 하나의 콜스택을 가진다. 그리고 메모리 할당을 관리하는 Heap 이 있다.   
 async / await 와 같은 비동기 처리는 JS 를 둘러싼 런타임 환경인 브라우저, Node.js 에서 지원한다.   
-Web APIs 는 브라우저, Node.js 에서 지원하는 api 이다. 환경에 따라 AJAX, Timeout 등 비동기 작업 API 를 지원한다.   
+Web APIs 는 브라우저, Node.js 에서 지원하는 api 이다. 환경에 따라 AJAX, Timeout 등 비동기 작업 API 를 지원한다.
 
 ![rw1](https://user-images.githubusercontent.com/13375810/125661976-d3b2044e-be31-45e5-b6a5-d28714904068.png)
 
