@@ -2,7 +2,7 @@
 layout: post
 title: Node.js addon 을 개발하는 방법
 date: 2021-06-30 12:00:00 + 0900
-categories: Dev
+categories: Node.js
 ref: Nodejs, addon
 ---
 
