@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Node.js addon async callback 작성
+title: Node.js addon async callback 작성 방법 1
 date: 2021-07-02 20:00:00 + 0900
 categories: Nodejs
 ref: Nodejs, addon, async, callback
@@ -8,7 +8,7 @@ ref: Nodejs, addon, async, callback
 
 출처 : https://z-wony.tistory.com/18 
 
-# Node.js addon async callback 작성
+# Node.js addon async callback 작성 방법 1
 
 ## 1. 파라미터로 받은 Function 객체를 Synchronous 하게 call
 ### js 함수명: directCall, c++ 함수명: MeethodFunc
