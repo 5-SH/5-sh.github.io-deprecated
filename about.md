@@ -51,7 +51,7 @@ permalink: /about/
 >  - 공간별 디바이스 제어 서비스 개발
 
 ### 2. 고도화 기능 개발
->  - [차량에서 가전을 제어할 수 있는 카투홈 서비스 개발](https://www.hyundai.com/kr/ko/>customer-service/bluelink/bluelink-service/smart-control/car-to-home)
+>  - [차량에서 가전을 제어할 수 있는 카투홈 서비스 개발](https://www.hyundai.com/kr/ko/customer-service/bluelink/bluelink-service/smart-control/car-to-home)
 >  - KT 기가지니, 현대건설 보이스홈 연동 서비스 개발
 
 ### 3. 운영 & 테스트
@@ -63,12 +63,13 @@ permalink: /about/
 >  - EDA 플랫폼 도입 검토
 >  - 스마트홈을 위한 EDA 플랫폼 PoC 개발
 
-## [현대자동차그룹 스마트 팩토리 플랫폼](http://www.hyundai-autoever.com/common/goPage.view?page=ko/service/IOT_platform)
+## [현대자동차그룹 스마트 팩토리 플랫폼(IoT 플랫폼)](https://www.hyundai-autoever.com/kor/business-area/digital-transformation/smart-factory/contents.do?cntnSeq=352)
 ### 1. 플랫폼 개발
+>  - 플랫폼 아키텍트 검증, 개발
 >  - DBMS 커넥터 개발(JDBC, ODBC)
 >  - 텍스트 파일 Read, parser 개발
 >  - 개발 표준 수립(형상관리 전략, 개발, 환경 가이드)
->  - 메모리 누수 이슈 해결 중
+>  - 메모리 누수 이슈 해결
 
 ### 2. 플랫폼 전개
 >  - 현대모비스 진천 공장 적용
