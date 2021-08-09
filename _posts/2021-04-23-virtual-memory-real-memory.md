@@ -2,13 +2,13 @@
 layout: post
 title: 가상 메모리와 실제 메모리
 date: 2021-04-23 16:10:00 + 0900
-categories: Dev
+categories: Linux
 ref: Dev, linux
 ---
 
 # 가상 메모리와 실제 메모리
  __ps -eo euser,pid,vsz,rss,comm | grep [process id]__ 명령어를 실행할 경우 출력 되는 vsz, rss 값은 다음과 같다.   
- - euser : OS User 이기
+ - euser : OS User
  - pid : 프로세스 id
  - vsz(VIRT) : 가상 메모리 크기
  - rss : 실제 점유 중인 메모리 크기  
