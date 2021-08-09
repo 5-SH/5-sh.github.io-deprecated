@@ -2,7 +2,7 @@
 layout: post
 title: heap memory 는 어떻게 할당될까
 date: 2021-04-23 16:10:00 + 0900
-categories: Dev
+categories: Linux
 ref: Dev, linux
 ---
 

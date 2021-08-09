@@ -2,8 +2,8 @@
 layout: post
 title: Bull queue 를 활용한 Job Manager 에 EventEmitter 사용하기
 date: 2021-03-31 02:00:00 +0900
-categories: Dev
-ref: node.js
+categories: Patterns
+ref: Node.js, message queue
 ---
 # Job Manager 클래스에 EventEmitter 상속하기
 

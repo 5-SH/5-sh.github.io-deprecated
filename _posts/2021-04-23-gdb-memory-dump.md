@@ -2,7 +2,7 @@
 layout: post
 title: GDB 를 통해 메모리 덤프하기
 date: 2021-04-23 16:10:00 + 0900
-categories: Dev
+categories: Linux
 ref: Dev, linux
 ---
 
