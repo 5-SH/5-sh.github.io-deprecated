@@ -2,7 +2,7 @@
 layout: post
 title: observer pattern 을 활용해 vue.js 의 computed 속성 구현
 date: 2021-04-13 18:30:00 + 0900
-categories: Javascript
+categories: Patterns
 ref: javascript, observer pattern, computed
 ---
 
