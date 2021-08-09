@@ -14,11 +14,14 @@ ref: DB
 ```java
 Connection conn = DriverManager.getConnection(url, username, password);
 conn.setAutoCommit(true);
+
 PreparedStatement countStmt = conn.prepareStatement("SELECT COUNT(1) as count FROM blah WHERE id = ?");
 countStmt.setLong(1, id);
 ResultSet rs = countStmt.executeQuery();
+
 rs.next();
 long count = rs.getLong("count");
+
 if (count < 1) {
   PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO blah (id, name) VALUES (?, ?)");
   insertStmt.setLong(1, id);
@@ -38,6 +41,7 @@ if (count < 1) {
 ```java
 Connection conn = DriverManager.getConnection(url, username, password);
 conn.setAutoCommit(true);
+
 String sql = "MERGE INTO blah"
             + "USING DUAL ON (id=?) "
             + "WHEN MATCHED THEN "
@@ -46,6 +50,7 @@ String sql = "MERGE INTO blah"
             + "INSERT (id, name) "
             + "VALUES (?, ?)";
 PreparedStatement stmt = conn.prepareStatement(sql);
+
 stmt.setLong(1, id);
 stmt.setString(2, name);
 stmt.setLong(3, id);
