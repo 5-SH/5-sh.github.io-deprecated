@@ -2,7 +2,7 @@
 layout: post
 title: unixODBC 로 oracle 서버에 연결하기
 date: 2021-06-17 22:00:00 + 0900
-categories: Linuxs
+categories: Linux
 ref: oracle, unixodbc, odbc, linux
 ---
 
