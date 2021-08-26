@@ -51,7 +51,7 @@ ref: Java, JVM, Heap, GC
 
 <br/>
 
-## 2. JVM 의 GC
+## 3. JVM 의 GC
 
 ### 1) GC
 #### Mark & Sweep & Compact
@@ -67,7 +67,7 @@ reachable object 가 참조하고 있는 객체를 찾아서 마킹한다.
 #### Old Generation 영역의 GC
 ![FT_2021-08-26 17_33_31 507](https://user-images.githubusercontent.com/13375810/130930031-3f5c09dc-4be0-4e50-8afb-19003ae7a6de.png)
 
-## 3. GC 의 종류
+## 4. GC 의 종류
 
 ### 1) Serial GC 
 GC 를 수행하는 스레드가 1개이다. cpu 가 한 개만 있을때 사용하는 방식. Mark-Sweep-Compact 알고리즘을 사용한다.   
