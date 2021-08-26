@@ -6,7 +6,7 @@ categories: Java
 ref: Java, JVM, Heap, GC
 ---
 
-출처1 : https://www.youtube.com/watch?v=UzaGOXKVhwU&ab_channel=%EC%9A%B0%EC%95%84%ED%95%9CTech
+출처1 : https://www.youtube.com/watch?v=UzaGOXKVhwU&ab_channel=%EC%9A%B0%EC%95%84%ED%95%9CTech   
 출처2 : https://www.artima.com/insidejvm/ed2/jvm8.html
 
 # JVM & JVM Heap
