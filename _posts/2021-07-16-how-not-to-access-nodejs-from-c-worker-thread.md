@@ -20,7 +20,8 @@ ref: Nodejs, addon, async, callback
 위 그림의 입/출력 데이터 복사는 이벤트 루프에서 수행된다. 따라서 복사가 오래 걸리면 이벤트 루프가 블로킹 되고 메모리 낭비가 생길 수 있다.   
 <br/>
 이상적으로는 아래와 같이 v8 heap 의 데이터를 worker_thread 에서 공유하는 방법을 선호한다.   
-그러나 아래 방법은 불가능하다.
+그러나 아래 방법은 불가능하다.   
+
 ![inplace](https://user-images.githubusercontent.com/13375810/125933294-5c1767a8-3221-4b9c-84be-0350926fa239.gif)   
 
 ## LocalHandle

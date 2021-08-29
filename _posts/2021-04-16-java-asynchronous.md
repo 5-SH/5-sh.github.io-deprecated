@@ -54,7 +54,7 @@ ref: Java, Asynchronous, Future
   public class FutureEx {
     public static void main(String[] args) throws ExecutionException, IntteruptedException {
       ExecutorService es = Executors.newCachedThreadPool();
-      Future<String> f = ex.submint(() -> {
+      Future<String> f = ex.submit(() -> {
         Thread.sleep(2000);
         log.info("Async");
         return "Hello";
@@ -85,10 +85,10 @@ ref: Java, Asynchronous, Future
         log.info("Async");
         return "Hello";
       });
-      log.info(String.valueOf(f.siDone()));
+      log.info(String.valueOf(f.isDone()));
       Thread.sleep(2000);
       log.info("Exit");
-      log.info(String.valueOf(f.siDone()));
+      log.info(String.valueOf(f.isDone()));
       log.info(f.get());
     }
   }
