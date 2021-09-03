@@ -33,6 +33,7 @@ class BasicSingleton implements Serializable {
 - 클래스가 로드 될 때 jvm 에 의해 INSTANCE 가 생성되어 원하는 순간에 싱글톤 인스턴스를 생성하는 lazy loading 은 지원하지 못한다.   
 - 싱글톤 객체를 직렬화, 역직렬화를 하면 인스턴스가 두 개 생길 수 있다.
 - 리플렉션을 사용해 BasicSingleton 을 생성하면 인스턴스가 두 개 생길 수 있다.
+
 ```java
 BasicSingleton instance = BasicSingleton.getInstance();
 BasicSingleton newInstance;
