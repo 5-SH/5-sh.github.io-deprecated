@@ -11,12 +11,12 @@ permalink: /about/
 >   - 현대오토에버에 재직 중 입니다.
 >   - 현대건설 스마트홈 플랫폼(Hi-oT) 을 개발 했습니다.
 >   - 현대자동차그룹 스마트 팩토리 플랫폼을 개발하고 있습니다.
->   - 객체지향적인 개발과 패턴 & 아키텍처를 주로 고민하고 공부합니다.
+>   - 객체지향적인 개발과 디자인 패턴 그리고 엔터프라이즈 아키텍처를 주로 고민하고 공부합니다.
 
 ## Contact 
->   - Email | llll_lll_lll@naver.com
->   - GitHub | https://github.com/5-SH
->   - Blog | https://5-sh.github.io/   
+>   - Email :  llll_lll_lll@naver.com
+>   - GitHub : https://github.com/5-SH
+>   - Blog : https://5-sh.github.io/   
 
 # ■ Skills
 > ### 언어
@@ -97,7 +97,8 @@ permalink: /about/
 ### 4. Articles
 >   - [Node.js 에서 pool 을 사용하면 pool size 만큼 RDBMS 에서 활용하지 않는 이유](https://5-sh.github.io/nodejs/2021/06/23/unixODBC-pool-nodejs-session-pool.html)
 >   - [자바스크립트 클로저 메모리 누수](https://5-sh.github.io/javascript/2021/04/27/javascript-closure-memory-leak.html)
->   - [V8 엔진의 heap 메모리 구조와 메모리 사용량이 계속 증가하는 이유](https://5-sh.github.>io/nodejs/2021/05/13/v8-heap-memory-and-why-memory-usage-keep-on-growing.html)
+>   - [Node.js addon 의 worker_thread 에서 v8 메모리에 엑세스 하는 방법](https://5-sh.github.io/nodejs/2021/07/16/how-not-to-access-nodejs-from-c-worker-thread.html)
+>   - [V8 엔진의 heap 메모리 구조와 메모리 사용량이 계속 증가하는 이유](https://5-sh.github.io/nodejs/2021/05/13/v8-heap-memory-and-why-memory-usage-keep-on-growing.html)
 
 # ■ Awards
 ### 1. GIF 2015 웨어러블 해커톤 대회 미래창조과학부장관상 수상   
