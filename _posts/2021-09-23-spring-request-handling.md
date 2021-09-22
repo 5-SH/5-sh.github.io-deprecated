@@ -9,7 +9,7 @@ ref: Spring, Servlet
 # 스프링 요청 처리 과정
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/13375810/134381785-9ba80f37-4068-4afd-8660-a3fda3376ea6.png" height="350" />
+  <img src="https://user-images.githubusercontent.com/13375810/134381785-9ba80f37-4068-4afd-8660-a3fda3376ea6.png" height="450" />
   <figcaption></figcaption>
 </figure>
 
