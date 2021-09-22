@@ -48,7 +48,7 @@ public static interface Flow.Processor<T, R> extends Flow.Subscriber<T>, Flow.Pu
 ```
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/13375810/134388511-7727b796-5cd3-4d6e-aaa9-e2fdf36a2ebf.png" height="350" />
+  <img src="https://user-images.githubusercontent.com/13375810/134388511-7727b796-5cd3-4d6e-aaa9-e2fdf36a2ebf.png" height="450" />
   <figcaption></figcaption>
 </figure>
 
