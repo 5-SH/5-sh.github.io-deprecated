@@ -40,9 +40,9 @@ ref: Java, Asynchronous, Future
   Future 는 비동기 계산의 결과를 나타내는 Interface 이다. Java 에서 비동기 작업을 수항핸다는 것은   
   현재 진행 중인 스레드가 아닌 별도의 스레드에서 작업을 수행한다는 의미이다.   
   비동기 작업에서 결과를 반환하고 싶을 때는 runnable 대신 callable interface 를 이용하면 결과 값을 사용하면 결과 값을 return 할 수 있다.   
-  그리고 예외를 비동기 코드를 처리하는스레드 안에서 처리하지 않고 밖으로 던질 수 있다.   
+  그리고 예외를 비동기 코드를 처리하는 스레드 안에서 처리하지 않고 밖으로 던질 수 있다.   
       
-####  Future 에서 제공하는 메소드
+### 2-1. Future 에서 제공하는 메소드
   - V get() : Callable 등 작업의 실행이 완료될 때 까지 블로킹되고 완료되면 결과값을 리턴한다.
   - V get(long timeut, TimeUnit unit) : 인수로 전달한 시간동안 작업의 실행 결과를 기다린다. 지정한 시간 내에 수행이 완료되면 결과를 리턴하고 초과되면 TimeoutException 을 발생시킨다.
   - boolean cancel(boolean mayInterruptIfRunning) : 작업을 취소하려고 시도한다. 작업이 이미 완료되거나 취소되면 실패할 수 있다. cancel 이 리턴된 이후에 isDone() 은 항상 true 를 반환한다.
@@ -127,17 +127,17 @@ public class FutureEx {
   }
 }
  
- // 결과
+// 결과
 00:29:39.459 [main] INFO com.example.study.FutureEx - false
 00:29:41.461 [pool-1-thread-1] INFO com.example.study.FutureEx - Async
 00:29:41.467 [main] INFO com.example.study.FutureEx - Exit
 00:29:41.467 [main] INFO com.example.study.FutureEx - true
 00:29:41.467 [main] INFO com.example.study.FutureEx - Hello
- ```
+```
  
- 비동기 작업의 결과를 가져오는 방법은 Future 와 같은 결과를 다루는 handler 를 이용하거나 callback 을 이용하는 2 가지 방법이 있다.
+비동기 작업의 결과를 가져오는 방법은 Future 와 같은 결과를 다루는 handler 를 이용하거나 callback 을 이용하는 2 가지 방법이 있다.
  
-#### 1) done() 메소드를 재정의 해 callback 을 이용하는 방법
+### 3-1. done() 메소드를 재정의 해 callback 을 이용하는 방법
 ```java
 @slf4j
 public class FutureEx {
@@ -175,7 +175,7 @@ public class FutureEx {
 01:03:06.153 [pool-1-thread-1] INFO com.example.study.FutureEx - Hello
 ```
       
-#### 2) callback 을 좀 더 가독성 있게 작성 
+### 3-2. callback 을 좀 더 가독성 있게 작성 
 ```java
 @slf4j
 public class FutureEx {
@@ -224,7 +224,7 @@ public class FutureEx {
 01:05:03.978 [pool-1-thread-1] INFO com.example.study.FutureEx - Hello
 ```
    
-#### 3) 예외처리 Callback 추가
+### 3-3. 예외처리 Callback 추가
 ```java
 @slf4j
 public class FutureEx {
@@ -282,22 +282,27 @@ public class FutureEx {
 01:11:53.463 [pool-1-thread-1] INFO com.example.study.FutureEx - Error: Async Error
 ```
 
-# 4. CompletableFuture
-  CompletableFuture 를 사용하면 Future 를 명시적으로 완료할 수 있다. 만약 2개 이상의 스레드에서 CompletableFuture 에   
-  결과를 쓰려고 하는 경우(complete, completeExceptionally, cancel) 에는 그 중 1개의 스레드만 성공한다.   
-  CompletableFuture 는 Future, CompletionState 인터페이스를 구현한다.
-  #### CompletionStage 인터페이스를 다음과 같은 정책으로 구현하고 있다.   
-  - 비동기 처리가 완료되었을 때 수행되는 의존적인 작업들은 CompletableFuture 를 완료한 스레드에 의해 실행될 수 있다. CompletableFuture 가 이미 완료된 경우에는 콜백을 등록하는 스레드에서 해당 콜백을 실행한다.
-  - 명시적으로 Executor 인자를 받지 않는 비동기 메소드들은 ForkJoinPool.commonPool() 에서 스레드를 할당받아 수행된다. AsynchronouseCompletionTask 는 async 메소드에 의해 생성된 비동기 task 들을 식별하기 위한 마커 인터페이스 이다.
+## 4. CompletableFuture
+  CompletableFuture 를 사용하면 Future 를 명시적으로 완료할 수 있다.    
+  만약 2개 이상의 스레드에서 CompletableFuture 에 결과를 쓰려고 하는 경우(complete, completeExceptionally, cancel) 에는 그 중 1개의 스레드만 성공한다.   
+  CompletableFuture 는 Future, CompletionStage 인터페이스를 구현한다.
+
+### 4-1. CompletionStage 인터페이스를 다음과 같은 정책으로 구현하고 있다.   
+  - 비동기 처리가 완료되었을 때 수행되는 의존적인 작업들은 CompletableFuture 를 완료한 스레드에 의해 실행될 수 있다.    
+  CompletableFuture 가 이미 완료된 경우에는 콜백을 등록하는 스레드에서 해당 콜백을 실행한다.
+  - 명시적으로 Executor 인자를 받지 않는 비동기 메소드들은 ForkJoinPool.commonPool() 에서 스레드를 할당받아 수행된다.   
+  AsynchronouseCompletionTask 는 async 메소드에 의해 생성된 비동기 task 들을 식별하기 위한 마커 인터페이스 이다.
   - 모든 CompletionStage 메소드들은 다른 public 메소드와 독립적으로 구현되어 있다. 따라서 서브 클래스에서 특정 메소드를 오버라이드 했다 하더라도 CompletionStage 메소드에 영향을 주지 않는다.
    
-  #### CompletableFuture 는 다음과 같은 정책으로 Future 인터페이스를 구현하고 있다.
-  - Future 인터페이스는 비동기 작업을 완료시킬 수 있는 메소드를 가지고 있지 않다. cancel() 메소드는 completeExcptionally 와 같은 효과를 가진다. isCompletedExceptionally() 메소드는 CompletableFuture 가 예외적인 방식으로 완료되었는지 확인하는데 사용될 수 있다.
+### 4-2 CompletableFuture 는 다음과 같은 정책으로 Future 인터페이스를 구현하고 있다.
+  - Future 인터페이스는 비동기 작업을 완료시킬 수 있는 메소드를 가지고 있지 않다.   
+  cancel() 메소드는 completeExceptionally 와 같은 효과를 가진다.   
+  isCompletedExceptionally() 메소드는 CompletableFuture 가 예외적인 방식으로 완료되었는지 확인하는데 사용될 수 있다.
   - CompletionException 에 의해 예외적으로 완료가 된 경우, get() 또는 get(long, TimeUnit) 메소드는 ExecutionException 을 던진다.
   
-  #### CompletableFuture 에서 제공하는 메소드   
+### 4-3 CompletableFuture 에서 제공하는 메소드   
   - CompletableFuture`<U`> completedFuture(U value) : 이미 비동기 작업이 완료된 상태의 CompletableFuture 를 반환한다.
-  - boolean complete(T value) : 이미 완료가 되지 않은 경우 비동기 결과를 value 로 쓱 완료 상태로 변환한다. get 메소드를 호출하는 경우 get() 메소드의 결과로 value 가 리턴된다.
+  - boolean complete(T value) : 이미 완료가 되지 않은 경우 비동기 결과를 value 로 쓰고 완료 상태로 변환한다. get 메소드를 호출하는 경우 get() 메소드의 결과로 value 가 리턴된다.
   - boolean completeExceptionally(Throwable x) : 이미 완료되지 않은 경우 예외적으로 완료되었다고 상태를 변환한다. get 메소드를 호출하는 경우 예외가 발생한다.
 
 ```java
@@ -313,6 +318,7 @@ public class FutureEx {
       future.complete("Finished");
       return null;
     });
+    log(future.get());
   }
 }
 
@@ -320,7 +326,7 @@ public class FutureEx {
 22:58:40.478 (main) Finished
 ```
   
-#### cancel 에 대한 예외처리
+### 4-4 cancel 에 대한 예외처리
 ```java
 public class FutureEx {
   public static void log(String msg) {
@@ -357,7 +363,7 @@ java.util.concurrent.CancellationException
   at java.lang.Thread.run(Thread.java:748) 23:02:53.074 (main) Canceled
 ```
 
-#### supplyAsync(), runAsync()
+### 4-5 supplyAsync(), runAsync()
   CompletableFuture 는 supplyAsync() 와 runAsync() 를 제공해 직접 스레드를 생성하지 않고 작업을 Async 로 처리할 수 있다.   
   supplyAsync() 는 리턴 값이 있는 반면에 runAsync() 는 리턴 값이 없다.
 
@@ -394,8 +400,7 @@ public class FutureEx {
   }
   
   public static void main(String[] args) {
-    CompletableFuture<void> future = new CompletableFuture.runAsync(() -> log("future 
-    log("get(): " + future.get());
+    CompletableFuture<void> future = new CompletableFuture.runAsync(() -> log("get(): " + future.get());
   }
 }
 
