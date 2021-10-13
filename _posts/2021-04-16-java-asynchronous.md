@@ -294,13 +294,13 @@ public class FutureEx {
   AsynchronouseCompletionTask 는 async 메소드에 의해 생성된 비동기 task 들을 식별하기 위한 마커 인터페이스 이다.
   - 모든 CompletionStage 메소드들은 다른 public 메소드와 독립적으로 구현되어 있다. 따라서 서브 클래스에서 특정 메소드를 오버라이드 했다 하더라도 CompletionStage 메소드에 영향을 주지 않는다.
    
-### 4-2 CompletableFuture 는 다음과 같은 정책으로 Future 인터페이스를 구현하고 있다.
+### 4-2. CompletableFuture 는 다음과 같은 정책으로 Future 인터페이스를 구현하고 있다.
   - Future 인터페이스는 비동기 작업을 완료시킬 수 있는 메소드를 가지고 있지 않다.   
   cancel() 메소드는 completeExceptionally 와 같은 효과를 가진다.   
   isCompletedExceptionally() 메소드는 CompletableFuture 가 예외적인 방식으로 완료되었는지 확인하는데 사용될 수 있다.
   - CompletionException 에 의해 예외적으로 완료가 된 경우, get() 또는 get(long, TimeUnit) 메소드는 ExecutionException 을 던진다.
   
-### 4-3 CompletableFuture 에서 제공하는 메소드   
+### 4-3. CompletableFuture 에서 제공하는 메소드   
   - CompletableFuture`<U`> completedFuture(U value) : 이미 비동기 작업이 완료된 상태의 CompletableFuture 를 반환한다.
   - boolean complete(T value) : 이미 완료가 되지 않은 경우 비동기 결과를 value 로 쓰고 완료 상태로 변환한다. get 메소드를 호출하는 경우 get() 메소드의 결과로 value 가 리턴된다.
   - boolean completeExceptionally(Throwable x) : 이미 완료되지 않은 경우 예외적으로 완료되었다고 상태를 변환한다. get 메소드를 호출하는 경우 예외가 발생한다.
@@ -326,7 +326,7 @@ public class FutureEx {
 22:58:40.478 (main) Finished
 ```
   
-### 4-4 cancel 에 대한 예외처리
+### 4-4. cancel 에 대한 예외처리
 ```java
 public class FutureEx {
   public static void log(String msg) {
@@ -363,7 +363,7 @@ java.util.concurrent.CancellationException
   at java.lang.Thread.run(Thread.java:748) 23:02:53.074 (main) Canceled
 ```
 
-### 4-5 supplyAsync(), runAsync()
+### 4-5. supplyAsync(), runAsync()
   CompletableFuture 는 supplyAsync() 와 runAsync() 를 제공해 직접 스레드를 생성하지 않고 작업을 Async 로 처리할 수 있다.   
   supplyAsync() 는 리턴 값이 있는 반면에 runAsync() 는 리턴 값이 없다.
 
