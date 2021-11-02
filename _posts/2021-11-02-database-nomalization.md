@@ -1,6 +1,6 @@
 ---
 layout: post
-title: DB index
+title: DB 정규화
 date: 2021-11-02 14:00:00 + 0900
 categories: DB
 ref: DB, nomailzation

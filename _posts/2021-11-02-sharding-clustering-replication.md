@@ -1,6 +1,6 @@
 ---
 layout: post
-title: DB index
+title:  DB 샤딩, 클러스터링, 레플리케이션
 date: 2021-11-02 15:00:00 + 0900
 categories: DB
 ref: DB, nomailzation
