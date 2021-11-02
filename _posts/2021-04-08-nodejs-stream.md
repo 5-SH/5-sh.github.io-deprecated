@@ -1,6 +1,6 @@
 ---
 layout: post
-title: node.js stream
+title: Node.js stream
 date: 2021-04-09 20:23:55 + 0900
 categories: Nodejs
 ref: node.js stearm
