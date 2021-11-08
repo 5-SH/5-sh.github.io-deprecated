@@ -36,7 +36,7 @@ statement timeout 은 statement 하나가 얼마나 오래 수행되어도 괜�
 
 따라서 JDBC statement 를 요청한 곳에서 statement canceled 에러를 받게 된다.
 
-
+<br />
 
 ## Lock
 
@@ -44,10 +44,12 @@ statement timeout 은 보통 잠금에 의한 쿼리 수행 지연이다.
 
 조회하려는 테이블의 row 에 잠금이 되어 있어  읽기, 쓰기가 지연되고 statement timeout 이 넘어갈 때 까지 쿼리가 완료되지 않아 취소된다.
 
+<br />
+
 잠금의 범위로 테이블락, 페이지락 등이 있지만 티베로는 기본적으로 row level lock 을 사용한다.
 
 <figure>
-    <img src="https://user-images.githubusercontent.com/13375810/140767848-57c77f49-cf58-43d5-83c4-62fe48b4f7fc.jpg" />
+    <img src="https://user-images.githubusercontent.com/13375810/140769803-424a8d93-f6f0-4ac3-9b3d-870da7086705.jpg" />
 
  <figcaption></figcaption>
 
@@ -63,7 +65,7 @@ statement timeout 은 보통 잠금에 의한 쿼리 수행 지연이다.
 
 </figure>
 
-
+<br />
 
 ## 결론
 
