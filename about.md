@@ -30,7 +30,7 @@ permalink: /about/
 > ### 데브옵스  
 >   - Tomcat
 >   - JEUS, WebToB
->   - Tibero, MySQL, MSSQL
+>   - MySQL, MSSQL, Tibero
 > 
 > ### 프론트엔드
 >   - Vue.js
@@ -101,14 +101,14 @@ permalink: /about/
 >   - [V8 엔진의 heap 메모리 구조와 메모리 사용량이 계속 증가하는 이유](https://5-sh.github.io/nodejs/2021/05/13/v8-heap-memory-and-why-memory-usage-keep-on-growing.html)
 
 # ■ Awards
-### 1. GIF 2015 웨어러블 해커톤 대회 미래창조과학부장관상 수상   
-> - [스마트워치를 활용해 프레젠테이션을 트레이닝하고 제어하는 어플리케이션](https://github.com/5-SH/PREZENTAINER)
-> - [수상 정보](https://pnu.edu/kor/CMS/Board/Board.do?mCode=MN109&page=27&mgr_seq=12&mode=view&mgr_seq=12&board_seq=331918)
+### 1. 스마트앱 어워드 2018 생활정보분야 최우수상 수상
+> - [현대건설 힐스테이트와 디에이치에서 제공하는 스마트홈 IoT 서비스(Hi-oT)](http://www.i-award.or.kr/smart/prize/2018/Awarded02.aspx)
 
 ### 2. International Development Hackathon 2016 대회 Best Qualcomm Project Submission 수상
 > - [열악한 통신환경에 있는 필리핀에서의 환자와 의사간 소통을 위한 SPASMS 어플리케이션을 개발](https://devpost.com/software/idhack2016-9nb7rk)
 > - [수상 정보](http://his.pusan.ac.kr/bbs/cse/2609/569240/artclView.do)
 
-### 3. 스마트앱 어워드 2018 생활정보분야 최우수상 수상
-> - [현대건설 힐스테이트와 디에이치에서 제공하는 스마트홈 IoT 서비스(Hi-oT)](http://www.i-award.or.kr/smart/prize/2018/Awarded02.aspx)
+### 3. GIF 2015 웨어러블 해커톤 대회 미래창조과학부장관상 수상   
+> - [스마트워치를 활용해 프레젠테이션을 트레이닝하고 제어하는 어플리케이션](https://github.com/5-SH/PREZENTAINER)
+> - [수상 정보](https://pnu.edu/kor/CMS/Board/Board.do?mCode=MN109&page=27&mgr_seq=12&mode=view&mgr_seq=12&board_seq=331918)
 
