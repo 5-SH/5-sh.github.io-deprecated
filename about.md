@@ -7,7 +7,7 @@ permalink: /about/
 # ■ About Me
 ## Introduction
 >   - 안녕하세요.
->   - 5 년차 IoT 플랫폼 개발자입니다.
+>   - 6 년차 IoT 플랫폼 개발자입니다.
 >   - 현대오토에버에 재직 중 입니다.
 >   - 현대건설 스마트홈 플랫폼(Hi-oT) 을 개발 했습니다.
 >   - 현대자동차그룹 스마트 팩토리 플랫폼을 개발하고 있습니다.
@@ -15,8 +15,8 @@ permalink: /about/
 
 ## Contact 
 >   - Email :  llll_lll_lll@naver.com
->   - GitHub : https://github.com/5-SH
->   - Blog : https://5-sh.github.io/   
+>   - GitHub : [https://github.com/5-SH](https://github.com/5-SH)
+>   - Blog : [https://5-sh.github.io/](https://5-sh.github.io/)   
 
 # ■ Skills
 > ### 언어
@@ -104,7 +104,7 @@ permalink: /about/
 ### 1. 스마트앱 어워드 2018 생활정보분야 최우수상 수상
 > - [현대건설 힐스테이트와 디에이치에서 제공하는 스마트홈 IoT 서비스(Hi-oT)](http://www.i-award.or.kr/smart/prize/2018/Awarded02.aspx)
 
-### 2. International Development Hackathon 2016 대회 Best Qualcomm Project Submission 수상
+### 2. International Development Hackathon 2016(Co-organized by Harvard, MIT, and Tufts) 대회 Best Qualcomm Project Submission 수상
 > - [열악한 통신환경에 있는 필리핀에서의 환자와 의사간 소통을 위한 SPASMS 어플리케이션을 개발](https://devpost.com/software/idhack2016-9nb7rk)
 > - [수상 정보](http://his.pusan.ac.kr/bbs/cse/2609/569240/artclView.do)
 
