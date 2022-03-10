@@ -14,3 +14,4 @@ ref: Vue.js, Atomic, BEM, store
 # Store module
 [vue store 바인딩 참고](https://kdydesign.github.io/2019/04/06/vuejs-vuex-helper/)
 
+# 다국어 처리 방법
