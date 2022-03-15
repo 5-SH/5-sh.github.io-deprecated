@@ -174,9 +174,25 @@ ref: kubernetes, container, docker
     2) 파드 간 통신
     3) 파드외 외부 간 통신
     
-  - 서비스 객체는 NodePort 나 LoadBalancer 를 사용해 클러스터 IP 주소
+  - 서비스가 ClusterIP 타입으로 실행되면 가상 IP 를 만들어 파드 그룹의 단일 진입점으로 사용한다. 서비스의 NodePort 타입은 ClusterIP 를 만들고 각 노드의 파드에 설정된 포트를 ClusterIP 와 함께 연다. 클라우드 플랫폼 환경에서 로드밸런서가 있는 경우, 서비스는 LoadBalancer 타입으로 실행해 ClusterIP 를 만들고 NodePort 를 만들어 클러스터 외부 로드밸런서와 연결한다. 
+
+  - Ingress 컨트롤러는 요청을 적절한 서비스로 전달하는 역할을 한다.
 
 ### 1-14. CNI Network 설정 파일
+  - Container Network Interface 는 파드 간 네트워크를 제어할 수 있는 플러그인을 만들기 위한 인터페이스 이다. 쿠버네티스는 kubenet 이라는 단순한 CNI 플러그인을 제공한다.
+
+  - 보통 3rd party 플러그인을 사용하는데 Flannel, Calico 등을 사용한다. 쿠버네티스 네트워크에 오버레이 네트워크를 구성해준다.
+
+  - 오버레이 네트워크는 노드 간의 네트워크 위해 별도의 네트워크 레이어를 구성한다.
 
 ### 1-15. Pod to Pod 통신
+![k8s_pod_network_basic](https://user-images.githubusercontent.com/13375810/158346593-fe546be4-1079-4415-bf72-5d4385dc24aa.png)
+  - 파드 내 컨테이너들은 pause 컨테이너가 만든 가상 인터페이스를 통해 호스트의 docker0 브리지 네트워크로 연결된다.
 
+  - 노드로 요청이 도착하면 호스트의 eth0 을 거쳐 docker0 브리지를 통해 veth0 으로 전송된다. 그 다음 veth0 에 연결된 컨테이너의 eth0 로 전달된다.
+
+  - 클러스터 내 각각의 워커 노드에 있는 파드가 서로 통신할 때, 10.100.0.2 워커 노드와 10.100.0.3 워커 노드 내 파드 둘 다 172.17.0.2 로 같은 IP 를 가지기 때문에 문제가 있다.
+
+  - 이 문제를 해결하기 위해 오버레이 네트워크를 지원하는 3rd party CNI 를 사용한다.
+
+  - 각 파드는 오버레이 네트워크 상에서 IP 를 할당 받고 그 IP 를 통해 서로 통신할 수 있다.
