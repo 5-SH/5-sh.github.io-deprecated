@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Kubernetes for appliation developers
+title: Kubernetes for appliation developers - 1. 쿠버네티스 구조
 date: 2022-03-08 18:10:00 + 0900
 categories: Kubernetes
 ref: kubernetes, container, docker
@@ -196,26 +196,3 @@ ref: kubernetes, container, docker
   - 이 문제를 해결하기 위해 오버레이 네트워크를 지원하는 3rd party CNI 를 사용한다.
 
   - 각 파드는 오버레이 네트워크 상에서 IP 를 할당 받고 그 IP 를 통해 서로 통신할 수 있다.
-
-
-## 2. 빌드
-
-### 2-1. 컨테이너 옵션
-
-### 2-2. 애플리케이션 컨테이너화 하기
-
-### 2-3. 도커파일 만들기
-
-### 2-4. 로컬 레포지토리
-
-### 2-5. 디플로이먼트 만들기
-
-### 2.6. 컨테이너에서 명령 실행하기
-
-### 2-7. Multi-Container Pod
-
-### 2-8. readinessProbe
-
-### 2-9. livenessProbe
-
-### 2-10. startupProbe
