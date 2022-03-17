@@ -6,9 +6,12 @@ categories: Kubernetes
 ref: kubernetes, container, docker
 ---
 
+# Kubernetes for application developers(LFD459)
+
 ## 2. 빌드
 
 ### 2-1. 컨테이너 옵션
+
 #### 2-1-1. 도커
   - 도커는 서버를 구동하기 위한 환경을 이미지 형태로 구성해 컨테이너에 설치해 준다.   
   도커를 사용하면 한 컴퓨터에 다양한 환경을 구축할 수 있다.
