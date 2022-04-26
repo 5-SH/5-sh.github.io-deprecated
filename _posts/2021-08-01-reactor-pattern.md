@@ -12,7 +12,7 @@ ref: Nodejs, async, non-blocking, reactor-pattern
 전통적인 블로킹 I/O 프로그래밍에서는 작업이 완료될 때 까지 스레드의 실행을 차단한다.   
 따라서 블로킹 I/O 를 사용해 구현된 웹 서버가 같은 스레드 내에서 여러 연결을 처리하지 못하게 된다.   
 보통 이 문제는 멀티스레드 사용해 해결한다.    
-각각의 스레드에서 I/O 작업이 처리되기 떄문에 I/O 작업으로 인해 블로킹된 스레드가 다른 연결에 영향을 미치지 않는다.   
+각각의 스레드에서 I/O 작업이 처리되기 때문에 I/O 작업으로 인해 블로킹된 스레드가 다른 연결에 영향을 미치지 않는다.   
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/127773641-26c2d1b2-079f-4cea-8300-5d9ac9f87f13.png" height="250" />
@@ -20,11 +20,12 @@ ref: Nodejs, async, non-blocking, reactor-pattern
 </figure>
 
 ## 2. 논 블로킹 I/O
-대부분 운영체제는 논블로킹 I/O 를 지원한다. 시스템 호출은 데이터 읽기, 쓰기를 기다리지 않고 항상 즉시 제어권을 반환한다.   
-논 블로킹 I/O 를 다루는 가장 기본적인 패턴은 리소스를 폴링하는 busy-waiting 방법이다.   
+대부분 운영체제는 논 블로킹 I/O 를 지원한다. 시스템 호출은 데이터 읽기, 쓰기를 기다리지 않고 항상 즉시 제어권을 반환한다.   
+논 블로킹 I/O 를 다루는 가장 기본적인 패턴은 주기적으로 리소스를 폴링하는 busy-waiting 방법이다.   
 busy-waiting 방법의 루프는 사용할 수 없는 리소스를 반복하는데 CPU 를 사용해 낭비가 많다.
 
 ```javascript
+// socketA, B, C 는 논 블로킹 I/O
 const resources = [socketA, socketB, fileA];
 while (!resources.isEmpty()) {
   for (resource of resources) {
@@ -51,7 +52,7 @@ while (!resources.isEmpty()) {
 
 ```javascript
 watchedList.add(socketA, FOR_READ); // (1)
-watcheList.add(fileB, FOR_READ);
+watchList.add(fileB, FOR_READ);
 
 while (events = demultiplexer.watch(watchedList)) { // (2)
   // 이벤트 루프
@@ -79,7 +80,7 @@ while (events = demultiplexer.watch(watchedList)) { // (2)
 </figure>
 
 ## 4. 리액터 패턴
-리액터 패턴의 주된 아이디어는 각 I/O 작업에 연관된 핸들러를 갖는 것 이다.   
+리액터 패턴의 주된 아이디어는 각 I/O 작업에 연관된 __핸들러__ 를 갖는 것 이다.   
 Node.js 에서 핸들러는 콜백 함수에 해당한다.   
 핸들러는 이벤트가 생성되고 이벤트 루프에 의해 처리되는 즉시 호출되게 된다.   
 
@@ -95,6 +96,7 @@ Node.js 에서 핸들러는 콜백 함수에 해당한다.
 ## 5. Node.js 의 I/O 엔진 libuv 
 각 운영체제는 Linux-epoll, Window-IOCP API 와 같은 이벤트 디멀티플렉서를 위한 자체 인터페이스를 가지고 있다.   
 그리고 각 I/O 작업은 동일한 OS 내에서도 리소스 유형에 따라 매우 다르게 동작할 수 있다.   
-Unix 에서 일반 파일 시스템은 논블로킹 작업을 지원하지 않기 때문에 이벤트 루프 외부에 별도의 스레드를 사용해야 한다.   
-운영체제 간의 불일치성을 해결하고 서로 다른 리소스 유형의 논블로킹 동작을 표준화하기 위해 libuv 라는 라이브러리를 만들었다.   
-libuv 는 기본 시스템 호출을 추상화하고, 리액터 패턴을 구현해 이벤트 루프의 생성, 이벤트 큐의 관리, 비동기 I/O 자업의 실행 및 다른 유형의 작업을 큐에 담기 위한 API 들을 제공한다.
+   
+UNIX 에서 일반 파일 시스템은 논 블로킹 작업을 지원하지 않기 때문에 이벤트 루프 외부에 별도의 스레드를 사용해야 한다.   
+운영체제 간의 불일치성을 해결하고 서로 다른 리소스 유형의 논 블로킹 동작을 표준화 하기 위해 libuv 라는 라이브러리를 만들었다.   
+libuv 는 운영체제의 기본 시스템 호출을 추상화 하고 리액터 패턴을 구현해 이벤트 루프의 생성, 이벤트 큐의 관리, 비동기 I/O 작업의 실행 및 다른 유형의 작업을 큐에 담기 위핸 API 들을 제공한다.
