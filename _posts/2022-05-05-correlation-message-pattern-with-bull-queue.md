@@ -163,10 +163,74 @@ for (const d of list) {
 }
 ```
 
+## 4. 동작 과정
+```javascript
+// client.js
+...
+for (const d of list) {
+  task.addTask(                               // (1)
+    new Task(genUUID()), 
+    {
+      dbname: 'MySql',
+      sql: 'INSERT INTO board VALUES(?,?,...)'
+      value: `[[${d.line}, ${d.date}...], [${d.line}, ${d.date}...]...]`
+      timeout: 5000
+      ...
+    });
+}
+```
 
-## 4. 전체 구조
+```javascript
+// JobManager.js
 
-## 5. 동작 과정
+const EventEmitter = require('events');
+const Queue = require('bull');
+const { doQuery } = require('./query');
 
-## 6. 적용
-Datasource 와 같은 라이프 사이클로 TaskManager 를 관리한다.
+class TaskManager extends EventEmitter {
+  constructor(queueName) {
+    super();
+    this.queue = null;
+    this.queueName = queueName;
+  }
+
+  init() {
+    if (!this.queue) {
+      this.queue = new Queue(this.queueName, `redis://127.0.0.1:6479`, { prefix: `task_` });
+
+      this.queue.process(async (task, done) => {            // (4)
+        const result = await doQuery(task.data);
+        this.emit(task.data.id, result);                    // (5)
+        done()
+      });
+    }
+  }
+
+  addTask(task) {
+    const message = {
+      id: task.id,
+      ...task.getParam()
+    }
+
+    this.queue.add(message, {                                 // (2)
+      removeOnComplete: true,
+      timeout: 5 * 1000
+    }).then(() => {
+      this.once(task.id, data => task.callback(data));        // (3)
+    });
+
+    ...
+  }
+}
+```
+
+(1) client.js 에서 태스크를 추가한다.   
+(2) 태스크를 메시지로 만들고 큐에 추가한다.   
+(3) 큐에 추가한 후 태스크 ID 를 이벤트 명으로 하는 이벤트 핸들러를 등록한다. 이벤트 핸들러는 태스크 결과를 처리할 핸들러를 호출한다.   
+(4) 메시지(태스크) 가 자신의 순서가 되었을 때 처리된다.   
+(5) 태스크가 처리된 결과를 태스크 ID 이벤트로 전달한다. 이 때 (3) 에 등록한 이벤트 핸들러가 호출되고 태스크 결과를 핸들러로 처리한다.
+
+## 5. 적용
+이 패턴을 활용해 기본 Node.js 힙 사이즈(1400MB) 에서 한 번에 150 만 건 이상 쿼리 처리 요청 시    
+heap out of memory 문제로 서비스가 종료되는 문제를 해결했다.    
+패턴 적용 후 900 만 건 까지 처리할 수 있게 되었다.
