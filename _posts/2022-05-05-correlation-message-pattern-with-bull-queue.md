@@ -17,6 +17,11 @@ ref: Patterns, reactive programming, flow, flux
 각 쿼리 요청을 태스크로 정의하고 ID 를 부여해 Bull 메시지 큐에 적재합니다.   
 메시지 큐의 태스크는 순서대로 실행된 후 요청 전송자(클라이언트)가 ID 로 두 메시지를 상호 연결하고 응답을 적절한 핸들러에 반환해 처리합니다.    
 
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/166848517-0d575c29-d826-4d2b-bcaa-a0be8d2fc7e0.png" height="350" />
+  <figcaption>▲ 상관 식별자를 사용한 요청/응답 메시지 교환</figcaption>
+</figure>
+
 ## 2. Bull 큐
 레디스를 활용한다.
 
