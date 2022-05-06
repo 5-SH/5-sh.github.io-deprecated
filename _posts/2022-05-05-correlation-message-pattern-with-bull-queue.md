@@ -14,7 +14,7 @@
   <figcaption>▲ 상관 식별자를 사용한 요청/응답 메시지 교환</figcaption>
 </figure>
 
-## 2. Bull 큐
+## 2. Bull 메시지 큐
 Bull 메시지 큐는 redis 기반의 큐 시스템을 구현한 노드 라이브러리 입니다.   
 요청 피크를 완화할 때,   
 마이크로서비스 간에 통신채널을 생성할 때,   
@@ -69,12 +69,12 @@ module.exports = Job;
 
 ### 3-2. JobManager
 Job 매니저는 EventEmitter 를 상속 받습니다.   
-init 함수는 Bull 큐 인스턴스를 생성합니다. 그리고 큐에 저장된 메시지(Job) 를 처리할 방법을 this.queue.process(...) 에 정의합니다.   
+init 함수는 Bull 메시지 큐 인스턴스를 생성합니다. 그리고 큐에 저장된 메시지(Job) 를 처리할 방법을 this.queue.process(...) 에 정의합니다.   
 
 메시지 큐에서 메시지를 받아올 때 마다 this.queue.process 콜백 함수가 실행됩니다.   
 이 때 인자로 전달된 Job 에는 숫자나 문자열 데이터만 저장되어 있습니다.   
 job 인스턴스에서 결과를 처리할 핸들러를 바로 받아 실행할 수 있지만,   
-메시지에 숫자나 문자만 저장되는 Bull 큐 특성으로 인해 이벤트 전달 방식으로 this.emit(...) 를 사용해 결과를 전달합니다.   
+메시지에 숫자나 문자만 저장되는 Bull 메시지 큐 특성으로 인해 이벤트 전달 방식으로 this.emit(...) 를 사용해 결과를 전달합니다.   
 
 addJob 함수는 Job 을 메시지 큐에 저장합니다.    
 remvoeOnComplete 옵션으로 메시지 처리 완료 후 큐에서 Job 을 제거할 것인지 선택할 수 있고   
