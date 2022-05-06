@@ -30,21 +30,21 @@ Job 은 메시지 큐에 추가되고 처리될 때 까지 아래 라이프 사�
 
 ## 3. 각 요소들
 패턴을 구현하는데 사용된 각 요소들을 설명합니다.
-### 3-1. Task
-각 쿼리 요청을 메시지 큐에 넣기 위해 태스크로 추상화 합니다.   
-태스크는 클라이언트가 각 요청에 대한 응답을 식별을 위한 ID 로 id 를 사용합니다.   
+### 3-1. Job
+각 쿼리 요청을 메시지 큐에 넣기 위해 Job 으로 추상화 합니다.   
+Job 의 id 는 클라이언트가 각 요청에 대한 응답을 식별을 위한 구분자로 주로 UUID 를 사용합니다.   
 그리고 응답을 처리할 핸들러를 callback 에 저장합니다.   
-getParam() 함수는 태스크로 부터 메시지 큐에 넣을 메시지를 생성할 때 사용합니다.   
+getParam() 함수는 Job 을 생성할 때 사용합니다.   
 
 ```javascript
-// Task.js
+// job.js
 
-class Task {
+class Job {
   constructor(id, info) {
     this.id;
     this.callback;
 
-    // 태스크를 수행하는데 필요한 정보들을 info 에서 받아옵니다.
+    // Job 을 수행하는데 필요한 정보들을 클라이언트에게 받아옵니다.
     this.dbname = info.dbname;
     this.sql = info.sql;
     this.value = info.value;
@@ -54,7 +54,7 @@ class Task {
 
   getParam() {
     return {
-      // 태스크를 수행하는데 필요한 정보들
+      // Job 을 수행하는데 필요한 정보들
       dbname = this.dbname;
       sql = this.sql;
       value = this.value;
@@ -64,26 +64,26 @@ class Task {
   }
 }
 
-module.exports = job;
+module.exports = Job;
 ```
 
-### 3-2. Task Manager
-태스크 매니저는 EventEmitter 를 상속 받습니다.   
-init 함수는 Bull 큐 인스턴스를 생성합니다. 그리고 큐에 저장된 메시지(태스크) 를 처리할 방법을 this.queue.process(...) 에 정의합니다.   
+### 3-2. JobManager
+Job 매니저는 EventEmitter 를 상속 받습니다.   
+init 함수는 Bull 큐 인스턴스를 생성합니다. 그리고 큐에 저장된 메시지(Job) 를 처리할 방법을 this.queue.process(...) 에 정의합니다.   
 
 메시지 큐에서 메시지를 받아올 때 마다 this.queue.process 콜백 함수가 실행됩니다.   
-이 때 인자로 전달된 태스크에는 숫자나 문자열 데이터만 저장되어 있습니다.   
-task 에서 결과를 처리할 핸들러를 바로 받아 실행할 수 있지만,   
+이 때 인자로 전달된 Job 에는 숫자나 문자열 데이터만 저장되어 있습니다.   
+job 인스턴스에서 결과를 처리할 핸들러를 바로 받아 실행할 수 있지만,   
 메시지에 숫자나 문자만 저장되는 Bull 큐 특성으로 인해 이벤트 전달 방식으로 this.emit(...) 를 사용해 결과를 전달합니다.   
 
-addTask 함수는 태스크에서 메시지를 만들어 메시지 큐에 저장합니다.    
-remvoeOnComplete 옵션으로 메시지 처리 완료 후 큐에서 메세지를 제거할 것인지 선택할 수 있고   
+addJob 함수는 Job 을 메시지 큐에 저장합니다.    
+remvoeOnComplete 옵션으로 메시지 처리 완료 후 큐에서 Job 을 제거할 것인지 선택할 수 있고   
 timeout 옵션으로 메시지의 타임아웃을 설정할 수 있습니다.   
 
 this.queue.add(...) 로 메세지를 큐에 넣은 후 메시지 실행 결과를 전달받을 이벤트 핸들러를 등록합니다.   
 이벤트 핸들러는 한 번만 호출되면 되기 때문에 this.once(...) 로 등록합니다.    
 이 이벤트 핸들러에서 태스크 핸들러를 호출합니다.   
-요청과 응답 메세지를 연결하기 위해 태스크의 id 를 이벤트 명으로 설정합니다.
+요청과 응답 메세지를 연결하기 위해 Job 의 id 를 이벤트 명으로 설정합니다.
 
 ```javascript
 // JobManager.js
@@ -92,7 +92,7 @@ const EventEmitter = require('events');
 const Queue = require('bull');
 const { doQuery } = require('./query');
 
-class TaskManager extends EventEmitter {
+class JobManager extends EventEmitter {
   constructor(queueName) {
     super();
     this.queue = null;
@@ -101,27 +101,27 @@ class TaskManager extends EventEmitter {
 
   init() {
     if (!this.queue) {
-      this.queue = new Queue(this.queueName, `redis://127.0.0.1:6479`, { prefix: `task_` });
+      this.queue = new Queue(this.queueName, `redis://127.0.0.1:6479`, { prefix: `job_` });
 
-      this.queue.process(async (task, done) => {
-        const result = await doQuery(task.data);
-        this.emit(task.data.id, result);
+      this.queue.process(async (job, done) => {
+        const result = await doQuery(job.data);
+        this.emit(job.data.id, result);
         done()
       });
     }
   }
 
-  addTask(task) {
+  addJob(job) {
     const message = {
-      id: task.id,
-      ...task.getParam()
+      id: job.id,
+      ...job.getParam()
     }
 
     this.queue.add(message, {
       removeOnComplete: true,
       timeout: 5 * 1000
     }).then(() => {
-      this.once(task.id, data => task.callback(data));
+      this.once(job.id, data => job.callback(data));
     });
 
     close() {
@@ -136,12 +136,12 @@ class TaskManager extends EventEmitter {
   }
 }
 
-module.exports = TaskManager;
+module.exports = JobManager;
 ```
 
 ### 3-3. 클라이언트
-태스크 매니저 인스턴스를 생성하고 메세지 큐에 사용자가 요청한 태스크를 추가합니다.   
-각 태스크는 고유한 ID 로 UUID 값을 가집니다.
+Job 매니저 인스턴스를 생성하고 메세지 큐에 사용자가 요청한 Job 을 추가합니다.   
+각 Job 은 고유한 ID 로 UUID 값을 가집니다.
 
 ```javascript
 // client.js
@@ -150,12 +150,12 @@ function genUUID() {
   return `${gen() + gen()}-${gen()}-${gen()}-${gen()}-${gen() + gen() + gen()}`;
 }
 
-const taskManager = new TaskManager('queryManager');
-taskManager.init();
+const JobManager = new JobManager('queryManager');
+JobManager.init();
 
 for (const d of list) {
-  task.addTask(
-    new Task(genUUID()), 
+  jobManager.addJob(
+    new job(genUUID()), 
     {
       dbname: 'MySql',
       sql: 'INSERT INTO board VALUES(?,?,...)'
@@ -171,8 +171,8 @@ for (const d of list) {
 // client.js
 ...
 for (const d of list) {
-  task.addTask(                               // (1)
-    new Task(genUUID()), 
+  jobManager.addJob(                               // (1)
+    new job(genUUID()), 
     {
       dbname: 'MySql',
       sql: 'INSERT INTO board VALUES(?,?,...)'
@@ -190,7 +190,7 @@ const EventEmitter = require('events');
 const Queue = require('bull');
 const { doQuery } = require('./query');
 
-class TaskManager extends EventEmitter {
+class JobManager extends EventEmitter {
   constructor(queueName) {
     super();
     this.queue = null;
@@ -199,27 +199,27 @@ class TaskManager extends EventEmitter {
 
   init() {
     if (!this.queue) {
-      this.queue = new Queue(this.queueName, `redis://127.0.0.1:6479`, { prefix: `task_` });
+      this.queue = new Queue(this.queueName, `redis://127.0.0.1:6479`, { prefix: `job_` });
 
-      this.queue.process(async (task, done) => {            // (4)
-        const result = await doQuery(task.data);
-        this.emit(task.data.id, result);                    // (5)
+      this.queue.process(async (job, done) => {            // (4)
+        const result = await doQuery(job.data);
+        this.emit(job.data.id, result);                    // (5)
         done()
       });
     }
   }
 
-  addTask(task) {
+  addJob(job) {
     const message = {
-      id: task.id,
-      ...task.getParam()
+      id: job.id,
+      ...job.getParam()
     }
 
     this.queue.add(message, {                                 // (2)
       removeOnComplete: true,
       timeout: 5 * 1000
     }).then(() => {
-      this.once(task.id, data => task.callback(data));        // (3)
+      this.once(job.id, data => job.callback(data));        // (3)
     });
 
     ...
@@ -227,8 +227,8 @@ class TaskManager extends EventEmitter {
 }
 ```
 
-(1) client.js 에서 태스크를 추가합니다.   
-(2) 태스크를 메시지로 만들고 큐에 추가합니다.   
-(3) 큐에 추가한 후 태스크 ID 를 이벤트 명으로 하는 이벤트 핸들러를 등록합니다. 이벤트 핸들러는 태스크 결과를 처리할 핸들러를 호출합니다.   
-(4) 메시지(태스크) 가 자신의 순서가 되었을 때 처리됩니다.   
-(5) 태스크가 처리된 결과를 태스크 ID 이벤트로 전달합니다. 이 때 (3) 에 등록한 이벤트 핸들러가 호출되고 태스크 결과를 핸들러로 처리합니다.
+(1) client.js 에서 Job 을 추가합니다.   
+(2) Job 을 큐에 추가합니다.   
+(3) 큐에 추가한 후 Job ID 를 이벤트 명으로 하는 이벤트 핸들러를 등록합니다. 이벤트 핸들러는 Job 실행 결과를 처리할 핸들러를 호출합니다.   
+(4) Job 이 자신의 순서가 되었을 때 처리됩니다.   
+(5) Job 이 처리된 결과를 Job ID 이벤트로 전달합니다. 이 때 (3) 에 등록한 이벤트 핸들러가 호출되고 Job 실행 결과를 핸들러로 처리합니다.
