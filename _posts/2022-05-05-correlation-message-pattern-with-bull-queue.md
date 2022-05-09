@@ -1,3 +1,11 @@
+---
+layout: post
+title: Bull 메시지 큐를 활용한 요청/응답 메시지 패턴 구현
+date: 2022-05-05 08:30:00 + 0900
+categories: Patterns
+ref: Patterns, reactive programming, flow, flux
+---
+
 # Bull 메시지 큐를 활용한 요청/응답 메시지 패턴 구현
 상관 식별자(Correlation Identifier) 개념과 Bull 메시지 큐를 활용해 단방향 채널 위에 요청/응답 패턴을 구현합니다.   
 
