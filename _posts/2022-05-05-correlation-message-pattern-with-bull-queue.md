@@ -229,18 +229,6 @@ class JobManager extends EventEmitter {
     }
   }
 
-  init() {
-    if (!this.queue) {
-      this.queue = new Queue(this.queueName, `redis://127.0.0.1:6479`, { prefix: `job_` });
-
-      this.queue.process(async (job, done) => {            // (4)
-        const result = await doQuery(job.data);
-        this.emit(job.data.id, result);                    // (5)
-        done()
-      });
-    }
-  }
-
   addJob(job) {
     const message = {
       id: job.id,
