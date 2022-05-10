@@ -112,9 +112,15 @@ class JobManager extends EventEmitter {
       this.queue = new Queue(this.queueName, `redis://127.0.0.1:6479`, { prefix: `job_` });
 
       this.queue.process(async (job, done) => {
-        const result = await doQuery(job.data);
+        done(await doQuery(job.data));
+      });
+
+      this.queue.on('completed', (job, result) => {
         this.emit(job.data.id, result);
-        done()
+      });
+
+      this.queue.on('failed', job => {
+        this.emit(job.data.id, new Error('Query failed'));
       });
     }
   }
@@ -209,6 +215,24 @@ class JobManager extends EventEmitter {
     if (!this.queue) {
       this.queue = new Queue(this.queueName, `redis://127.0.0.1:6479`, { prefix: `job_` });
 
+      this.queue.process(async (job, done) => {           // (4)
+        done(await doQuery(job.data));    
+      });
+
+      this.queue.on('completed', (job, result) => {       // (5-1)
+        this.emit(job.data.id, result);
+      });
+
+      this.queue.on('failed', job => {                    // (5-2)
+        this.emit(job.data.id, new Error('Query failed'));
+      });
+    }
+  }
+
+  init() {
+    if (!this.queue) {
+      this.queue = new Queue(this.queueName, `redis://127.0.0.1:6479`, { prefix: `job_` });
+
       this.queue.process(async (job, done) => {            // (4)
         const result = await doQuery(job.data);
         this.emit(job.data.id, result);                    // (5)
@@ -238,5 +262,6 @@ class JobManager extends EventEmitter {
 (1) client.js 에서 Job 을 추가합니다.   
 (2) Job 을 큐에 추가합니다.   
 (3) 큐에 추가한 후 Job ID 를 이벤트 명으로 하는 이벤트 핸들러를 등록합니다. 이벤트 핸들러는 Job 실행 결과를 처리할 핸들러를 호출합니다.   
-(4) Job 이 자신의 순서가 되었을 때 처리됩니다.   
-(5) Job 이 처리된 결과를 Job ID 이벤트로 전달합니다. 이 때 (3) 에 등록한 이벤트 핸들러가 호출되고 Job 실행 결과를 핸들러로 처리합니다.
+(4) Job 이 자신의 순서가 되었을 때 처리되어 쿼리를 수행합니다. 수행 결과를 done() 함수의 인자로 전달해 'completed' 이벤트에서 받을 수 있도록 합니다.   
+(5-1) Job 의 process 가 완료되면 'completed' 이벤트 핸들러가 호출 됩니다. 핸들러에서 Job 이 처리된 결과를 Job ID 이벤트로 쿼리 처리 결과를 전달합니다. 이 때 (3) 에 등록한 이벤트 핸들러가 호출되고 Job 실행 결과를 콜백 함수로 처리합니다.    
+(5-2) Job 의 process 가 실패하면 'failed' 이벤트 핸들러가 호출 됩니다. 핸들러에서 에러를 만들어 Job ID 이벤트로 전달합니다. 이 때 (3) 에 등록한 이벤트 핸들러가 호출되어 콜백 함수에서 에러를 핸들링 합니다.
