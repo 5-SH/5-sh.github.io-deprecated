@@ -1,12 +1,12 @@
 ---
 layout: post
-title: spring request handling
+title: spring request handling 1
 date: 2021-09-23 23:00:00 + 0900
 categories: Spring
 ref: Spring, Servlet
 ---
 
-# 스프링 요청 처리 과정
+# 스프링 요청 처리 과정 1
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/134381785-9ba80f37-4068-4afd-8660-a3fda3376ea6.png" height="450" />
