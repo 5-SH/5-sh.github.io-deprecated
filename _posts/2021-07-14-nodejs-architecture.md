@@ -83,4 +83,7 @@ thread 는 내부에서 work queue 를 감시하는 loop 가 돌고있다.
 4. 위 그림의 poll 단계에서는 이 watcher queue 를 감시 하면서 변화(준비-> 완료)가 있는 요청의 콜백 함수를 호출한다.
 
 ## ■ 전체 구조
-![1_C5sCYUM9gPUs7ftDkqnqzg (1)](https://user-images.githubusercontent.com/13375810/125668081-16f8506d-9304-4846-b8a5-f070ce70179d.png)
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/125668081-16f8506d-9304-4846-b8a5-f070ce70179d.png" height="600" />
+  <figcaption></figcaption>
+</figure>
