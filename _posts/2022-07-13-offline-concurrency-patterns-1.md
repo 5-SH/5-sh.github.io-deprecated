@@ -78,3 +78,246 @@ UPDATE 와 DELETE 쿼리에 버전을 추가하는 방법을 많이 사용하지
 UPDATE 또는 DELETE 쿼리가 아니라 SELECT 쿼리로 버전을 다시 읽는 방법을 사용해 검사하는 경우    
 시스템 트랜잭션 격리 수준을 REPEATABLE READ 이상으로 설정해야 합니다.   
 
+### 1-5. 구현 (1)
+낙관적 오프라인 잠금에 대한 예제로 버전 열을 포함하는 데이터베이스 테이블 하나와    
+업데이트 조건의 일부로 버전 정보를 사용하는 UPDATE, DELETE 쿼리를 구현합니다.   
+
+CUSTOMER 예제 테이블의 구조는 아래와 같습니다.   
+
+| id | name | createdby | created | modifiedby | modified | version |
+| --- | --- | --- | --- | --- | --- | --- |
+| BIGINT | VARCHAR(50) | VARCHAR(50) | DATETIME | VARCHAR(50) | DATETIME | INT |
+
+### 1-6. 구현 (2)
+먼저, 도메인 객체의 상위 객체에 낙관적 오프라인 잠금을 구현하는데 필요한 모든 정보를 저장합니다.   
+
+```java
+package offline_concurrency.optimistic_offline_lock;
+
+import java.sql.Timestamp;
+
+public class DomainObject {
+  private Long id;
+  private Timestamp modified;
+  private String modifiedBy;
+  private int version;
+
+  public DomainObject() {}
+
+  public DomainObject(Long id) { this.id = id; }
+
+  ...
+
+  public void setSystemFields(Timestamp modified, String modifiedBy, int version) {
+    this.modified = modified;
+    this.modifiedBy = modifiedBy;
+    this.version = version;
+  }
+}
+```
+
+그리고 데이터 접근은 데이터 매퍼 패턴을 사용합니다.   
+한 비즈니스 트랜잭션 내에서 다른 시점에 다른 버전의 객체가 로드되면,    
+예기치 않은 에러가 발생할 수 있기 때문에 매퍼는 객체가 미리 로드되지 않았는지 확인합니다.    
+
+```java
+// AppSessionManager.java
+package offline_concurrency.optimistic_offline_lock;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class AppSessionManager {
+  private static AppSessionManager soleInstance = new AppSessionManager();
+  protected Map<Long, DomainObject> identityMap;
+
+  public AppSessionManager() {
+    identityMap = new HashMap();
+  }
+
+  private static AppSessionManager getInstance() { return soleInstance; }
+
+  public static void initialize() { soleInstance = new AppSessionManager(); }
+
+  public static AppSessionManager getSession() { return soleInstance; }
+
+  public Map getIdentityMap() {
+    return identityMap;
+  }
+}
+
+```
+
+```java
+// AbstractMapper.java
+public abstract class AbstractMapper {
+  private String table;
+  private String[] colmuns;
+
+  private String loadSQL;
+  private String deleteSQL;
+  private String insertSQL;
+  private String updateSQL;
+
+  protected Connection db;
+  protected final String checkVersionSQL ="SELECT version, modifiedBy, modified FROM customer WHERE id = ?";
+
+  public AbstractMapper(String table, String[] columns) {
+    this.table = table;
+    this.colmuns = columns;
+    buildStatements();
+
+    try {
+      Class.forName("com.mysql.jdbc.Driver");
+      Properties props = new Properties();
+      props.put("user", "root");
+      props.put("password", "root");
+      props.put("characterEncoding", "UTF-8");
+      String url = "jdbc:mysql://localhost/architecture";
+      this.db = DriverManager.getConnection(url, props);
+    } catch(ClassNotFoundException | SQLException e){
+      e.printStackTrace();
+    }
+  }
+
+  public DomainObject find(Long id) {
+    DomainObject obj = (DomainObject) AppSessionManager.getSession().getIdentityMap().get(id);
+    if (obj == null) {
+      try {
+        PreparedStatement stmt = db.prepareStatement(loadSQL);
+        stmt.setLong(1, id.longValue());
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+          obj = load(id, rs);
+          String modifiedBy = rs.getString(colmuns.length + 3);
+          Timestamp modified = rs.getTimestamp(colmuns.length + 4);
+          int version = rs.getInt(colmuns.length + 5);
+          obj.setSystemFields(modified, modifiedBy, version);
+          AppSessionManager.getSession().getIdentityMap().put(id, obj);
+        } else {
+          throw new Exception(table + " " + id + " does not exist");
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    return obj;
+  }
+
+  protected abstract DomainObject load(Long id, ResultSet rs) throws SQLException;
+
+  ...
+
+  public void delete(DomainObject object) {
+    AppSessionManager.getSession().getIdentityMap().remove(object.getId());
+    try {
+      PreparedStatement stmt = db.prepareStatement(deleteSQL);
+      stmt.setLong(1, object.getId().longValue());
+      stmt.setInt(2, object.getVersion());        // (2)
+      int rowCount = stmt.executeUpdate();
+      if (rowCount == 0) {
+        throwConcurrencyException(object);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  ...
+
+  public void update(DomainObject object) {
+    Timestamp now = new Timestamp(System.currentTimeMillis());
+    int curVersion = object.getVersion();
+    int newVersion = curVersion + 1;
+    try {
+      PreparedStatement stmt = db.prepareStatement(updateSQL);
+      stmt.setLong(1, object.getId().longValue());
+      doUpdate(object, stmt);
+      stmt.setString(3, "admin");
+      stmt.setTimestamp(4, now);
+      stmt.setInt(5, newVersion);
+      stmt.setInt(6, curVersion);                 // (2)
+      int rowCount = stmt.executeUpdate();
+      if (rowCount == 0) {
+        throwConcurrencyException(object);
+      } else {
+        object.setSystemFields(now, "admin", newVersion);
+        AppSessionManager.getSession().getIdentityMap().put(object.getId(), object);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  ...
+  
+  protected void throwConcurrencyException(DomainObject object) throws Exception {
+    try {
+      PreparedStatement stmt = db.prepareStatement(checkVersionSQL);
+      stmt.setInt(1, (int) object.getId().longValue());
+      ResultSet rs = stmt.executeQuery();
+      if (rs.next()) {
+        int version = rs.getInt(1);
+        String modifiedBy = rs.getString(2);
+        Timestamp modified = rs.getTimestamp(3);
+        if (version > object.getVersion()) {      // (1)
+          String when = DateFormat.getDateInstance().format(modified);
+          throw new Exception(table + " " + object.getId() + " modified by " + modifiedBy + " at " + when);
+        } else if (version < object.getVersion()) {
+          throw new Exception("unexpected error checking timestamp");
+        }
+      } else {
+        throw new Exception(table + " " + object.getId() + " has been deleted");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  ...
+
+  private void buildStatements() {
+    int columnsLength = colmuns.length;
+
+    this.loadSQL = "SELECT * FROM " + this.table + " WHERE id = ?";
+
+    this.deleteSQL = "DELETE FROM " + this.table + " WHERE id =? and version = ?";  // (3)
+
+    this.insertSQL = "INSERT INTO " + this.table + " VALUES (";
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0; i < columnsLength + 5; i++) {
+      buffer.append("?, ");
+    }
+    buffer.setLength(buffer.length() - 2);
+    this.insertSQL += (buffer.toString() + ");");
+
+    this.updateSQL = "UPDATE " + this.table + " SET ";
+    buffer = new StringBuffer();
+    for (int i = 0; i < columnsLength; i++) {
+      buffer.append(this.colmuns[i] + " = ?,");
+    }
+    buffer.append("modifiedby = ?,");
+    buffer.append("modified = ?,");
+    buffer.append("VERSION = ? ");
+    buffer.append("WHERE version = ?");           // (3)
+    buffer.setLength(buffer.length());
+    this.updateSQL += (buffer.toString() + ";");
+  }
+}
+
+```
+
+__(1)__   
+AbstractMapper 의 throwConcurrencyExcption 함수에서 __if (version > obejct.getVersion())__ 부분이   
+낙관적 오프라인 잠금의 유효성을 검사하는 부분 입니다.   
+
+__(2)__
+그리고 update 와 delete 함수에서 세션에 저장된 도메인 객체의 버전과 레코드 버전을 비교하기 위해    
+쿼리의 파라미터로 curVersion 을 넘기고 있습니다.   
+
+__(3)__
+updateSQL, deleteSQL 에서 쿼리문을 보면 레코드에 저장된 version 과 비교하는 조건을    
+where 절에서 확인할 수 있습니다.     
+
+__변경 내용을 커밋하는 특정 시스템 트랜잭션 내에서 낙관적 오프라인 잠금을 획득해야   
+레코드 데이터의 일관성을 유지할 수 있습니다.__
