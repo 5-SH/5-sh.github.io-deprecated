@@ -88,6 +88,9 @@ CUSTOMER 예제 테이블의 구조는 아래와 같습니다.
 | --- | --- | --- | --- | --- | --- | --- |
 | BIGINT | VARCHAR(50) | VARCHAR(50) | DATETIME | VARCHAR(50) | DATETIME | INT |
 
+전체 예제 코드는 아래 링크를 확인해 주세요.   
+[낙관적 오프라인 잠금 전체 예제 코드](https://github.com/5-SH/enterprise_application_architecture/tree/master/src/offline_concurrency/optimistic_offline_lock)
+
 ### 1-6. 구현 (2)
 먼저, 도메인 객체의 상위 객체에 낙관적 오프라인 잠금을 구현하는데 필요한 모든 정보를 저장합니다.   
 
