@@ -148,6 +148,11 @@ public class UserDaoInsert extends UserDao {
 오브젝트를 아예 둘로 분리하고 클래스 레벨에서는 인터페이스를 통해서만 의존하도록 전략 패턴을 사용해   
 템플릿 메소드 패턴의 단점을 보완합니다.   
 
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/181700806-6a10e32d-b352-432d-bfe2-fd3e4036cc49.png" width="100%"/>
+  <figcaption></figcaption>
+</figure>
+
 컨텍스트(Context) 는 PreparedStatement 를 실행하는 JDBC 의 작업 흐름이고   
 전략(Strategy)은 PreparedStatement 를 생성하는 것 입니다.   
 
@@ -261,5 +266,43 @@ public class UserDao {
 ```
 
 ## 3. 템플릿 메소드 패턴 활용 사례 - 스프링 JDBCTemplate
+스프링은 JDBC 를 이용하는 DAO 에서 사용할 수 있도록 준비된 다양한 템플릿과 콜백을 제공합니다.   
+스프링이 제공하는 JDBC 코드용 기본 템플릿은 JdbcTempalte 입니다.    
 
-### 3-1.
+앞서 만든 StatementStrategy 인터페이스의 makePreparedStatement() 에 대응하는   
+JdbcTemplate 의 메소드는 PreaparedStatementCreator 인터페이스의    
+createPreapredStatement() 메소드 입니다.    
+
+그리고 SQL 문장만 전달하면 미리 준비된 콜백을 만들어서 템플릿을 호출하는 것까지   
+한 번에 해주는 편리한 메소드도 제공합니다.   
+
+```java 
+public class UserDao {
+  ...
+  private JdbcTemplate jdbcTemplate;
+
+  public void setDataSource(DataSource dataSource) {
+    this.jdbcTemplate = new JdbcTemplate(dataSource);
+    this.dataSource = dataSource;
+  }
+
+  public void deleteAll() {
+    this.jdbcTempalte.update(
+      new PreparedStatementCreator() {
+        public PreparedStatement createPreparedStatemnt(Connection conn) throws SQLException {
+          return conn.preparedStatement("delete from users");
+        }
+      }
+    )
+  }
+
+  public void deleteAllSimple() {
+    this.jdbcTemplate.update("delete from users");
+  }
+}
+```
+
+그 외에도 PreparedStatement 의 쿼리를 실행해서 ResultSet 을 전달받는    
+queryForInt(), queryForObject() 등 의 함수를 제공합니다.   
+
+스프링에서 제공하는 JDBC 모듈 역시 템플릿 콜백 패턴을 활용해 구현된 것을 볼 수 있습니다.

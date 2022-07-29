@@ -15,6 +15,11 @@ ref: Patterns, template, method, spring, jdbc
 
 ### 1-1. 클래스 다이어그램
 
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/181702608-3b5f5ef1-fdb5-4120-91a8-100f5cda821b.png" width="100%"/>
+  <figcaption></figcaption>
+</figure>
+
 ### 1-2. 코드
 ```java
 abstract class AbstractClass {
