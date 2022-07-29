@@ -11,7 +11,7 @@ ref: Patterns, template, method, spring, jdbc
 ## 2. 템플릿 메소드 패턴 적용 과정
 
 ### 2-1. 문제점
-JDBC 를 활용한 DAO 를 작성하면 같은 함수가 매번 같은 순서로 호출되고 예외처리 코드가 중복된다.   
+JDBC 를 활용한 DAO 를 작성하면 같은 함수가 매번 같은 순서로 호출되고 예외처리 코드가 중복됩니다.   
 
 ```java
 class UserDao {
