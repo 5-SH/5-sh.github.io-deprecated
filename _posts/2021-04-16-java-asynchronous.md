@@ -21,11 +21,11 @@ ref: Java, Asynchronous, Future
   public class FutureEx {
     public static void main(String[] args) {
       ExecutorService es = Executors.newCachedThreadPool();
-      ex.execute(() -> {
+      es.execute(() -> {
         try {
           Thread.sleep(2000);
         } catch (InterruptedException e) {}
-        log.info("Async"):
+        log.info("Async");
       });
       log.info("Exit");  
     }
@@ -37,7 +37,7 @@ ref: Java, Asynchronous, Future
   ```
   
 ## 2. Future
-  Future 는 비동기 계산의 결과를 나타내는 Interface 이다. Java 에서 비동기 작업을 수항핸다는 것은   
+  Future 는 비동기 계산의 결과를 나타내는 Interface 이다. Java 에서 비동기 작업을 수행한다는 것은   
   현재 진행 중인 스레드가 아닌 별도의 스레드에서 작업을 수행한다는 의미이다.   
   비동기 작업에서 결과를 반환하고 싶을 때는 runnable 대신 callable interface 를 이용하면 결과 값을 사용하면 결과 값을 return 할 수 있다.   
   그리고 예외를 비동기 코드를 처리하는 스레드 안에서 처리하지 않고 밖으로 던질 수 있다.   
@@ -52,22 +52,24 @@ ref: Java, Asynchronous, Future
   ```java
   @slf4j
   public class FutureEx {
-    public static void main(String[] args) throws ExecutionException, IntteruptedException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
       ExecutorService es = Executors.newCachedThreadPool();
-      Future<String> f = ex.submit(() -> {
+      Future<String> f = es.submit(() -> {
         Thread.sleep(2000);
-        log.info("Async");
+        logger.info("Async");
         return "Hello";
       });
-      log.info(f.get());
-      log.info("Exit");
+      logger.info("Start");
+      logger.info(f.get());
+      logger.info("Exit");
     }
   }
   
   // 결과 
-  20:43:11.704 [pool-1-thread-1] INFO com.example.study.FutureEx - Async
-  20:43:11.706 [main] INFO com.example.study.FutureEx - Hello
-  20:43:11.706 [main] INFO com.example.study.FutureEx - Exit
+  18:29:47.653 [main] async.future.FutureTest2 - Start
+  18:29:49.667 [pool-1-thread-1] async.future.FutureTest2 - Async
+  18:29:49.667 [main] async.future.FutureTest2 - Hello
+  18:29:49.668 [main] async.future.FutureTest2 - Exit
   ```
   
   Future 로 비동기 작업의 결과를 가져올 때는 get 메서드를 사용한다.   
