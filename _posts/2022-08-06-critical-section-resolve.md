@@ -11,7 +11,7 @@ ref: OS, critical section, monitor
 ## 1. 임계구역은 어떤 경우에 발생하는가?
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183125719-8bae2489-9508-4f8d-bd5a-57150e8dc47e.png" width="55%"/>
-  <figcaption></figcaption>
+  <figcaption>▲ 임계구역이 발생하는 경우</figcaption>
 </figure>
 
 ### 1-1
@@ -43,4 +43,57 @@ DB 같은 자료구조에 접근하는 경우 DBMS 에서 동시성 제어를 �
   <figcaption>▲ Spin Lock</figcaption>
 </figure>
 
-## 3. 모니터
+## 3. 잘 알려진 해결 방법
+### 3-1
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/183134225-2af724ff-c0ef-4955-bf9c-0e6f5fc09017.png" width="55%"/>
+  <figcaption>▲ 스레드-큐 구조</figcaption>
+</figure>
+
+스레드 또는 프로세스에서 동기화 목표를 달성하기 위해서 __Queue__ 를 사용해야 합니다.   
+작업을 수행하는 스레드들은 큐에서 작업을 하나씩 꺼내온다. 그리고 작업은 다른 외부 스레드에서 큐에 추가합니다.   
+<br/>
+각 작업 수행 스레드에서 큐를 가져다 연산하는 것이 아니라 큐를 관리하는 스레드에 작업을 요청합니다.    
+여기서 큐는 임계구역이 되고, 여러 작업 처리 스레드의 임계구역 접근을 단일 스레드로 제한해 동시성을 확보합니다.
+
+### 3-2
+아래와 같은 좀 더 나은 구조를 생각해 볼 수 있습니다.
+
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/183139765-e4c87b39-bc52-4524-8aa9-261f1a0cf06a.png" width="55%"/>
+  <figcaption>▲ 좀 더 나은 스레드-큐 구조</figcaption>
+</figure>
+
+작업에 따라 코드를 분리하고 작업 큐를 별도로 둡니다.   
+그리고 작업 별 스레드들은 작업 큐를 통해 처리할 작업을 주고 받습니다.   
+
+## 4. 모니터
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/183134120-0debe2b4-c12b-4b9b-8ffc-acb440689a7c.png" width="55%"/>
+  <figcaption>▲ Monitor</figcaption>
+</figure>
+
+- 세마포어를 실제로 구현했습니다.
+- 순차적으로만 사용할 수 있는 공유자원 그룹, 공유자원을 할당합니다.
+- 모니터 외부 프로세스는 모니터 내부 프로스에 직접 접근할 수 없습니다.
+- __한 순간에 한 프로세스만 모니터에 진입할 수 있습니다.__
+- monitor 구조체로 공유 데이터를 선언합니다.   
+  공유 데이터는 변수와 변수를 조작할 수 있는 프로시저 또는 함수를 포함합니다.    
+  공유 데이터의 내부의 변수는 내부 프로시저 통해서만 접근할 수 있습니다.
+  ```
+  monitor monitor-name {
+    procedure p1(..) {...}
+    procedure p2(..) {...}
+    procedure p3(..) {...}
+    function f1(..) {...}
+    function f2(..) {...}
+  }
+  ```
+- 조건 변수를 활용해 동기화 메커니즘을 제공해야 합니다.   
+  condition 은 wait(), signal() 함수만 사용 가능합니다.    
+  ``` javascript
+  condition x, y;
+  x.wait();     // 자원이 없을 경우 대기
+  y.signal();   // 사용 중인 자원을 반납하고 대기하고 있는 프로세스를 불러옴
+  ```
+- 내부의 프로시저가 동시에 접근되지 않아 Lock 을 걸 필요가 없습니다.
