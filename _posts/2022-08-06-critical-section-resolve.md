@@ -7,6 +7,9 @@ ref: OS, critical section, monitor
 ---
 
 # 임계구역 해결 방법
+출처1 : [임계구역 해결방법 결론은 하나 'Queue'! - 널널한 개발자 TV](https://www.youtube.com/watch?v=1I_DQosMkhQ&list=PLXvgR_grOs1DGFOeD792kHlRml0PhCe9l&index=17&ab_channel=%EB%84%90%EB%84%90%ED%95%9C%EA%B0%9C%EB%B0%9C%EC%9E%90TV)    
+출처2 : [동기화, 모니터 : Synchronization, Monitor [운영체제]](https://luv-n-interest.tistory.com/441)
+
 
 ## 1. 임계구역은 어떤 경우에 발생하는가?
 <figure>
