@@ -54,13 +54,13 @@ DB 같은 자료구조에 접근하는 경우 DBMS 에서 동시성 제어를 �
 작업을 수행하는 스레드들은 큐에서 작업을 하나씩 꺼내온다. 그리고 작업은 다른 외부 스레드에서 큐에 추가합니다.   
 <br/>
 각 작업 수행 스레드에서 큐를 가져다 연산하는 것이 아니라 큐를 관리하는 스레드에 작업을 요청합니다.    
-여기서 큐는 임계구역이 되고, 여러 작업 처리 스레드의 임계구역 접근을 단일 스레드로 제한해 동시성을 확보합니다.
+여기서 큐는 임계구역이 되고, __여러 작업 처리 스레드의 임계구역 접근을 단일 스레드로 제한__ 해 동시성을 확보합니다.
 
 ### 3-2
 아래와 같은 좀 더 나은 구조를 생각해 볼 수 있습니다.
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/13375810/183139765-e4c87b39-bc52-4524-8aa9-261f1a0cf06a.png" width="55%"/>
+  <img src="https://user-images.githubusercontent.com/13375810/183226567-8cdf1aa1-4963-4baf-9825-ef3ba60fc0eb.png" width="55%"/>
   <figcaption>▲ 좀 더 나은 스레드-큐 구조</figcaption>
 </figure>
 
@@ -69,7 +69,7 @@ DB 같은 자료구조에 접근하는 경우 DBMS 에서 동시성 제어를 �
 
 ## 4. 모니터
 <figure>
-  <img src="https://user-images.githubusercontent.com/13375810/183134120-0debe2b4-c12b-4b9b-8ffc-acb440689a7c.png" width="55%"/>
+  <img src="https://user-images.githubusercontent.com/13375810/183226546-ace52d83-4e11-466b-a06b-b61aec3a14c4.png" width="55%"/>
   <figcaption>▲ Monitor</figcaption>
 </figure>
 
