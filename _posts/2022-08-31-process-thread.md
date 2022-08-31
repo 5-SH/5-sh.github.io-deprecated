@@ -48,3 +48,7 @@ data, heap 영역에 있는 데이터는 여러 스레드에서 공유하기 때
 그리고 사용자가 생성한 스레드는 메인 스레드가 종료되기 전에 종료되지 않을 수 있기 때문에    
 이벤트를 통해 스레드의 실행 순서를 동기화 해야한다.
 
+##### 출처
+- https://www.youtube.com/watch?v=2i3dInwVeUM&ab_channel=%EB%84%90%EB%84%90%ED%95%9C%EA%B0%9C%EB%B0%9C%EC%9E%90TV
+- https://www.youtube.com/watch?v=x-Lp-h_pf9Q&t=967s&ab_channel=%EB%84%90%EB%84%90%ED%95%9C%EA%B0%9C%EB%B0%9C%EC%9E%90TV
+- OLC Kernel of Linux (Kern Koh)
