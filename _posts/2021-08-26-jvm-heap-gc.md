@@ -7,7 +7,8 @@ ref: Java, JVM, Heap, GC
 ---
 
 출처1 : https://www.youtube.com/watch?v=UzaGOXKVhwU&ab_channel=%EC%9A%B0%EC%95%84%ED%95%9CTech   
-출처2 : https://www.artima.com/insidejvm/ed2/jvm8.html
+출처2 : https://www.artima.com/insidejvm/ed2/jvm8.html    
+출처3 : https://ict-nroo.tistory.com/19
 
 # JVM & JVM Heap
 ## 1. JVM 이란?
@@ -39,7 +40,10 @@ ref: Java, JVM, Heap, GC
 ## 2. JVM Heap 구조
 ![FT_2021-08-26 16_00_54 591](https://user-images.githubusercontent.com/13375810/130916523-7d665773-1207-4a01-b78f-0b65337290ea.png)
 
-- method area : class loader 가 class 파일을 읽어 왔을때, 클래스에 있는 정보들을 파싱해서 method area 에 저장한다.
+- method area : class loader 가 class 파일을 읽어 왔을때, 클래스에 있는 정보들을 파싱해서 method area 에 저장한다.     
+    static 키워드가 붙은 변수들도 여기에 저장된다.   
+    class area, code area, static area 로 불려지며, 클래스들을 로더로 읽어 클래스 별로 상수 풀, 필드 데이터, 메소드 데이터    
+    메소드 코드, 생성자 코드 등으로 분류해 저장한다.
 - heap : 프로그램을 실행하며 생성되는 모듈 객체를 heap 에 저장한다.
 - program counter : 각 스레드는 메서드를 실행하고 있고, program counter 는 그 메서드 의 몇 번째 byte code 를 실행햐아 하는지 기억한다.
 - stack : 스레드 별로 1 개씩 존재한다. 스택 프레임은 스레드가 호출될 때마다 생성되어 스택에 쌓이고 메서드 실행이 끝나면 스택 프레임은 pop 되어 스택에서 사라진다.
