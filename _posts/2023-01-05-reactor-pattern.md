@@ -363,4 +363,94 @@ public class Dispatcher {
 그리고 XML 을 통해 메시지 형식과 처리할 핸들러 정보를 선언하고 서버에서 XML 정보를 읽어 이벤트 핸들러들을 추가하도록    
 개발해 서버를 재시작하지 않고 동적으로 핸들러를 추가할 수 있도록 할 수 있습니다.   
 
+### 2-3. 리액터 패턴 예제 수정
 
+위 리액터 패턴의 예제는 스레드를 하나만 사용하기 때문에 한 번에 하나의 요청만 처리할 수 있고     
+그 요청이 오랫동안 블로킹되어 요청이 쌓이는 문제가 발생할 수 있습니다.   
+
+이 문제를 해결하기 위해 스레드 풀을 활용한 멀티스레드 형식으로 수정하겠습니다.   
+
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/210803022-e2b3e461-5803-450d-ac69-348daa5cdafa.png" width="75%"/>
+  <figcaption>스레드 풀을 활용한 구조</figcaption>
+</figure>  
+
+소켓에서 연결을 맺고 메시지를 받아 분류하는 두 가지 작업이 디스패처에 모여 있습니다.    
+그리고 메시지를 받아 분류하는 demultiplex 부분에서 지연 문제가 발생하고 있습니다.    
+따라서 demultiplex 부분을 별도의 스레드로 분리하도록 하겠습니다.    
+
+디스패처는 8개 스레드 풀을 만들고 demultiplex 를 스레드로 실행하도록 합니다.    
+이렇게 하면 한 번에 8개의 요청을 동시에 처리할 수 있어 지연 문제를 해결할 수 있습니다.
+
+```java
+public interface Dispatcher {
+  public void dispatch(ServerSocket serverSocket, HandleMap handlers);
+}
+
+public class ThreadPoolDispatcher implements Dispatcher {
+  static final String NUMTHREADS = "8";
+  static final String THREADPROP =  "Threads";
+
+  private int numThreads;
+
+  public ThreadPoolDispatcher() {
+    numThreads = Integer.parseInt(System.getProperty(THREADPROP, NUMTHREADS));
+  }
+
+  public void dispatch(ServerSocket serverSocket, HandleMap handleMap) {
+    for (int i = 0; i < (numThreads - 1); i++) {
+      Thread thread = new Thread(() -> {
+        dispatchLoop(serverSocket, handleMap);
+      });
+
+      thread.start();
+      System.out.println("Created and started Thread = " + thread.getName());
+    }
+    System.out.println("iterative server starting in main thread " + Thread.currentThread().getName());
+    dispatchLoop(serverSocket, handleMap);
+  }
+
+  private void dispatchLoop(ServerSocket serverSocket, HandleMap handleMap) {
+    while (true) {
+      try {
+        Socket socket = serverSocket.accept();
+
+        Runnable demultiplexer = new Demultiplexer(socket, handleMap);
+        Thread thread = new Thread(demultiplexer);
+        thread.start();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+}
+
+public class Demultiplexer implements Runnable {
+  private final int HEADER_SIZE = 6;
+
+  private Socket socket;
+  private HandleMap handleMap;
+
+  public Demultiplexer(Socket socket, HandleMap handleMap) {
+    this.socket = socket;
+    this.handleMap = handleMap;
+  }
+
+  @Override
+  public void run() {
+    try {
+      InputStream inputStream = socket.getInputStream();
+
+      byte[] buffer = new byte[HEADER_SIZE];
+      inputStream.read(buffer);
+      String header = new String(buffer);
+
+      handleMap.get(header).handleEvent(inputStream);
+
+      socket.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+}
+```
