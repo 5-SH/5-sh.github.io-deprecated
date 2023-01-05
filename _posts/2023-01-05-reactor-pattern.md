@@ -172,3 +172,195 @@ Dispatcher 의 demltiplex 에 switch 구문에 case 를 계속 추가해야 하�
 이 문제를 해결하기 위해 핸들러를 통해 요청을 처리하는 리액터 패턴을 사용합니다.    
 
 ## 2. Reactor 패턴
+
+### 2-1. 리액터 패턴이란
+새로운 메시지 형식과 프로토콜을 만들기 위해 메시지를 처리하는 핸들러를 만들고 핸들러 맵에 등록하고    
+각 메시지에 적절한 핸들러를 찾아 처리하도록 개발합니다.    
+
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/210799185-4179db0a-f450-4611-b17b-45cc243d8b8e.png" width="75%"/>
+  <figcaption>리액터 패턴 구조도</figcaption>
+</figure>  
+
+핸들러 맵은 아래 그림과 같이 구성되어 있습니다.
+
+<figure>
+  <img src="https://user-images.githubusercontent.com/13375810/210799457-27365498-efc4-4545-8b8d-6559859f4324.png" width="75%"/>
+  <figcaption>핸들러 맵 구조</figcaption>
+</figure>  
+
+### 2-2. 리액터 패턴 예제
+
+먼저 Key 를 String 으로 Value 는 EventHandler 로 하는 HashMap 을 상속 받아 핸들러 맵을 구현합니다.    
+그리고 디스패처의 프로토콜을 EventHandler 로 이름을 바꾸고 EventHandler 인터페이스를 구현합니다.
+
+```java
+public class HandleMap extends HashMap<String, EventHandler> {
+}
+
+public interface EventHandler {
+
+  public String getHandler();
+
+  public void handleEvent(InputStream inputStream);
+}
+
+public class StreamSayHelloEventHandler implements EventHandler {
+
+  private static final int DATA_SIZE = 512;
+  private static final int TOKEN_NUM = 2;
+
+  @Override
+  public String getHandler() {
+    return "0x5001";
+  }
+
+  @Override
+  public void handleEvent(InputStream inputStream) {
+    try {
+      byte[] buffer = new byte[DATA_SIZE];
+      inputStream.read(buffer);
+      String data = new String(buffer);
+
+      String[] params = new String[TOKEN_NUM];
+      StringTokenizer token = new StringTokenizer(data, "|");
+
+      int i = 0;
+      while (token.hasMoreTokens()) {
+        params[i] = token.nextToken();
+        ++i;
+      }
+
+      sayHello(params);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void sayHello(String[] params) {
+    System.out.println("SayHello -> name : " + params[0] + " age : " + params[1]);
+  }
+}
+
+public class StreamUpdateProfileEventHandler implements EventHandler {
+
+  private static final int DATA_SIZE = 1024;
+  private static final int TOKEN_NUM = 5;
+
+  @Override
+  public String getHandler() {
+    return "0x6001";
+  }
+
+  @Override
+  public void handleEvent(InputStream inputStream) {
+    try {
+      byte[] buffer = new byte[DATA_SIZE];
+      inputStream.read(buffer);
+      String data = new String(buffer);
+
+      String[] params = new String[TOKEN_NUM];
+      StringTokenizer token = new StringTokenizer(data, "|");
+
+      int i = 0;
+      while (token.hasMoreTokens()) {
+        params[i] = token.nextToken();
+        ++i;
+      }
+
+      updateProfile(params);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void updateProfile(String[] params) {
+    System.out.println("UpdateProfile -> " +
+            " id :" + params[0] +
+            " password : " + params[1] +
+            " name : " + params[2] +
+            " age : " + params[3] +
+            " gender : " + params[4]);
+  }
+}
+```
+
+그리고 메시지를 받아 디멀티플렉싱하고 핸들러 맵에서 EventHandler 를 찾아 연결하는 Reactor 클래스를 생성합니다.   
+
+```java
+public class Reactor {
+  private ServerSocket serverSocket;
+  private HandleMap handleMap;
+
+  public Reactor(int port) {
+    handleMap = new HandleMap();
+    try {
+      serverSocket = new ServerSocket(port);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void startServer() {
+    Dispatcher dispatcher = new Dispatcher();
+
+    while(true) {
+      dispatcher.dispatch(serverSocket, handleMap);
+    }
+  }
+
+  public void registerHandler(String header, EventHandler handler) {
+    handleMap.put(header, handler);
+  }
+
+  public void registerHandler(EventHandler handler) {
+    handleMap.put(handler.getHandler(), handler);
+  }
+
+  public void removeHandler(EventHandler handler) {
+    handleMap.remove(handler.getHandler());
+  }
+}
+```
+
+그리고 디스패처는 메시지를 받아 적정한 핸들러로 처리하도록 수정합니다.    
+이 때 모든 핸들러는 EventHandler 인터페이스를 구현했기 때문에     
+handleMap.get(header).handleEvent(inputStream) 구문을 통해 실행할 수 있습니다.
+
+```java
+public class Dispatcher {
+  private final int HEADER_SIZE = 6;
+
+  public void dispatch(ServerSocket serverSocket, HandleMap handleMap) {
+    try {
+      Socket socket = serverSocket.accept();
+      demultiplex(socket, handleMap);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void demultiplex(Socket socket, HandleMap handleMap) {
+    try {
+      InputStream inputStream = socket.getInputStream();
+
+      byte[] buffer = new byte[HEADER_SIZE];
+      inputStream.read(buffer);
+      String header = new String(buffer);
+
+      handleMap.get(header).handleEvent(inputStream);
+
+      socket.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+}
+```
+
+이렇게 하면 매번 switch 구문에 case 를 추가하지 않고 EventHandler 를 등록해 기능을 추가할 수 있습니다.    
+그리고 XML 을 통해 메시지 형식과 처리할 핸들러 정보를 선언하고 서버에서 XML 정보를 읽어 이벤트 핸들러들을 추가하도록    
+개발해 서버를 재시작하지 않고 동적으로 핸들러를 추가할 수 있도록 할 수 있습니다.   
+
+
