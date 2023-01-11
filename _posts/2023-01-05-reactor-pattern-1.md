@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Reactor 패턴
+title: Reactor 패턴 (1)
 date: 2023-01-05 20:30:00 + 0900
 categories: Patterns
 ref: Patterns, dispatcher, reactor
@@ -8,7 +8,7 @@ ref: Patterns, dispatcher, reactor
 
 출처1 : SW 아키텍처 설계 강의(IMQA 손영수 상무)
 
-# Reactor 패턴
+# Reactor 패턴 (1)
 
 요청을 처리하는 핸들러들을 가지고 있고 각 요청에 맞는 핸들러로 처리해 프로토콜 추가에 유연한 Dispathcer 입니다.
 
