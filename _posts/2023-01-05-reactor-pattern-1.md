@@ -185,7 +185,7 @@ Dispatcher 의 demltiplex 에 switch 구문에 case 를 계속 추가해야 하�
 핸들러 맵은 아래 그림과 같이 구성되어 있습니다.
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/13375810/210799457-27365498-efc4-4545-8b8d-6559859f4324.png" width="75%"/>
+  <img src="https://user-images.githubusercontent.com/13375810/210799457-27365498-efc4-4545-8b8d-6559859f4324.png" width="45%"/>
   <figcaption>핸들러 맵 구조</figcaption>
 </figure>  
 
