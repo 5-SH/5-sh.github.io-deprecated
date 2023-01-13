@@ -87,7 +87,7 @@ NIO 는 소켓, 파일과 같은 IO 대상을 __Channel__ 로 추상화 했고 �
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/211336950-a7aba4b0-2ce4-4799-90b3-38be8cc94514.jpg" width="75%"/>
-  <figcaption>리액터 패턴 구조도</figcaption>
+  <figcaption>동기 이벤트 디멀티플렉서를 활용한 리액터 패턴 구조도</figcaption>
 </figure>  
 
 ### 4-3. 코드
