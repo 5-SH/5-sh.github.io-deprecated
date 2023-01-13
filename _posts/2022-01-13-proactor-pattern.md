@@ -9,7 +9,10 @@ ref: Patterns, dispatcher, proactor, async, non-blocking
 출처1 : https://www.javacodegeeks.com/2012/08/io-demystified.html    
 출처2 : https://docs.oracle.com/javase/7/docs/api/java/nio/channels/AsynchronousChannelGroup.html    
 출처3 : https://docs.oracle.com/javase/7/docs/api/java/nio/channels/AsynchronousChannel.html    
-출처4 : https://docs.oracle.com/javase/7/docs/api/java/nio/channels/CompletionHandler.html    
+출처4 : https://docs.oracle.com/javase/7/docs/api/java/nio/channels/CompletionHandler.html       
+출처5 : https://yangbox.tistory.com/28    
+출처6 : https://stackoverflow.com/questions/20057497/program-does-not-terminate-immediately-when-all-executorservice-tasks-are-done     
+출처7 : https://velog.io/@tkadks123/Java-NIO%EC%97%90-%EB%8C%80%ED%95%B4-%EC%95%8C%EC%95%84%EB%B3%B4%EC%9E%90-22   
 
 # Proactor 패턴
 
@@ -137,4 +140,142 @@ CompletionHandler 는 IO 작업의 결과를 콜백으로 처리하기 위해 �
 
 AsynchronousChannel 은 멀티스레드 환경에서 Thread-Safe 합니다. 
 
+### 2-3 CompletionHandler
 
+비동기 IO 작업의 결과를 사용하기 위한 핸들러 입니다.     
+IO 작업이 성공하면 completed 메소드가 실행되고 실패하면 failed 메소드가 실행됩니다.   
+
+### 2-4. 코드
+
+Java NIO 2 API 를 사용해 만든 에코 서버 입니다.
+
+```java
+public class ProactorInitiator {
+  static int ASYNC_SERVER_PORT = 4333;
+ 
+  public void initiateProactiveServer(int port)
+    throws IOException {
+ 
+    final AsynchronousServerSocketChannel listener = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(port));
+     AcceptCompletionHandler acceptCompletionHandler = new AcceptCompletionHandler(listener);
+     SessionState state = new SessionState();
+     listener.accept(state, acceptCompletionHandler);
+  }
+ 
+  public static void main(String[] args) {
+    try {
+       System.out.println('Async server listening on port : ' + ASYNC_SERVER_PORT);
+       new ProactorInitiator().initiateProactiveServer(ASYNC_SERVER_PORT);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+ 
+    // Sleep indefinitely since otherwise the JVM would terminate
+    while (true) {
+      try {
+        Thread.sleep(Long.MAX_VALUE);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+}
+ 
+public class AcceptCompletionHandler implements CompletionHandler<AsynchronousSocketChannel, SessionState> {
+
+  private AsynchronousServerSocketChannel listener;
+ 
+  public AcceptCompletionHandler(AsynchronousServerSocketChannel listener) {
+    this.listener = listener;
+  }
+ 
+  @Override
+  public void completed(AsynchronousSocketChannel socketChannel, SessionState sessionState) {
+    // accept the next connection
+    SessionState newSessionState = new SessionState();
+    listener.accept(newSessionState, this);
+ 
+    // handle this connection
+    ByteBuffer inputBuffer = ByteBuffer.allocate(2048);
+    ReadCompletionHandler readCompletionHandler = new ReadCompletionHandler(socketChannel, inputBuffer);
+    socketChannel.read(inputBuffer, sessionState, readCompletionHandler);
+  }
+ 
+  @Override
+  public void failed(Throwable exc, SessionState sessionState) {
+   // Handle connection failure...
+  }
+}
+ 
+public class ReadCompletionHandler implements CompletionHandler<Integer, SessionState> {
+ 
+  private AsynchronousSocketChannel socketChannel;
+  private ByteBuffer inputBuffer;
+
+  public ReadCompletionHandler(AsynchronousSocketChannel socketChannel, ByteBuffer inputBuffer) {
+   this.socketChannel = socketChannel;
+   this.inputBuffer = inputBuffer;
+  }
+ 
+  @Override
+  public void completed(Integer bytesRead, SessionState sessionState) {
+    byte[] buffer = new byte[bytesRead];
+    inputBuffer.rewind();
+    // Rewind the input buffer to read from the beginning
+ 
+    inputBuffer.get(buffer);
+    String message = new String(buffer);
+ 
+    System.out.println('Received message from client : ' + message);
+ 
+    // Echo the message back to client
+    WriteCompletionHandler writeCompletionHandler = new WriteCompletionHandler(socketChannel);
+ 
+    ByteBuffer outputBuffer = ByteBuffer.wrap(buffer);
+ 
+    socketChannel.write(outputBuffer, sessionState, writeCompletionHandler);
+  }
+ 
+  @Override
+  public void failed(Throwable exc, SessionState attachment) {
+    //Handle read failure.....
+  }
+}
+ 
+public class WriteCompletionHandler implements CompletionHandler<Integer, SessionState> {
+ 
+  private AsynchronousSocketChannel socketChannel;
+ 
+  public WriteCompletionHandler(AsynchronousSocketChannel socketChannel) {
+    this.socketChannel = socketChannel;
+  }
+ 
+  @Override
+  public void completed(Integer bytesWritten, SessionState attachment) {
+    try {
+      socketChannel.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+ 
+  @Override
+  public void failed(Throwable exc, SessionState attachment) {
+   // Handle write failure.....
+  }
+}
+ 
+public class SessionState {
+ 
+  private Map<String, String> sessionProps = new ConcurrentHashMap<String, String>();
+ 
+  public String getProperty(String key) {
+    return sessionProps.get(key);
+  }
+ 
+  public void setProperty(String key, String value) {
+    sessionProps.put(key, value);
+  }
+ 
+}
+```
