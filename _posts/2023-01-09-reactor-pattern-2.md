@@ -61,11 +61,6 @@ ref: Patterns, dispatcher, reactor
 
 ## 4. Non blocking / Async - complete event
 
-<figure>
-  <img src="https://user-images.githubusercontent.com/13375810/212045289-2d0912bf-7c11-478a-817f-f94ecdebab9d.png" width="75%"/>
-  <figcaption>select()</figcaption>
-</figure>  
-
 리눅스는 AIO posix api / 윈도우는 windows I/O completion port 로 지원합니다.     
 그리고 자바는 NIO2 Asynchronous Channel API 로 플랫폼 별 AIO 를 추상화 했습니다.
 
