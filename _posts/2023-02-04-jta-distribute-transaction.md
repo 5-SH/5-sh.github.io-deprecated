@@ -13,7 +13,11 @@ JdbcTemplate 내부에서 DataSourceTransactionManager 를 통해 관리하는 �
 JtaTransactionManager 를 통해 글로벌 트랜잭션을 처리하는 방법을 알아 보겠습니다.    
 
 ## 2. JtaTransactionManager
-데이터베이스 액세스를 위해 주로 JDBC 와 iBatis 두 가지 기술을 사용하고 두 기술을 지원하는 DataSourceTransactionManager 를 트랜잭션을 토합하는데 주로 사용합니다. 그리고 DataSourceTransactionManager 에서 트랜잭션을 통합 하려면 항상 동일한 DataSource 를 사용해야 합니다. 따라서 여러 DataSource 를 같은 트랜잭션 안에서 동작하게 만들 수 없습니다.     
+데이터베이스 액세스를 위해 주로 JDBC 와 iBatis 두 가지 기술을 사용하고, 두 기술을 지원하는 DataSourceTransactionManager 를 트랜잭션을 통합하는데 주로 사용합니다. 그리고 DataSourceTransactionManager 에서 트랜잭션을 통합 하려면 항상 동일한 DataSource 를 사용해야 합니다. 따라서 여러 DataSource 를 같은 트랜잭션 안에서 동작하게 만들 수 없습니다.     
+
+DataSourceTransactionManager 는 'TransactionManager를 식별 -> DataSource에서 Connection 추출 -> Transaction 동기화(커넥션 저장)' 순서로 진행 됩니다.    
+만약 AbstractRoutingDataSource 를 상속한 RoutingDataSource 에서 여러 데이터소스를 관리할 경우, DataSourceTransactionManager 가 현재 커넥션을 ThreadLocal 에 저장하는 트랜잭션 동기화 작업을 수행한 이후에 RoutingDataSource 에서 타깃 데이터소스 변경이 수행되어 이전 사용하던 데이터소스를 사용하게 됩니다.     
+따라서 DataSourcTransactionManager 를 사용하면 여러 DataSource 를 가튼 트랜잭션 안에서 동작하게 만들 수 없습니다.
 
 JtaTransactionManager 를 사용하면 여러 데이터베이스에 액세스 하는 작업을 하나의 트랜잭션으로 관리할 수 있습니다. 그리고 모든 종류의 데이터 액세스 기술을 지원합니다. 보통 JTA(Java Transaction Api) 는 서버에 설정한 XA DataSource 와 트랜잭션 매니저를 가져와 트랜잭션을 관리해 줍니다. 그러나 서버의 지원 없이도 애플리케이션 안에 JTA 서비스 기능을 내장해 사용하는 방법도 있습니다. 독립형 JTA 트랜잭션 매니저라고 불리는 이 기술은 JOTM, Atomikos 라는 오픈 소스를 주로 사용합니다. 이번 테스트 에서는 Atomikos 를 사용했습니다.   
 
