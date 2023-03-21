@@ -37,6 +37,7 @@ plugins:
 category_dir: category/
 tag_dir: tag/
 future: true
+published: true
 
 # Exclude from processing.
 # The following items will not be processed, by default.
