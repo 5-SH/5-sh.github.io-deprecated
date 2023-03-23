@@ -427,4 +427,155 @@ yahoo 구조
       - 내부에서 수집할 수 없는 데이터 ex) 유입 경로, 소셜 로그인
 
 ### 3-2. 관계형 데이터베이스와 NoSQL 그리고 파일 저장소
- 
+
+- 자료구조
+  - 단순구조 : Integer, String...
+  - 선형구조 : List, Queue, Stack...
+  - 비선형구조 : Tree, Graph...
+  - 파일구조 : Text, Sequence, Index...
+
+#### 3-2-1. 1억 개 이상의 elements 를 갖는 List 구현하기
+
+1. Binary Sequence File 로 구현
+
+```
+[List Size|   idx   |  value  |   idx   |  value  |   idx   |  value  | ... ]
+[ 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | ... ]
+
+idx + value (8 bytes) = Element
+```
+
+[구현 링크](https://github.com/5-SH/FileBaseList)
+
+2. DB 를 활용해 구현
+
+| id | value |  
+| --- | --- |  
+| ... | ... |  
+
+```
+bigList(id int(4) auto_increment, value int(4))
+
+get(int index) {
+  q = "select value from bigList where id = " + index;
+  return q.result();
+}
+
+add(int value) {
+  q = "insert into bigList (value) values (" + value + ")";
+  q.executeStatement();
+}
+```
+
+#### 3-2-2. 자료구조와 데이터베이스
+
+Binary Sequence File 에 remove() 가 발생하면?
+
+1, 2, 3, 4, 5 자료가 있는데 3이 삭제되고 3을 조회하면 최악의 경우 3을 기준으로 좌우로 풀 스캔이 일어나 O(n) 연산이 발생한다.     
+
+그래서 DB 는 remove 된 다음 검색이 느려지는 것을 방지하기 위해 PK 를 가지고 트리 형태로 인덱스 파일을 생성한다.     
+인덱스 파일을 통해 특정 값을 검색하는데 O(nlogn) 이 걸린다.     
+트리 형태의 인덱스 파일은 검색을 위한 구조이고 실제 데이터는 Bytes Array Sequence File 로 저장 되어있다.    
+
+
+프로그래밍 언어에 대부분 존재하는 built-in 자료구조(List, Queue, Stack...) 은 메모리와 디스크에 쓰고 읽는데 사용할 수 있다.   
+RDBMS 이건 NoSQL 이건 기본적인 컨셉은 자료구조를 저장하는 데이터 저장소 이다.    
+
+파일 기반의 경량 데이터베이스 SQLite 같은 것은 파일 데이터를 프로세싱 하는 프로그램으로 볼 수 있다.    
+Redis 나 MemCache 는 인메모리 해쉬 테이블 저장소이다.    
+따라서 자료구조에 대한 이해가 있으면 데이터베이스의 동작을 자연스럽게 유추할 수 있다.    
+
+
+#### 3-2-3. 데이터 처리
+
+1. 데이터 처리 방식
+
+RDBMS 에는 Row wise 저장소, Column wise 저장소가 있다.    
+A, B, C column 을 가지고 여러 개의 row 가 있다고 할 때,    
+Column Operation 은 AAABBBCCC... 형식이고 Row Operation 은 ABCABCABC...형식이다.   
+
+Row wise 는 행 단위 연산에 최적화 되어 있기 때문에 특정 column 에 대한 집계 연산인 ORDER BY 나 GROUP 같은 연산이 많이 느리다.     
+그러나 특정 row 를 가져올 때는 데이터 skip 없이 쭉 읽어오면 되기 때문에 빠르다.   
+그리고 고정된 스키마와 공간 확보가 필요하다.   
+
+Column wise 는 특정 column 에 대한 풀스캔이나 집계 연산에 데이터 skip 없이 쭉 읽으면 되기 때문에 빠르게 연산할 수 있다.    
+그러나 특정 row 전체를 가져오기 위해선 데이터 skip 을 해야하기 때문에 느리다.    
+그리고 스키마 변경이 용이하고, 탄력적으로 공간을 활용할 수 있다.   
+
+2. 데이터 처리의 성능 차이
+
+| id | name | age | gender | address | number |   
+| --- | --- | --- | --- | --- | --- |  
+|  |  |  |  |  |  |  
+
+userTable 의 column 이 위와 같고 80 억 개의 row 가 있다고 가정할 때,         
+
+"select gender, count(gender) from userTable group by gender;" 
+
+성별에 따른 인구 수를 연산하는 쿼리를 실행하면 Row Store, Column Store 에 따라 성능 차이가 많이 난다.   
+
+- Row Store
+
+| id | name | age | gender | address | number |   
+| :---: | :---: | :---: | :---: | :---: | :---: |  
+| 1 | aaa | 0 | ... | ... | ... |
+| 2 | bbb | 1 | ... | ... | ... |
+| 3 | ccc | 0 | ... | ... | ... |
+| 4 | ddd | 0 | ... | ... | ... |
+| 5 | eee | 0 | ... | ... | ... |
+| 6 | fff | 1 | ... | ... | ... |
+
+위 형식으로 저장되고 각 row 의 gender 를 얻기 위해 Stride Access 를 하게 된다.   
+8 * 10^9 * 64 bytes = 512 GB 를 읽어와야 하고, 약 128,000 ms 가 걸린다.   
+
+- Column Store
+
+| id | | | | | | | | |  
+| -- | -- | -- | -- | -- | -- | -- | -- | -- |    
+| | | | | | |  
+
+| name | | | | | | | |    
+| -- | -- | -- | -- | -- | -- | -- | -- |    
+| | | | | | |  
+
+| gender | | |  
+| -- | -- | -- |  
+| | |  
+
+| address | | | | |
+| -- | -- | -- | -- | -- |
+| | | | |
+
+| number | | | | |
+| -- | -- | -- | -- | -- |
+| | | | |
+
+위 형식으로 저장되고 Attribute Vector 들을 가지게 된다. gender 이 저장된 Vector 만 읽으면 되므로     
+8 * 10^9 * 1 bit = 1 GB 를 읽어오고 250 ms 가 걸린다.
+
+#### 3-2-4. 파티셔닝   
+
+조회와 연산 성능을 높이기 위해 테이블 파티셔닝을 사용할 수 있다.
+
+- 수직 파티셔닝
+RDBMS 에서 특정 column 풀스캔이나 집계 연산이 많은 경우 수직 파티셔닝을 통해 별도의 테이블을 만든다.    
+그러나 수직 파티셔닝이 너무 많이 생기면 JOIN 연산이 빈번해 지고 테이블간 관계가 복잡해 지는 문제가 생긴다.
+
+- Horizontal Partitioning (샤딩)
+row 가 많은 경우 같은 테이블을 여러 개로 나누고 PK 에 따라 row 를 분산해 저장한다.    
+연산을 분산처리 할 수 있는 장점이 있지만 관리 및 프로세싱 복잡도가 증가하는 문제가 있다.   
+
+#### 3-2-5. NoSQL 의 출현
+
+인터넷의 폭발적인 데이터 증가에 따라 빠른 연산을 위해 NoSQL 이 출현했다.    
+NoSQL 은 Columnar Store 이고 아래와 같은 장점을 가진다.       
+- 스키마 변경 용이   
+- 분산 저장   
+- 분산 처리   
+- 압축 저장   
+
+#### 3-2-6. 일반적인 저장소 선택
+- 파일 저장 : 시스템 로그 처럼 접근 빈도가 낮은 데이터
+- NoSQL : 행동 로그(검색, 탐색, 클릭...) 처럼 다양한 분석이 필요한 데이터
+- Multi-DB 혼합 : 서비스 로그(구매, 시청, 평점...) 처럼 서비스 상 실시간 성능과 안정성을 요구하는 데이터    
+RDBMS, RTDB, Time-series DB, NoSQL, In-memory DB 등을 혼합해 사용한다.   
