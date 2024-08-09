@@ -187,6 +187,7 @@ public class BoundedMain {
     }
 }
 ```
+![KakaoTalk_20240809_120508874](https://github.com/user-attachments/assets/3405421b-b45a-4166-a374-846e670f0b9d)
 
 put(data) - wait(), notify()
 - synchronized를 통해 임계 영역을 설정한다. 생산자 스레드는 락 획득을 시도한다.
