@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Java 스레드7 - 스레드 풀과 Executor 프레임워크1
-date: 2024-08-15 01:00:00 + 0900
+date: 2024-08-20 19:00:00 + 0900
 categories: Java
 ref: Java, thread, multi-thread, thread pool, executor
 ---
@@ -347,5 +347,214 @@ V get(long timeout, TimeUnit unit)
   - TimeoutException: 주어진 시간 내에 작어빙 완료되지 않은 경우 발생
 - 설명: 지정된 시간 동안 결과를 기다린다. 시간이 초과되면 TimeoutException을 발생시킨다.
    
-## 12-7. Future7 - 취소
+## 12-7. Future5 - 취소
 
+```java
+public class FutureCancelMain {
+
+    private static boolean mayInterruptIfRunning = true;
+    // private static boolean mayInterruptIfRunning = false;
+
+    public static void main(String[] args) {
+        ExecutorService es = Executors.newFixedThreadPool(1);
+        Future<String> future = es.submit(new MyTask());
+        log("Future.state: " + future.state());
+
+        sleep(3000);
+
+        log("future.cancel(" + mayInterruptIfRunning + ") 호출");
+        boolean cancelResult1 = future.cancel(mayInterruptIfRunning);
+        log("Future.state: " + future.state());
+        log("cancel(" + mayInterruptIfRunning + ") result: " + cancelResult1);
+
+        try {
+            log("Future result: " + future.get());
+        } catch (CancellationException e) {
+            log("Future는 이미 취소 되었습니다.");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        es.shutdown();
+    }
+
+    static class MyTask implements Callable<String> {
+
+        @Override
+        public String call() throws Exception {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    log("작업 중: " + i);
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException e) {
+                log("인터럽트 발생");
+                return "Interrupted";
+            }
+
+            return "Completed";
+        }
+    }
+}
+```
+
+아직 완료되지 않은 작업을 취소하는 cancel(boolean mayInterruptIfRunning) 작업이 실행 중인지 아닌지에 따라 다르게 동작하도록 할 수 있는 mayInterruptIfRunning 을 인자로 가진다.    
+- cancel(true): Future를 취소 상태로 변경한다. 이 때 작업이 실행 중 이라면 Thread.interrupt() 를 호출해서 작업을 중단한다.
+- cancel(false): Future를 취소 상태로 변경한다. 단, 이미 실행 중인 작업을 중단하지 않는다.
+   
+**실행결과 - mayInterruptIfRunning=true**    
+mayInterruptIfRunning=true를 사용하면 실행 중인 작업에 인터럽트가 발생해서 실행 중인 작업을 중지한다.    
+이후 Future.get()을 호출하면 CancellationException 런타임 예외가 발생한다.    
+    
+**실행결과 - mayInterruptIfRunning=false**    
+mayInterruptIfRunning=false를 사용하면 실행 중인 작업은 인터럽트를 걸지 않고 그냥 둔다.    
+실행 중인 작업은 그냥 두더라도 cancel()을 호출했기 때문에 Future는 CANCEL 상태가 된다.    
+이후 Future.get()을 호출하면 CancellationException 런타임 예외가 발생한다.    
+   
+## 12-8. Future - 예외
+
+```java
+public class FutureExceptionMain {
+
+    public static void main(String[] args) {
+
+        ExecutorService es = Executors.newFixedThreadPool(1);
+        log("작업 전달");
+        Future<Integer> future = es.submit(new ExCallable());
+        sleep(1000);
+
+        try {
+            log("future.get() 호출 시도, future.state(): " + future.state());
+            Integer result = future.get();
+            log("result value = " + result);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            log("e = " + e);
+            Throwable cause = e.getCause();
+            log("cause = " + cause);
+        }
+    }
+
+    static class ExCallable implements Callable<Integer> {
+        @Override
+        public Integer call() throws Exception {
+            log("Callable 실행, 예외 발생");
+            throw new IllegalStateException("ex!");
+        }
+    }
+}
+```
+
+- 요청 스레드: es.submit(new ExCallable())을 호출해서 작업을 전달한다.
+- 작업 스레드: ExCallable을 실행하는데, IllegalStateException 예외가 발생한다.
+  - 작업 스레드는 Future에 발생한 예외를 담아둔다. 예외도 객체 이므로 필드에 보관할 수 있다.
+  - 예외가 발생했으므로 Future의 상태는 FAILED가 된다.
+- 요청 스레드: 결과를 얻기 위해 future.get()을 호출한다.
+  - Future의 상태가 FAILED면 ExecutionException 예외를 던진다.
+  - 이 예외는 내부에 앞서 Future에 저장해둔 IllegalStateException을 포함하고 있다.
+  - e.getCause()를 호출하면 작업에서 발생한 원본 예외를 바등ㄹ 수 있다.
+   
+Future.get()은 싱글 스레드 상황에서 일반적인 메서드를 호출하는 것 처럼 작업의 결과 값을 받을 수도 있고 예외를 받을 수도 있다.   
+
+## 12-9. ExecutorService - 작업 컬렉션 처리
+
+ExecutorService는 여러 작업을 한 번에 편리하게 처리하는 invokeAll(), invokeAny() 기능을 제공한다.   
+
+**invokeAll()**   
+- <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException
+  - 모든 Callable 작업을 제출하고, 모든 작업이 완료될 때까지 기다린다.
+- <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException
+  - 지정된 시간 내 모든 Callable 작업을 제출하고 완료될 때까지 기다린다.
+   
+```java
+public class CallableTask implements Callable<Integer> {
+
+    private String name;
+    private int sleepMs = 1000;
+
+    public CallableTask(String name) {
+        this.name = name;
+    }
+
+    public CallableTask(String name, int sleepMs) {
+        this.name = name;
+        this.sleepMs = sleepMs;
+    }
+
+    @Override
+    public Integer call() throws Exception {
+        log(name + " 실행");
+        sleep(sleepMs);
+        log(name + " 완료, return = " + sleepMs);
+        return sleepMs;
+    }
+}
+
+public class InvokeAllMain {
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        ExecutorService es = Executors.newFixedThreadPool(10);
+
+        CallableTask task1 = new CallableTask("task1", 1000);
+        CallableTask task2 = new CallableTask("task2", 2000);
+        CallableTask task3 = new CallableTask("task3", 3000);
+        List<CallableTask> tasks = List.of(task1, task2, task3);
+
+        List<Future<Integer>> futures = es.invokeAll(tasks);
+        for (Future<Integer> future : futures) {
+            Integer value = future.get();
+            log("value = " + value);
+        }
+        es.shutdown();
+    }
+}
+
+// 결과
+14:31:02.365 [pool-1-thread-3] task3 실행
+14:31:02.365 [pool-1-thread-2] task2 실행
+14:31:02.365 [pool-1-thread-1] task1 실행
+14:31:03.387 [pool-1-thread-1] task1 완료, return = 1000
+14:31:04.376 [pool-1-thread-2] task2 완료, return = 2000
+14:31:05.371 [pool-1-thread-3] task3 완료, return = 3000
+14:31:05.371 [     main] value = 1000
+14:31:05.372 [     main] value = 2000
+14:31:05.373 [     main] value = 3000
+```
+   
+**invokeAny()**   
+- <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException
+  - 하나의 Callable 작업이 완료될 때까지 기다리고, 가장 먼저 완료된 작업의 결과를 반환한다.
+  - 완료되지 않은 나머지 작업은 취소한다.
+- <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException
+  - 지정된 시간 내에 하나의 Callable 작업이 완료될 떄까지 기다리고, 가장 먼저 완료된 작업의 결과를 반환한다.
+  - 완료되지 않은 나머지 작업은 취소한다.
+
+```java
+public class InvokeAnyMain {
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        ExecutorService es = Executors.newFixedThreadPool(10);
+
+        CallableTask task1 = new CallableTask("task1", 1000);
+        CallableTask task2 = new CallableTask("task2", 2000);
+        CallableTask task3 = new CallableTask("task3", 3000);
+        List<CallableTask> tasks = List.of(task1, task2, task3);
+
+        Integer value = es.invokeAny(tasks);
+        log("value = " + value);
+        es.shutdown();
+    }
+}
+
+// 결과
+14:34:08.158 [pool-1-thread-1] task1 실행
+14:34:08.158 [pool-1-thread-3] task3 실행
+14:34:08.158 [pool-1-thread-2] task2 실행
+14:34:09.174 [pool-1-thread-1] task1 완료, return = 1000
+14:34:09.175 [     main] value = 1000
+14:34:09.175 [pool-1-thread-2] 인터럽트 발생, sleep interrupted
+14:34:09.175 [pool-1-thread-3] 인터럽트 발생, sleep interrupted
+```
+
+invokeAll(), invokeAny()를 사용하면 한꺼번에 여러 작업을 요청할 수 있다.    
