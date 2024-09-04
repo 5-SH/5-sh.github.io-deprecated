@@ -7,11 +7,12 @@ permalink: /about/
 # ■ About Me
 ## Introduction
 >   - 안녕하세요.
->   - 6 년차 IoT 플랫폼 개발자입니다.
+>   - 8년차 IoT 플랫폼 개발자입니다.
 >   - 현대오토에버에 재직 중 입니다.
->   - 현대건설 스마트홈 플랫폼(Hi-oT) 을 개발 했습니다.
->   - 현대자동차그룹 스마트 팩토리 플랫폼을 개발하고 있습니다.
+>   - 현대건설의 스마트홈 플랫폼인 "Hi-oT"을 개발했습니다.
+>   - 현대자동차그룹의 공정 데이터 처리 표준 스마트 팩토리 플랫폼인 "IoT 플랫폼"을 개발하고 있습니다.
 >   - 객체지향적인 개발과 디자인 패턴 그리고 엔터프라이즈 아키텍처를 주로 고민하고 공부합니다.
+>   - 높은 성능과 에러로 인한 중단 없는 견고한 솔루션 개발을 주도적으로 수행합니다.
 
 ## Contact 
 >   - Email :  llll_lll_lll@naver.com
@@ -44,14 +45,14 @@ permalink: /about/
 >   - SVN
 
 # ■ Work Experience & Projects
-## [현대건설 스마트홈 IoT 서비스(Hi-oT)](https://www.hyundai.co.kr/TechInnovation/Etc/Hiot.hub   )
+## [현대건설 스마트홈 IoT 서비스(Hi-oT)](https://www.hyundai.co.kr/story/CONT0000000000001088)
 ### 1. 플랫폼 개발
 >  - 회원가입, 인증 서비스 개발
 >  - 공용부 서비스 개발
 >  - 공간별 디바이스 제어 서비스 개발
 
 ### 2. 고도화 기능 개발
->  - [차량에서 가전을 제어할 수 있는 카투홈 서비스 개발](https://www.hyundai.com/kr/ko/customer-service/bluelink/bluelink-service/smart-control/car-to-home)
+>  - [차량에서 가전을 제어할 수 있는 카투홈 서비스 개발](https://www.hdec.kr/kr/company/press_view.aspx?CompanyPressSeq=81)
 >  - KT 기가지니, 현대건설 보이스홈 연동 서비스 개발
 
 ### 3. 운영 & 테스트
@@ -67,13 +68,21 @@ permalink: /about/
 ### 1. 플랫폼 개발
 >  - 플랫폼 아키텍트 검증, 개발
 >  - DBMS 커넥터 개발(JDBC, ODBC)
->  - 텍스트 파일 Read, parser 개발
+>  - 텍스트 파일 처리 기능 개발
+>  - BIT, BYTE, WORD 데이터 스트림 처리 기능 개발
 >  - 개발 표준 수립(형상관리 전략, 개발, 환경 가이드)
->  - 메모리 누수 이슈 해결
+>  - 부품사 정보계 공정 데이터 처리 기능 개발
+>  - 완성차 지시계 공정 데이터 처리 기능 개발
+>  - 메모리 누수 및 데이터 처리 성능 등 주요 이슈 해결
 
 ### 2. 플랫폼 전개
->  - 현대모비스 진천 공장 적용
->  - 현대모비스 울산 공장 적용
+>  - 현대자동차그룹 완성차, 부품사의 정보계 도입
+>      - 현대모비스 김천, 대구, 울산 공장 적용
+>      - 현대모비스 진천 반도체 라인 적용 PoC
+>      - HMMC(체코) Factory BI 도입
+>  - 현대자동차그룹 완성차의 지시계에 도입 되었습니다.
+>      - HMGICS(싱가포르), KMX(멕시코), HMMC(체코), KaSK(슬로바키아), HMGMA(미국) 해외 공장 도입
+>      - 아산, 전주 국내 공장 도입
 
 ### 3. 대시보드 개발
 >  - 프론트엔드 기술 검증 (Angular, React, Vue.js)
@@ -106,9 +115,9 @@ permalink: /about/
 
 ### 2. International Development Hackathon 2016(Co-organized by Harvard, MIT, and Tufts) 대회 Best Qualcomm Project Submission 수상
 > - [열악한 통신환경에 있는 필리핀에서의 환자와 의사간 소통을 위한 SPASMS 어플리케이션을 개발](https://devpost.com/software/idhack2016-9nb7rk)
-> - [수상 정보](http://his.pusan.ac.kr/bbs/cse/2609/569240/artclView.do)
+> - [수상 정보](https://his.pusan.ac.kr/bbs/cse/2609/569240/artclView.do)
 
 ### 3. GIF 2015 웨어러블 해커톤 대회 미래창조과학부장관상 수상   
 > - [스마트워치를 활용해 프레젠테이션을 트레이닝하고 제어하는 어플리케이션](https://github.com/5-SH/PREZENTAINER)
-> - [수상 정보](https://pnu.edu/kor/CMS/Board/Board.do?mCode=MN109&page=27&mgr_seq=12&mode=view&mgr_seq=12&board_seq=331918)
+> - [수상 정보](https://his.pusan.ac.kr/bbs/cse/2609/569232/artclView.do)
 
