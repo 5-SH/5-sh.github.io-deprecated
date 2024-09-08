@@ -421,5 +421,60 @@ ExecutorService es = new ThreadPoolExecutor(100, 200, 60, TimeUnit.SECONDS, new 
 
 - 100개의 기본 스레드를 사용한다.
 - 긴급 대응 가능한 추가 스레드 100개를 사용한다. 추가 스레드는 60초의 생존 주기를 가진다.
-- 100-개의 작업이 큐에 대기할 수 있다.
+- 1000개의 작업이 큐에 대기할 수 있다.
    
+```java
+public class PoolSizeMainV4 {
+
+    static final int TASK_SIZE = 1100; // 1. 일반
+//    static final int TASK_SIZE = 1200; // 2. 긴급
+//    static final int TASK_SIZE = 1201; // 3. 거절
+
+    public static void main(String[] args) {
+        ExecutorService es = new ThreadPoolExecutor(100, 200, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000));
+        printState(es);
+
+        long startMs = System.currentTimeMillis();
+
+        for (int i = 1; i <= TASK_SIZE; i++) {
+            String taskName = "task" + i;
+            try {
+                es.execute(new RunnableTask(taskName));
+                printState(es, taskName);
+            } catch (RejectedExecutionException e) {
+                log(taskName + " -> " + e);
+            }
+        }
+
+        es.close();
+        long endMs = System.currentTimeMillis();
+        log("time: " + (endMs - startMs));
+    }
+}
+```
+
+- 일반: 1000개 이하의 작업이 큐에 담겨있다. → 100개의 기본 스레드가 처리한다.
+  - 작업을 모두 처리하는데 11초가 걸린다. 1100 / 100 → 11초
+- 긴급: 큐에 담긴 작업이 1000개를 초과한다. → 100개의 기본 스레드 + 100개의 초과 스레드가 처리한다.
+  - 최대 1000개의 작업이 대기하고 200개의 작업이 실행 중일 수 있다.
+  - 작업을 모두 처리하는데 6초가 걸린다. 1200 / 200 → 6초
+  - 긴급 투입한 스레드 덕분에 풀의 스레드 수가 2배가 된다. 따라서 작업을 2배 빠르게 처리한다.
+  - CPU, 메모리 리소스 사용은 일반 때 보다 늘어난다.
+- 거절: 초과 스레드를 투입 했지만, 큐에 담긴 작업 1000개를 초과하고 또 초과 스레드도 넘어간 상황이다. 이 경우 예외를 발생시킨다.
+  - 추가 스레드로 작업이 빠르게 소모되지 않는다는 것은 시스템이 감당하기 어려운 많은 요청이 들어오고 있다는 의미이다.
+  - 여기서는 총 1200개의 작업을 초과하면 예외가 발생한다.
+  - 따라서 1201번에서 예외가 발생한다.
+  - 이런 경우 요청을 거절하고 나중에 다시 시도해 달라고 해야 한다.
+   
+**실무에서 자주 하는 실수**   
+
+```java
+new ThreadPoolExecutor(100, 200, 60, TimeUnit.SECONDS, new LinkedBlockingQueue());
+```
+- 기본 스레드 100개
+- 최대 스레드 200개
+- 큐 사이즈: 무한대
+   
+이렇게 설정하면 큐 사이즈가 무한대 이므로 절대로 최대 사이즈 만큼 풀에 있는 스레드가 늘어나지 않는다.   
+
+## 13-5. Executor 예외 정책
