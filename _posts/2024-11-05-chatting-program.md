@@ -30,7 +30,7 @@ ref: network, socket, chatting
 
 클라이언트에서 서버로 부터 오는 데이터를 읽는 동시에 사용자가 입력하는 값을 쓸 수 있도록 읽기/쓰기 핸들러를 만든다.   
 읽기/쓰기 핸들러들은 Runnable을 구현하고 Thread를 통해 실행해 동시에 작업할 수 있다.   
-   
+<br/>
 ReadHandler, WriteHandler에서 예외가 발생하면 Client를 종료할 수 있도록 한다.    
 Client는 Socket, DataInputStream, DataOutputStream 자원을 정리하고    
 Readhandler.close() 와 WriteHandler.close()는 중복 호출될 수 있으므로 synchronized 처리한다.   
@@ -193,18 +193,18 @@ public class ClientMain {
 
 여러 클라이언트와 연결하고 요청을 처리할 수 있도록 서버의 동작은 Session 클래스에 작성한다.    
 Session 클래스는 클라이언트의 API 요청을 받고 처리하고 Thread로 실행한다.   
-   
+<br/>
 API 별 동작을 if-else로 개발하지 않고 유지보수와 기능 추가가 편리하도록 커맨드 패턴을 활용한다.   
 API 별 동작은 Command 인터페이스를 구현한 JoinCommand, MessageCommand, ChangeCommand, ExitCommand에 개발한다.   
-   
+<br/>
 Command 들은 CommandManager 클래스에서 생성되고 관리된다.   
 CommandManager의 commands HashMap에서 요청마다 필요한 커맨드를 가져와 사용한다.    
-   
+<br/>
 커맨드 패턴을 사용하면 작업을 호출하는 객체와 작업을 수행하는 객체를 부닐할 수 있고    
 기존 코드를 변경하지 않고 새로운 명령을 추가할 수 있다.   
 단순한 if문 몇 개로 문제를 해결할 수 있으면 커맨드 패턴을 사용할 필요가 없지만    
 기능이 많고 앞으로 추가와 수정이 많을 것이라 예상 된다면 커맨드 패턴을 사용하는 것이 좋다.   
-   
+<br/>
 CommandManager에서 필요한 커맨드를 가져올 때   
 Null Object Pattern을 사용해 요청에 맞는 커맨드가 없으면 DefaultCommand를 가져와 사용하도록 한다.    
 Null Object Pattern을 사용하면 코드에서 null 체크를 할 필요가 없어져 불필요한 조건문을 줄이고 객체의 기본 동작을 정의하는데 유용하다.   

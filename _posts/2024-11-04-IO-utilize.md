@@ -180,7 +180,7 @@ public class MemberConsoleMain {
 회원 정보는 문자로 저장되고 문자를 다룰 땐 Reader Writer 클래스를 사용하는 것이 편리하다.   
 그리고 한 줄 단위로 처리할 때는 BufferedReader가 유용하므로 BufferedReader, BufferedWriter를 사용한다.   
 FileWriter(FILE_PATH, UTF_8, true) 에서 true는 파일에 덮어쓰지 않고 끝에 추가하도록 한다.   
-   
+<br/>
 try-with-resources 구문을 사용해서 자동으로 자원을 정리한다. try 블록이 끝나면 자동으로 close()가 호출되면서 자원을 정리한다.   
 try-with-resources 구문을 사용하면 자원들을 정리하는 중에 예외가 발생해도 중단되지 않고 이어서 다른 자원들을 정리할 수 있도록 해준다.   
 
@@ -221,7 +221,7 @@ public class FileMemberRepository implements MemberRepository {
 
 실행을 위한 main 함수에 private static final MemberRepository repository = new MemoryMemberRepository(); 대신    
 private static final MemberRepository repository = new FileMemberRepository();를 사용한다.   
-   
+<br/>
 이 방법을 사용하면 Member 클래스의 필드에 정의된 타입을 무시하고 모두 String으로 저장해서 타입 캐스팅을 해야하는 문제와 구분자(DELIMITER)를 사용하는 문제가 있다.    
 
 ## 4-4. 회원 관리 예제3 - DataStream
@@ -268,10 +268,10 @@ public class DataMemberRepository implements MemberRepository {
 readUTF()로 문자를 읽어올 때 id1이라는 3글자만 정확하게 읽어 올 수 있는 이유는   
 writeUTF()로 문자를 저장할 때 2byte를 추가로 사용해서 앞에 글자의 길이를 저장해두기 때문이다.   
 2byte 이므로 65535 길이 까지만 사용 가능하다.   
-   
+<br/>
 그리고 Int와 같은 기타 타입은 정해진 사이즈를 사용하기 때문에    
 4byte를 사용해서 파일에 저장하고 읽을 때도 4byte를 읽어서 복원한다.   
-
+<br/>
 따라서 DataOutputStream에서 쓴 순서대로 DataInputStream에서 읽으면 구분자 없이 데이터를 처리할 수 있다.   
 
 #### 문제
@@ -287,7 +287,7 @@ ObjectStream을 사용하면 메모리에 보관되어 있는 회원 인스턴�
 객체 직렬화는 메모리에 있는 객체 인스턴스를 바이트 스트림으로 변환해 파일에 젖아하거나 네트워크를 통해 전송할 수 있도록 하는 기능이다.   
 이 과정에서 객체의 상태를 유지해 나중에 역직렬화(Deserialization)를 통해 원래의 객체로 복원할 수 있다.   
 객체의 직렬화를 사용하려면 지결로하 하려는 클래스는 Serializable 인터페이스를 구현해야 한다.   
-
+<br/>
 Serializable 인터페이스는 아무 기능이 없고 직렬화 가능한 클래스라는 것을 표시하기 위한 마커 인터페이스 이다.   
 
 ```java
@@ -338,10 +338,10 @@ public class ObjectMemberRepository implements MemberRepository {
 그러나 클래스 구조가 변경되면 이전에 직렬화된 객체와의 호환성 문제가 발생해 버전 관리가 어렵다.   
 그리고 자바 플랫폼에 종속적이어서 다른 언어나 시스템과 상호 운용성이 떨어진다.    
 직렬화된 데이터의 크기가 크고 직렬화/역직렬화 과정이 상대적으로 느리고 리소스를 많이 사용해 성능 이슈도 있다.   
-   
+<br/>
 따라서 직렬화/역직렬화의 대안으로 XML, JSON를 사용하고 있다.   
 XML은 복잡하고 무거운 단점이 있어 지금은 웹 환경에서 데이터를 교환할 때 JSON이 사실상 표준 기술이다.   
-   
+<br/>
 객체 직렬화의 대안으로 더 적응 용량과 성능을 제공하는 Protobuf나 Avro을 사용하는 경우도 있다.   
 
 #### 데이터베이스
