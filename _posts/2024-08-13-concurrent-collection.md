@@ -17,7 +17,7 @@ ref: Java, thread, multi-thread, concurrent, collection
    
 ## 11-1. 자바 동시성 컬렉션1 - synchronized
 
-일반적인 자료 구조를 스레드 세이프하게 사용하기 위해 자료 구조의 연산에 synchronized 를 붙여 동기화 하는 방법이 있다.   
+일반적인 자료 구조를 스레드 세이프하게 사용하기 위해 자료 구조의 연산에 synchronized를 붙여 동기화 하는 방법이 있다.   
 
 
 ```java
@@ -58,7 +58,7 @@ public class SynchronizedListMain {
 }
 ```
    
-Collections.synchronizedList() 는 내부적으로 프록시 패턴을 사용해 다음과 같이 자료 구조의 연산을 래핑하고 synchronized를 추가해 실행 되도록 개발되어 있다.   
+Collections.synchronizedList()는 내부적으로 프록시 패턴을 사용해 다음과 같이 자료 구조의 연산을 래핑하고 synchronized를 추가해 실행 되도록 개발되어 있다.   
 
 ```java
 public interface SimpleList {
@@ -92,7 +92,8 @@ public class SyncProxyList implements SimpleList {
 }
 ```
    
-**synchronized 프록시 방식의 단점**   
+#### synchronized 프록시 방식의 단점
+
 synchornized 프록시를 사용하는 방식은 다음과 같은 단점이 있다.
 - 첫째, 동기화 오버헤드가 발생한다. 자료 구조의 각 메서드 호출 시 마다 동기화 비용이 추가되어 성능 저하가 발생할 수 있다.
 - 둘째, 전체 컬렉션에 대해 동기화가 이뤄지기 때문에 잠금 범위가 넓어진다. 이는 잠금 경합을 증가시켜 병렬 처리의 효율성을 저하시킨다.
@@ -103,7 +104,8 @@ synchornized 프록시를 사용하는 방식은 다음과 같은 단점이 있�
 자바는 synchronized 프록시 방식의 단점을 보완하기 위해 java.util.concurrent 패키지에 동시성 컬렉션을 제공한다.   
 synchronized, Lock(ReentrantLock), CAS, 분할 잠금 기술 등 다양한 방법을 섞어서 매우 정교한 동기화를 통해 성능을 최적화 했다.   
    
-**동시성 컬렉션의 종류**
+#### 동시성 컬렉션의 종류
+
 - List
   - CopyOnWriteArray: ArrayList의 대안
 - Set
@@ -117,7 +119,8 @@ synchronized, Lock(ReentrantLock), CAS, 분할 잠금 기술 등 다양한 방�
 - Deque
   - ConcurrentLinkedDeque: 동시성 데크, non-blocking 큐
    
-**스레드를 차단하는 블로킹 큐**
+#### 스레드를 차단하는 블로킹 큐
+
 - BlockingQueue
   - ArrayBlockingQueue
     - 크기가 고정된 블로킹 큐
@@ -127,7 +130,7 @@ synchronized, Lock(ReentrantLock), CAS, 분할 잠금 기술 등 다양한 방�
   - PriorityBlockingQueue
     - 우선순위가 높은 요소를 먼저 처리하는 블로킹 큐
   - SynchoronousQueue
-    - 데이터를 저장하지 않는 블로킹 큐로, 생산자가 데이터를 추가하면 소비자가 그 데이터를 받을 때 까지 대기한다. 생산자-소비자 간에 중간 큐 없잉 직접 거래하는 핸드오프 메커니즘을 제공한다.
+    - 데이터를 저장하지 않는 블로킹 큐로, 생산자가 데이터를 추가하면 소비자가 그 데이터를 받을 때 까지 대기한다. 생산자-소비자 간에 중간 큐 없이 직접 거래하는 핸드오프 메커니즘을 제공한다.
   - DelayQueue
     - 지연된 요소를 처리하는 블로킹 큐로 각 요소는 지정된 지연 시간이 지난 후에야 소비될 수 있다.
     - 일정 시간이 지난 후 작업을 처리해야 하는 스케줄링 작업에 사용된다.

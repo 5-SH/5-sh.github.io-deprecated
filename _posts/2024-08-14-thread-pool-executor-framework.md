@@ -17,34 +17,37 @@ ref: Java, thread, multi-thread, thread pool, executor
 - 스레드 관리 문제
 - Runnable 인터페이스의 불편함
    
-**1. 스레드 생성 비용으로 인한 성능 문제**   
+### 12-1-1. 스레드 생성 비용으로 인한 성능 문제
+
 스레드를 사용하기 위해 생성해야 하는데, 스레드는 다음과 같은 이유로 매우 무겁다.   
 참고로 스레드 하나는 보통 1MB 이상의 메모리를 사용한다.   
 - 메모리 할당: 각 스레드는 자신만의 콜 스택을 가지고 있어야 한다. 콜 스택은 스레드가 실행되는 동안 사용하는 메모리 공간이다. 따라서 콜 스택을 위한 메모리를 할당해야 한다.
 - 운영체제 자원 사용: 스레드를 생성하는 작업은 커널 수준에서 이뤄지며, 시스템 콜을 통해 처리된다. 이는 CPU와 메모리 리소스를 소모하는 작업이다.
 - 운영체제 스케줄러 설정: 새로운 스레드가 생성되면 운영체제의 스케줄러는 이 스레드를 관리하고 실행 순서를 조정해야 한다.
    
-스레드를 생성하는 작업은 단순히 자바 객체를 생성하는 것과는 비교할수 없을 정도로 큰 작업이다.   
+스레드를 생성하는 작업은 단순히 자바 객체를 생성하는 것과는 비교할 수 없을 정도로 큰 작업이다.   
 만약 작업을 수행할 때 마다 스레드를 생성하고 실행한다면 스레드의 생성 비용에 작업보다 많은 시간과 리소스가 사용될 수 있다.   
 이런 문제를 해결하려면 생성한 스레드를 재사용하는 방법을 고려할 수 있다.    
    
-**2. 스레드 관리 문제**   
+### 12-1-2. 스레드 관리 문제
+
 서버의 CPU, 메모리 자원은 한정되어 있기 때문에, 스레드는 무한하게 만들 수 없다.   
 그래서 서버나 시스템이 버틸 수 있는 최대 스레드 수 까지만 스레드를 생성할 수 있게 관리해야 한다.   
 그리고 실행 중인 스레드가 남은 작업을 모두 수행한 다음 프로그램을 종료하거나 급하게 종료하고 싶다 할 때,    
 스레드가 어딘가에 관리가 되어 있어야한다.   
    
-**3. Runnable 인터페이스의 불편함**    
+### 12-1-3. Runnable 인터페이스의 불편함
+
 - 반환 값이 없다: run() 메서드는 반환 값을 가지지 않아서 직접 받을 수 없다. 따라서 실행 결과를 얻기 위해서는 별도의 메커니즘을 사용해야 한다. 스레드가 실행한 결과를 멤버 변수에 넣어두고, join() 등을 사용해서 스레드가 종료되길 기다린 다음에 멤버 변수에 보관한 값을 받아야 한다.   
 - 예외 처리: run() 메서드는 체크 예외를 던질 수 없어서 메서드 내부에서 처리하는 것이 강제된다.   
     
 이런 문제를 해결하려면 반환 값을 받을 수 있고 예외를 더 쉽게 처리하는 스레드 풀이 필요하다.   
 이 문제를 해결해주는 것이 자바가 제공하는 Executor 프레임워크다.   
-Executor 프레음워크는 스레드 풀, 스레드 관리, Runnable의 문제점 뿐만 아니라 생산자 소비자 문제까지 한 번에 해결해주는 자바 멀티스레드 도구이다.   
+Executor 프레임워크는 스레드 풀, 스레드 관리, Runnable의 문제점 뿐만 아니라 생산자 소비자 문제까지 한 번에 해결해주는 자바 멀티스레드 도구이다.   
 
 ## 12-2. Executor 프레임워크 소개
 
-Executor 프레임워크의 주요 구성 요소   
+#### Executor 프레임워크의 주요 구성 요소   
 
 ```java
 package java.util.concurrent;
@@ -54,8 +57,10 @@ public interface Executor {
 }
 ```
 
-ExecutorService 인터페이스 - 주요 메서드     
+#### ExecutorService 인터페이스 - 주요 메서드     
+
 ExecutorService 인터페이스의 기본 구현체는 ThreadPoolExecutor 이다.   
+
 ```java
 public interface ExecutorService extends Executor, AutoCloseable {
     <T> Future<T> submit(Callable<T> task);
@@ -65,7 +70,7 @@ public interface ExecutorService extends Executor, AutoCloseable {
 }
 ```
    
-ExecutorService 코드   
+#### ExecutorService 코드   
 
 ```java
 public class RunnableTask implements Runnable {
@@ -114,7 +119,7 @@ public class ExecutorBasicMain {
 }
 ```
     
-ThreadPoolExecutor(ExecutorService) 는 크게 스레드를 관리하는 스레드 풀과 작업을 보관할 BlockingQueue 로 구성되어 있다.   
+ThreadPoolExecutor(ExecutorService)는 크게 스레드를 관리하는 스레드 풀과 작업을 보관할 BlockingQueue 로 구성되어 있다.   
 ThreadPoolExecutor 생성자는 다음 속성을 사용한다.   
 - corePoolSize: 스레드 풀에서 관리되는 기본 스레드의 수
 - maximumPoolSize: 스레드 풀에서 관리되는 최대 스레드 수
@@ -123,7 +128,8 @@ ThreadPoolExecutor 생성자는 다음 속성을 사용한다.
     
 ## 12-3. Future1 - 소개
 
-**Runnable 과 Callable 비교**   
+#### Runnable 과 Callable 비교
+
 ```java
 package java.lang;
 
@@ -133,7 +139,7 @@ public interface Runnable {
 ```
 
 - Runnable의 run()은 반환 타입이 void 라서 값을 반환할 수 없다.
-- 예외가 선언되어 있지 않아 Runnable 을 구현하는 모든 메서드는 체크 예외를 던질 수 없다.
+- 예외가 선언되어 있지 않아 Runnable을 구현하는 모든 메서드는 체크 예외를 던질 수 없다.
    
 ```java
 package java.util.concurrent;
@@ -143,7 +149,7 @@ public interface Callable<V> {
 }
 ```
    
-- Callable의 call()은 반환 타입이 제네렉 V라서 값을 반환할 수 있다.
+- Callable의 call()은 반환 타입이 제네릭 V라서 값을 반환할 수 있다.
 - throws Exception 예외가 선언되어 있어 Callable 을 구현하는 모든 메서드는 체크 예외를 던질 수 있다.
 
 **Callable과 Future사용**
@@ -184,8 +190,8 @@ Future.get()은 InterruptedException, ExecutionException 체크 예외를 던진
 ## 12-4. Future2 - 분석
 
 - submit()의 호출로 MyCallable의 인스턴스를 전달한다.
-- MyCallable.call() 메서드는 호출 스레드가 실해앟는 것도 아니고, 스레드 풀의 다른 스레드가 실행하기 때문에 언제 실행이 완료되어서 결과를 반환할 지 알 수 없다.
-- 결과를 즉시 받는 것을 불가능하기 때문에 es.submit()은 MyCallable의 결과를 반환하는 대신에 MyCallable의 결과를 나중에 받을 수 있는 Future 라는 객체를 대신 반환한다.
+- MyCallable.call() 메서드는 호출 스레드가 실행하는 것도 아니고, 스레드 풀의 다른 스레드가 실행하기 때문에 언제 실행이 완료되어서 결과를 반환할 지 알 수 없다.
+- 결과를 즉시 받는 것은 불가능하기 때문에 es.submit()은 MyCallable의 결과를 반환하는 대신에 MyCallable의 결과를 나중에 받을 수 있는 Future 라는 객체를 대신 반환한다.
 
 ```java
 public class CallableMainV2 {
@@ -226,16 +232,21 @@ MyCallable 인스턴스를 감싸고 있는 Future가 블로킹 큐에 담긴다
 스레드 풀에 있는 스레드가 FutureTask 의 run()메서드를 수행한다.   
 그리고 run() 메서드가 MyCallable 인스턴스의 call() 메서드를 호출하고 그 결과를 받아서 처리한다.   
 es.submit(new MyCallable())을 호출하면 요청 스레드는 기다리지 않고 바로 Future 객체를 받는다.   
-    
-Thread.join(), Future.get()과 같은 메서드는 스레드가 작업을 바로 수행하지 않고, 다른 자업이 완료될 때까지 기다리게 하는 블로킹 메서드이다. 블로킹 메서드를 호출하면 호출한 스레드는 지정된 작업이 완료될 때까지 블록(대기) 되어 다른 작업을 수행할 수 없다.   
+
+<br/>
+
+Thread.join(), Future.get()과 같은 메서드는 스레드가 작업을 바로 수행하지 않고, 다른 자업이 완료될 때까지 기다리게 하는 블로킹 메서드이다.    
+블로킹 메서드를 호출하면 호출한 스레드는 지정된 작업이 완료될 때까지 블록(대기)되어 다른 작업을 수행할 수 없다.   
 이 때 요청 스레드의 상태는 RUNNABLE → WAITING이 된다.    
-   
+
+<br/>
+
 MyCallable 인스턴스의 작업을 완료하면 요청 스레드를 깨워 WAITING → RUNNABLE 상태로 변한다.   
 그리고 완료 상태의 Future 에서 결과를 반환 받는다.    
 
 ## 12-5. Future3 - 활용
 
-아래 코드는 ExecutorService 와 Callable 을 활용해 1~100까지 더하는 경우를 스레드를 사용해 나누어 처리한다.   
+아래 코드는 ExecutorService와 Callable을 활용해 1~100까지 더하는 경우를 스레드를 사용해 나누어 처리한다.   
 
 ```java
 public class SumTaskMain {
@@ -284,7 +295,8 @@ public class SumTaskMain {
 
 ## 12-6. Future4 - 정리
 
-**Future 인터페이스**   
+### 12-6-1. Future 인터페이스
+
 ```java
 package java.util.concurrent;
 
@@ -309,29 +321,34 @@ pbulic interface Future<V> {
 }
 ```
 
-**주요 메서드**   
-boolean cancel(boolean mayInterruptIfRunning)   
+### 12-6-2. 주요 메서드
+
+#### boolean cancel(boolean mayInterruptIfRunning)   
+
 - 기능: 아직 완료되지 않은 작업을 취소한다.
 - 매개변수: mayInterruptIfRunning
   - cancel(true): Future를 취소 상태로 변경한다. 작업이 실행 중이라면 Thread.interrupt()를 호출해서 작업을 중단한다.
   - cancel(false): Future를 취소 상태로 변경한다. 단 이미 실행 중인 작업을 중단하지는 않는다.
-- 반환값: 작업이 성공적으로 취소된 경우 true, 이미 완료ㅕ되었거나 취소할 수 없는 경우 false
-- 설명: 작업이 실행 중이 아니거나 아직 시작되지 ㅇ낳았음녀 취소하고, 실행 중인 작업의 경우 mayInterruptIfRunning이 treu 이면 중단을 시도한다.
+- 반환값: 작업이 성공적으로 취소된 경우 true, 이미 완료 되었거나 취소할 수 없는 경우 false
+- 설명: 작업이 실행 중이 아니거나 아직 시작되지 않았으면 취소하고, 실행 중인 작업의 경우 mayInterruptIfRunning이 true이면 중단을 시도한다.
 - 참고: 취소 상태의 Future에 Future.get()을 호출하면 CancellationException 런타임 예외가 발생한다.
    
-boolean isCancelled()
+#### boolean isCancelled()
+
 - 기능: 작업이 완료되었는지 여부를 확인한다.
 - 반환값: 작업이 완료된 경우 true, 그렇지 않은 경우 false
 - 설명: 작업이 정상적으로 완료되었거나, 취소되었거나 예외가 발생해 종료된 경우에 true를 반환한다.
    
-State state()
+#### State state()
+
 - 기능: Future의 상태를 반환한다. 자바 19부터 지원한다.
   - RUNNING: 작업 실행 중
   - SUCCESS: 성공 완료
   - FAILED: 실패 완료
   - CANCELLED: 취소 완료
    
-V get()
+#### V get()
+
 - 기능: 작업이 완료될 때까지 대기하고, 완료되면 결과를 반환한다.
 - 반환값: 작업의 결과
 - 예외
@@ -339,12 +356,13 @@ V get()
   - ExecutionException: 작업 계산 중에 예외가 발생한 경우 발생
 - 설명: 작업이 완료될 때까지 get()을 호출한 스레드를 블로킹한다. 작업이 완료되면 결과를 반환한다.
    
-V get(long timeout, TimeUnit unit)
+#### V get(long timeout, TimeUnit unit)
+
 - 기능: get()과 같은데, 시간이 초과되면 예외를 발생시킨다.
 - 예외
   - InterruptedException: 대기 중에 현재 스레드가 인터럽트된 경우 발생
   - ExecutionException: 작업 계산 중에 예외가 발생한 경우 발생
-  - TimeoutException: 주어진 시간 내에 작어빙 완료되지 않은 경우 발생
+  - TimeoutException: 주어진 시간 내에 작업이 완료되지 않은 경우 발생
 - 설명: 지정된 시간 동안 결과를 기다린다. 시간이 초과되면 TimeoutException을 발생시킨다.
    
 ## 12-7. Future5 - 취소
@@ -402,11 +420,13 @@ public class FutureCancelMain {
 - cancel(true): Future를 취소 상태로 변경한다. 이 때 작업이 실행 중 이라면 Thread.interrupt() 를 호출해서 작업을 중단한다.
 - cancel(false): Future를 취소 상태로 변경한다. 단, 이미 실행 중인 작업을 중단하지 않는다.
    
-**실행결과 - mayInterruptIfRunning=true**    
+#### 실행결과 - mayInterruptIfRunning=true
+
 mayInterruptIfRunning=true를 사용하면 실행 중인 작업에 인터럽트가 발생해서 실행 중인 작업을 중지한다.    
 이후 Future.get()을 호출하면 CancellationException 런타임 예외가 발생한다.    
     
-**실행결과 - mayInterruptIfRunning=false**    
+#### 실행결과 - mayInterruptIfRunning=false
+
 mayInterruptIfRunning=false를 사용하면 실행 중인 작업은 인터럽트를 걸지 않고 그냥 둔다.    
 실행 중인 작업은 그냥 두더라도 cancel()을 호출했기 때문에 Future는 CANCEL 상태가 된다.    
 이후 Future.get()을 호출하면 CancellationException 런타임 예외가 발생한다.    
@@ -453,7 +473,7 @@ public class FutureExceptionMain {
 - 요청 스레드: 결과를 얻기 위해 future.get()을 호출한다.
   - Future의 상태가 FAILED면 ExecutionException 예외를 던진다.
   - 이 예외는 내부에 앞서 Future에 저장해둔 IllegalStateException을 포함하고 있다.
-  - e.getCause()를 호출하면 작업에서 발생한 원본 예외를 바등ㄹ 수 있다.
+  - e.getCause()를 호출하면 작업에서 발생한 원본 예외를 받을 수 있다.
    
 Future.get()은 싱글 스레드 상황에서 일반적인 메서드를 호출하는 것 처럼 작업의 결과 값을 받을 수도 있고 예외를 받을 수도 있다.   
 
@@ -461,7 +481,8 @@ Future.get()은 싱글 스레드 상황에서 일반적인 메서드를 호출�
 
 ExecutorService는 여러 작업을 한 번에 편리하게 처리하는 invokeAll(), invokeAny() 기능을 제공한다.   
 
-**invokeAll()**   
+#### invokeAll()
+
 - <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException
   - 모든 Callable 작업을 제출하고, 모든 작업이 완료될 때까지 기다린다.
 - <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException
@@ -522,7 +543,8 @@ public class InvokeAllMain {
 14:31:05.373 [     main] value = 3000
 ```
    
-**invokeAny()**   
+#### invokeAny()
+
 - <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException
   - 하나의 Callable 작업이 완료될 때까지 기다리고, 가장 먼저 완료된 작업의 결과를 반환한다.
   - 완료되지 않은 나머지 작업은 취소한다.

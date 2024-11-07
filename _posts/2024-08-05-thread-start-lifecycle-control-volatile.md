@@ -25,8 +25,10 @@ thread.start();
 # 2. 스레드 생명 주기
 
 스레드는 생성하고 시작하고, 종료되는 생명 주기를 가집니다.
+<br/>
 
 **NEW** → **Runnable**(**Blocked**, **Wating**, **Timed Waiting**) → **Terminated**
+<br/>
 
 - New : 스레드가 생성 되었으나 아직 시작되지 않은 상태.
   - Thread.thread = new Thread(runnable);
@@ -102,8 +104,11 @@ public interface Runnable {
   - 자식 메서드는 부모 메서드가 던질 수 있는 체크 예외의 하위 타입만 던질 수 있다.
 - 런타임(언체크) 예외
   - 예외 처리를 강제하지 않으므로 상관없이 던질 수 있다.
+<br/>
 
 Runnable 인터페이스의 run() 메서드는 체크 예외를 던지지 않기 때문에 메서드를 재정의 하는 곳에서 밖으로 던질 수 없다.   
+
+<br/>
 
 체크 예외를 run() 메서드에서 던질 수 없고 try-catch 블록 내에서 처리 하도록 강제한다.   
 예외 발생 시 예외가 처리되지 않아 프로그램이 비정상 종료되는 상황을 방지할 수 있다.    
@@ -113,8 +118,12 @@ Runnable 인터페이스의 run() 메서드는 체크 예외를 던지지 않기
 
 특정 스레드가 완료될 때 까지 기다려야 하는 상황이면 join()을 사용한다.    
 
+<br/>
+
 join() 을 호출하는 스레드는 대상 스레드가 TERMINATED 상태가 될 때 까지 대기한다.    
 대상 스레드가 TERMINATED 상태가 되면 호출 스레드는 다시 RUNNABLE 상태가 되면서 다음 코드를 수행한다.   
+
+<br/>
 
 join() 은 다른 스레드가 완료될 때 까지 무기한 기다리는 단점이 있는데,    
 join(ms) 를 호출하면 특정 시간 만큼만 대기한다. 호출 스레드는 지정한 시간이 지나면 다시 RUNNABLE 상태가 되어 다음 코드를 수행한다.
@@ -180,14 +189,18 @@ public class JoinMain {
 
 인터럽트를 사용하면 WAITING, TIMED_WAITING 같은 대기 상태의 스레드를 직접 깨워서, RUNNABLE 상태로 만들 수 있다.   
 
+<br/>
+
 자바는 인터럽트 예외가 한 번 발생하면, 스레드의 인터럽트 상태를 다시 정상(false)으로 돌린다.       
 스레드의 인터럽트 상태를 정상으로 돌리지 않으면 이후에도 계속 인터럽트가 발생하게 된다.   
 인터럽트의 목적을 달성하면 인터럽트 상태를 다시 정상으로 돌려두어야 한다.   
 
+<br/>
+
 스레드의 인터럽트 상태를 단순히 확인만 하는 용도라면 Thread.isInterrupted()를 사용한다.
 하지만 직접 체크해서 사용할 때는 Thread.interrupted()를 사용한다.
-interrupted() 는 인터럽트 상태라면 true 를 반환하고 해당 스레드의 인터럽트 상태를 false 로 변경한다.   
-인터럽트 상태가 아니면 false 를 반환하고 해당 스레드의 인터럽트의 상태를 바꾸지 않는다.   
+interrupted() 는 인터럽트 상태라면 true 를 반환하고 해당 스레드의 인터럽트 상태를 false로 변경한다.   
+인터럽트 상태가 아니면 false를 반환하고 해당 스레드의 인터럽트의 상태를 바꾸지 않는다.   
 
 ```java
 public class ThreadStopMain {
@@ -229,10 +242,12 @@ public class ThreadStopMain {
 ## 4-2. yield
 
 어떤 스레드를 얼마나 실행할지는 운영체제가 스케줄링을 통해 결정한다.    
-특정 스레드가 크게 바쁘지 않은 상황에서 다른 스레드에 CPU 실행 기회를 양보할 때 yield 를 사용한다.   
+특정 스레드가 크게 바쁘지 않은 상황에서 다른 스레드에 CPU 실행 기회를 양보할 때 yield를 사용한다.   
+
+<br/>
 
 RUNNABLE 상태일 때 스레드가 CPU에서 실제로 실행 중인 Running 상태와 스케줄링 큐에서 대기 중인 Ready 상태일 수 있다.   
-Thread.yield() 를 사용하면 호출한 스레드는 RUNNABLE 상태를 유지하면서 CPU 를 양보한다.
+Thread.yield()를 사용하면 호출한 스레드는 RUNNABLE 상태를 유지하면서 CPU를 양보한다.
 
 ```java
 public class YieldMain {
@@ -264,12 +279,16 @@ public class YieldMain {
 
 멀티스레드 환경에서 한 스레드가 변경한 값이 다른 스레드에서 언제 보이는지에 대한 것을 메모리 가시성이라고 한다.    
 
+<br/>
+
 main 스레드와 work 스레드가 heap 영역에 있는 변수를 동시에 참조할 때, heap 메모리에 선언된 변수를 읽어 올 것이라 예상 하지만 실제 동작은 다르다.   
 CPU 의 연산 속도에 비해 메모리의 연산 속도는 매우 느리다. CPU 의 연산 속도를 따라가기 위해 CPU 는 코어 단위로 캐시 메모리를 가진다.    
 캐시 메모리를 메인 메모리에 반영하거나 메인 메모리 변경을 캐시 메모리에 다시 불러오는 것은 주로 컨텍스트 스위칭이 될 때 이지만, CPU 설계 방식과 실행 환경에 따라 다를 수 있다.    
 따라서 아래 예시에서 main 스레드가 runFlag를 false로 바꿔도 work 스레드는 중단되지 않는다.
 
-runFlag 변수에 volatile 을 붙이면 캐시 메모리를 활용한 성능의 이점을 포기하고 heap 메모리에 있는 값을 참조한다.    
+<br/>
+
+runFlag 변수에 volatile을 붙이면 캐시 메모리를 활용한 성능의 이점을 포기하고 heap 메모리에 있는 값을 참조한다.    
 이 경우에 main 스레드가 runFlag를 false로 바꾸면 캐시 메모리가 아닌 heap 메모리의 runFlag 값이 바뀌고 work 스레드도 heap 메모리의 runFlag 값이 false 로 바뀐 것을 확인하고 중단되게 된다.
 
 ```java
@@ -303,9 +322,9 @@ public class VolatileFlagMain {
 }
 ```
 
-volatile 이 있을 때와 없을 때에 약 5배의 성능 차이가 난다.    
+volatile이 있을 때와 없을 때에 약 5배의 성능 차이가 난다.    
 아래 코드를 실행하면 volatile 이 없을 때 count 값이 611296934 에서 flag 값이 false 가 되고.
-volatile 이 있을 때 count 값이 144193052 에서 flag 값이 false 가 된다.    
+volatile이 있을 때 count 값이 144193052 에서 flag 값이 false 가 된다.    
 
 ```java
 public class VolatileCountMain {

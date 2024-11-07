@@ -11,7 +11,7 @@ ref: Java, thread, multi-thread, CAS, spin lock
 # 10. CAS - 동기화와 원자적 연산
 
 원자적 연산은 연산이 CPU에서 더 이상 나눌 수 없는 단위로 수행되는 것을 의미한다.    
-따라서 멀티스레드 상황에서 다른 스레드의 간섭 ㅇ벗이 안전하게 처리될 수 있다.   
+따라서 멀티스레드 상황에서 다른 스레드의 간섭 없이 안전하게 처리될 수 있다.   
 
 1씩 값을 증가하는 연산을 멀티스레드 환경에서 실행하면 여러 스레드가 동시에 실행해 예상하지 못한 값이 나올 수 있다.   
 아래 코드를 실행하면 1,000이 나오지 않고 1,000 보다 작은 값이 나오는 것을 확인할 수 있다.    
@@ -95,8 +95,8 @@ public class SyncInteger implements IncrementInteger {
 }
 ```
 
-value 의 값을 1 증가하는 연산을 원자적으로 수행하면 동기화를 하지 않고 이 문제를 해결할 수 있다.    
-AtomicInteger 는 멀티스레드 상황에서 안전하고 다양한 값 증가, 감소 연산을 제공한다.    
+value의 값을 1 증가하는 연산을 원자적으로 수행하면 동기화를 하지 않고 이 문제를 해결할 수 있다.    
+AtomicInteger는 멀티스레드 상황에서 안전하고 다양한 값 증가, 감소 연산을 제공한다.    
 
 ```java
 public class MyAtomicInteger implements IncrementInteger {
@@ -116,9 +116,9 @@ public class MyAtomicInteger implements IncrementInteger {
 ```
 
 BasicInteger, SyncInteger, MyAtomicInteger의 실행 속도를 아래 코드로 비교 해보면,    
-BasicInteger → MyAtomicInteger → SyncInteger 순서로 빠른 것을 알 수 있다.    
-BasicInteger 는 빠르지만 멀티스레드 상황에서 사용할 수 없고, 
-SyncInteger 는 멀티스레드 상황에서 사용할 수 있지만 락을 획득하고 기다리는 과정으로 인해      
+BasicInteger < MyAtomicInteger < SyncInteger 순서로 빠른 것을 알 수 있다.    
+BasicInteger는 빠르지만 멀티스레드 상황에서 사용할 수 없고, 
+SyncInteger는 멀티스레드 상황에서 사용할 수 있지만 락을 획득하고 기다리는 과정으로 인해      
 AtomicInteger 보다 속도가 느린 것을 알 수 있다.    
 
 ```java
@@ -148,7 +148,7 @@ public class IncrementPerformanceMain {
 // MyAtomicInteger: ms=680
 ```
 
-**락 기반 방식의 문제점**    
+#### 락 기반 방식의 문제점
 
 SyncInteger 클래스에서 데이터를 보호하기 위해 락(synchronized, Lock-ReentrantLock)을 사용한다.    
 락을 사용하는 방식은 다음과 같이 작동한다.   
@@ -158,7 +158,8 @@ SyncInteger 클래스에서 데이터를 보호하기 위해 락(synchronized, L
 - 락을 반납한다.
 100,000,000 번 락을 획득하고 반납하는 과정을 반복한다.    
    
-**CAS(Compare And Set)**
+#### CAS(Compare And Set)
+
 이런 문제를 해결하기 위해 락을 걸지 않고 원자적인 연산을 수행할 수 있는데, 이것을 CAS 연산이라 한다.   
 이 방법은 락을 사용하지 않기 때문에 lock-free 기법 이라고도 한다.   
 CAS 연산은 락을 완전히 대체하는 것은 아니고 작은 단위의 일부 영역에 적용할 수 있다.   
@@ -221,7 +222,7 @@ public class CasMain {
 }
 ```
     
-**CAS 락 구현**
+#### CAS 락 구현
 CAS는 단순한 연산 뿐만 아니라, 락을 구현하는데 사용할 수 있다.   
 
 ```java
@@ -269,13 +270,14 @@ public class SpinLockMain {
 ```
 
 CAS를 활용한 락(spin-lock)은 기다리는 스레드가 BLOCKED, WAITING 상태로 락을 획득할 때 까지 while 문을 반복하는 문제가 있는데, 락을 기다리는 스레드가 CPU를 계속 사용하면서 대기하는 것이다.    
-따라서 임계 영역이 필요하지만 연산이 길지않고 매우 짧게 끝날 때 사용해야 한다.    
+따라서 임계 영역이 필요하지만 연산이 길지 않고 매우 짧게 끝날 때 사용해야 한다.    
 숫자 값의 증가, 자료 구조의 데이터 추가와 같이 CPU 사이클이 금방 끝나는 연산에 사용하면 효과적이다.    
 반면에 데이터베이스의 결과를 대기한다거나, 다른 서버의 요청을 기다린다거나 하는 것 처럼 오래 기다리는 작업에 사용하면 CPU를 계속 사용하며 기다리는 최악의 결과가 나올 수 있다.    
 이 때는 동기화 락을 사용하는 것이 바람직하다.    
-    
 
-실무 관점에서 보면 대부분의 애플리케이션들은 공유 자원을 사용할 때, 충돌할 간으성 보다 충돌하지 않을 가능성이 훨씬 높다.     
+<br/>
+
+실무 관점에서 보면 대부분의 애플리케이션들은 공유 자원을 사용할 때, 충돌할 가능성 보다 충돌하지 않을 가능성이 훨씬 높다.     
 예를 들어 특정 시간에 주문이 100만건 들어오는 서비스라고 가정하면 1초에 277건이 들어온다.     
-CPU가 1초에 얼마나 많은 연산을 처리하는지 생각해보면, 백만 건 중에 충돌이 나는 경우는 아주 넉넉하게 해도 몇 신 건 이하일 것이다.    
+CPU가 1초에 얼마나 많은 연산을 처리하는지 생각해보면, 백만 건 중에 충돌이 나는 경우는 아주 넉넉하게 해도 몇 십 건 이하일 것이다.    
 따라서 주문 수 증가와 같은 단순한 연산의 경우에는 동기화 락을 활용하는 것 보다 CAS를 사용하는 것이 더 나은 성능을 보인다.   
