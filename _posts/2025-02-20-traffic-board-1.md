@@ -28,15 +28,15 @@ builder() 함수로 빌더 패턴을 사용해 기본 URI, path variable, header
 RestClient defaultClient = RestClient.create();
 
 RestClient customClient = RestClient.builder()
-  .requestFactory(new HttpComponentsClientHttpRequestFactory())
-  .messageConverter(converts -> converters.add(new MyCustomMessageConverter()))
-  .baseUrl("https://example.com")
-  .defaultUriVariables(Map.of("variable", "foo"))
-  .defaultHeader("My-Header", "Foo")
-  .defaultCookie("My-Cookie", "Bar")
-  .requestInterceptor(myCustomInterceptor)
-  .requestInitializer(myCustomInitializer)
-  .build();
+    .requestFactory(new HttpComponentsClientHttpRequestFactory())
+    .messageConverter(converts -> converters.add(new MyCustomMessageConverter()))
+    .baseUrl("https://example.com")
+    .defaultUriVariables(Map.of("variable", "foo"))
+    .defaultHeader("My-Header", "Foo")
+    .defaultCookie("My-Cookie", "Bar")
+    .requestInterceptor(myCustomInterceptor)
+    .requestInitializer(myCustomInitializer)
+    .build();
 ```
 
 ### 1-1-2. Using the RestClient
@@ -76,16 +76,16 @@ REST 요청이 준비되면 retrieve() 함수를 사용해 요청을 보낼 수 
 그리고 .retrieve().toEntity(Class)를 사용해 ResponseEntity 형식으로 변환할 수 있다.
 ```java
 String result = restClient.get()
-  .uri("https://example.com")
-  .retrieve()
-  .body(String.class);
+    .uri("https://example.com")
+    .retrieve()
+    .body(String.class);
 
 System.out.println(result);
 
 ResponseEntity<String> result = restClient.get()
-  .uri("https://example.com")
-  .retrieve()
-  .body(String.class);
+    .uri("https://example.com")
+    .retrieve()
+    .body(String.class);
 
 System.out.println("Response status: " + result.getStatusCode());
 System.out.println("Response headers: " + result.getHeaders());
@@ -98,7 +98,7 @@ controller 메소드 파라메터에 @RequestBody 애노테이션을 붙여 requ
 ```java
 @PostMapping("/accounts")
 public void handle(@RequestBody Account account) {
-  // ...
+    // ...
 }
 ```
 
@@ -110,15 +110,15 @@ WebMvcConfigurer 인터페이스의 configureMessageConverters() 함수를 오�
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-  @Override
-  public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-    Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
-          .indentOutput(true)
-          .dateFormat(new SimpleDateFormat("yyyy-MM-dd"))
-          .modulesToInstall(new ParameterNamesModule());
-    converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
-    converters.add(new MappingJackson2XmlHttpMessageConverter(builder.createXmlMapper(true).build()));
-  }
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
+              .indentOutput(true)
+              .dateFormat(new SimpleDateFormat("yyyy-MM-dd"))
+              .modulesToInstall(new ParameterNamesModule());
+        converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
+        converters.add(new MappingJackson2XmlHttpMessageConverter(builder.createXmlMapper(true).build()));
+    }
 }
 ```
 
@@ -133,11 +133,107 @@ HttpMessageConverter 빈들은 Converter 목록에 자동으로 추가 되기 �
 ```java
 @Configuration(proxyBeanMethods = false)
 public class MyHttpMessageConvertersConfiguration {
-  @Bean
-  public HttpMessageConverters customConverters() {
-    HttpMessageConverter<?> additional = new AdditionalHttpMessageConverter();
-    HttpMessageConverter<?> another = new AnotherHttpMessageConverter();
-    return new HttpMessageConverters(additional, another);
-  }
+    @Bean
+    public HttpMessageConverters customConverters() {
+        HttpMessageConverter<?> additional = new AdditionalHttpMessageConverter();
+        HttpMessageConverter<?> another = new AnotherHttpMessageConverter();
+        return new HttpMessageConverters(additional, another);
+    }
 }
 ```
+
+# 2. 빈 스캐닝과 자동 와이어링
+
+## 2-1. @Autowired
+@Autowired는 자동와이어링 기법을 이용해서 조건에 맞는 빈을 찾아 자동으로 수정자 메소드나 필드에 넣어준다.   
+컨테이너가 타입이나 이름을 기준으로 주입될 빈을 찾아준다. 컨테이너가 자동으로 주입할 빈을 결정하기 어려운 경우 직접 프로퍼티에 주입할 대상을 지정할 수 있다.   
+
+userDao 빈의 구현 클래스인 UserDaoJdbc가 dataSource, sqlService 두 개의 빈에 의존하고 두 개의 빈을 setter 메소드를 호출해 주입하도록 만들어 놨다고 가정한다.
+
+```java
+@Bean
+public UserDao userDao() {
+    UserDaoJdbc dao = new UserDaoJdbc();
+    dao.setDataSource(dataSource());
+    dao.setSqlService(this.sqlService);
+    return dao;    
+}
+```
+
+dataSource, sqlService 빈을 @Autowired 애노테이션을 통해 컨테이너가 자동으로 주입하도록 할 수 있다.
+스프링은 @Autowired가 붙은 수정자 메소드가 있으면 파라미터 타입을 보고 주입이 가능한 빈을 모두 찾는다.   
+만약 두 개 이상이 나오면 프로퍼티와 동일한 이름의 빈을 주입한다.   
+   
+빈을 자동 주입 하려는 필드의 접근 제한자가 private 인 것은 스프링에서 리플렉션 API 이용해 제약조건을 우회해서 값을 넣어주기 때문에 문제 되지 않는다.
+```java
+public class UserDaoJdbc implements UserDao {
+  
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dateSource);
+    }
+    ...
+    @Autowired
+    private SqlService sqlService;
+
+    public void setSqlService(SqlService sqlService) {
+        this.sqlService = sqlService;
+    }
+}
+
+@Bean
+public UserDao userDao() {
+    return new UserDaoJdbc();
+}
+```
+
+## 2-2. @Component, @ComponentScan
+@Autowired 애노테이션을 활용해 아래 코드와 같이 userDao() 메소드를 지울 수 있다.    
+하지만 이대로 빌드를 하면 userDao 빈이 등록될 방법이 없고 주입 받을 빈을 찾지 못해 에러가 발생한다.   
+
+```java
+@Autowired UserDao userDao;
+
+@Bean
+public UserService userService() {
+    UserServiceImple service = new UserServiceImpl();
+    service.setUserDao(this.userDao);
+    service.setMailSender(mailSender());
+    return service;
+}
+```
+
+@Component 애노테이션은 빈으로 등록될 후보 클래서에 붙여주는 마커 역할을 한다.   
+userDao 빈이 자동 빈 등록 대상이 되도록 UserDaoJdbc 클래스에 @Component 애노테이션을 추가한다.   
+   
+컨테이너에서 @Component 애노테이션이 달린 클래스를 자동으로 찾아서 빈으로 등록하는 기능을 디폴트로 제공하지 않기 때문에 빈 스캔 기능을 사용하겠다는 정의가 필요하다.   
+@ComponentScan 애노테이션을 사용해 정의할 수 있고 프로젝트 내 모든 클래스패스에서 빈으로 등록할 대상을 찾는 것은 부담이 많이 가는 작업이기 때문에 기준이 되는 패키지를 지정해야 한다.
+
+
+```java
+@Component
+public class UserDaoJdbc implements UserDao {
+    ...
+}
+
+@Configuration
+@EnableTransactionManagement
+@ComponentScan(basePackages="springbook.user")
+public class TestApplicationContext {
+    ...
+}
+```
+
+@Component가 붙은 클래스가 발견되면 새로운 빈을 자동으로 추가한다.   
+빈의 아이디는 따로 지정하지 않으면 클래스 이름의 첫 글자를 소문자로 바꿔 사용한다.    
+클래스의 이름 대신 다른 이름을 빈의 아이디로 사용하려면 @Component("userDao") 와 같이 이름을 설정할 수 있다.   
+자동 빈 등록을 사용하는 경우 빈의 의존관계를 담은 프로퍼티를 따로 지정할 방법이 없기 때문에 프로퍼티 설정에 @Autowired를 활용해 자동와이어링 방식을 적용해야 한다.   
+
+## 2-3.@Service, @Repository
+애노테이션을 기준으로 어드바이스 적용 대상을 선별하는 @Transactional과 같이, @Component 애노테이션은 빈 스캔 검색 대상으로 만드는 것 외에 부가적인 용도의 마커로 사용한다.   
+
+@Repository 애노테이션은 데이터 액세스 서비스를 제공하는 클래스를 자동 빈 등록 대상으로 만들 때 사용한다.   
+@Service 애노테이션은 비즈니스 로직을 담고 있는 서비스 계층의 빈을 자동 등록 대상으로 만들 때 사용한다.   
+
+
+
