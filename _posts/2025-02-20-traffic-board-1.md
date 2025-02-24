@@ -1,6 +1,6 @@
 ---
 layout: post
-title: HTTP 서버 활용 - 회원 관리 서비스
+title:  대규모 시스템으로 설계된 게시판에 사용된 Spring 문법과 요소 기술들
 date: 2025-02-20 13:00:00 + 0900
 categories: Java, Spring
 ref: java, Spring, board
