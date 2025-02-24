@@ -55,7 +55,9 @@ body(Object) 대신 제네릭을 지원하는 ParameterizedTypeReference 함수�
 spring-web 모듈은 HTTP request, response의 InputStream OutputStream에서 보내거나 받아오는 데이터를 읽거나 쓰기 위해 HttpMessageConverter 인터페이스를 갖고 있다.    
 HttpMessageConverter 인스턴스는 RestClient와 같은 클라이언트나 Spring MVC REST controllers 같은 서버 쪽에서 사용된다.   
 주요 MIME 형식을 구현한 HttpMessageConverter 구현체들을 Spring framework에서 RestClient, RestTemplate 같은 클라이언트 또는 서버 쪽의 RequestappingHandlerAdater에 적용한다.   
-</br>
+
+<br/>
+
 MessageConverter 구현체
 
 |MessageConverer|설명|
@@ -124,10 +126,14 @@ public class WebConfiguration implements WebMvcConfigurer {
 
 Spring Boot 애플리케이션의 WebMvcAutoConfiguration은 기본 Converter 외에 등록된 HttpMessageConverter 빈들을 모두 추가한다.    
 따라서 Spring Boot 애플리케이션은 HttpMessageConverters 방식을 사용해 설정하는 것이 권장된다.   
-</br>
+
+<br/>
+
 HttpMessageConverter는 자주 사용하는 설정이 등록되어 있다.   
 예를 들어 자동으로 Object를 JSON 또는 XML로 변환한다. 그리고 문자열은 기본적으로 UTF-8로 인코딩 된다.   
-</br>
+
+<br/>
+
 HttpMessageConverter 빈들은 Converter 목록에 자동으로 추가 되기 때문에 WebMvcConfigurer의 configureMessageConverters를 재정의하는 방식 대신 아래와 같이 HttpMessageConverter를 사용해 재정의 할 수 있다.
 
 ```java
@@ -146,8 +152,11 @@ public class MyHttpMessageConvertersConfiguration {
 
 ## 2-1. @Autowired
 @Autowired는 자동와이어링 기법을 이용해서 조건에 맞는 빈을 찾아 자동으로 수정자 메소드나 필드에 넣어준다.   
-컨테이너가 타입이나 이름을 기준으로 주입될 빈을 찾아준다. 컨테이너가 자동으로 주입할 빈을 결정하기 어려운 경우 직접 프로퍼티에 주입할 대상을 지정할 수 있다.   
-</br>
+컨테이너가 타입이나 이름을 기준으로 주입될 빈을 찾아준다. 컨테이너가 자동으로 주입할 빈을 결정하기 어려운 경우 직접 
+프로퍼티에 주입할 대상을 지정할 수 있다.   
+
+<br/>
+
 userDao 빈의 구현 클래스인 UserDaoJdbc가 dataSource, sqlService 두 개의 빈에 의존하고 두 개의 빈을 setter 메소드를 호출해 주입하도록 만들어 놨다고 가정한다.
 
 ```java
@@ -163,7 +172,9 @@ public UserDao userDao() {
 dataSource, sqlService 빈을 @Autowired 애노테이션을 통해 컨테이너가 자동으로 주입하도록 할 수 있다.
 스프링은 @Autowired가 붙은 수정자 메소드가 있으면 파라미터 타입을 보고 주입이 가능한 빈을 모두 찾는다.   
 만약 두 개 이상이 나오면 프로퍼티와 동일한 이름의 빈을 주입한다.   
-</br>
+
+<br/>
+
 빈을 자동 주입 하려는 필드의 접근 제한자가 private 인 것은 스프링에서 리플렉션 API 이용해 제약조건을 우회해서 값을 넣어주기 때문에 문제 되지 않는다.
 
 ```java
@@ -206,7 +217,9 @@ public UserService userService() {
 
 @Component 애노테이션은 빈으로 등록될 후보 클래서에 붙여주는 마커 역할을 한다.   
 userDao 빈이 자동 빈 등록 대상이 되도록 UserDaoJdbc 클래스에 @Component 애노테이션을 추가한다.   
-</br>
+
+<br/>
+
 컨테이너에서 @Component 애노테이션이 달린 클래스를 자동으로 찾아서 빈으로 등록하는 기능을 디폴트로 제공하지 않기 때문에 빈 스캔 기능을 사용하겠다는 정의가 필요하다.   
 @ComponentScan 애노테이션을 사용해 정의할 수 있고 프로젝트 내 모든 클래스패스에서 빈으로 등록할 대상을 찾는 것은 부담이 많이 가는 작업이기 때문에 기준이 되는 패키지를 지정해야 한다.
 
@@ -232,7 +245,9 @@ public class TestApplicationContext {
 
 ## 2-3.@Service, @Repository
 애노테이션을 기준으로 어드바이스 적용 대상을 선별하는 @Transactional과 같이, @Component 애노테이션은 빈 스캔 검색 대상으로 만드는 것 외에 부가적인 용도의 마커로 사용한다.   
-</br>
+
+<br/>
+
 @Repository 애노테이션은 데이터 액세스 서비스를 제공하는 클래스를 자동 빈 등록 대상으로 만들 때 사용한다.   
 @Service 애노테이션은 비즈니스 로직을 담고 있는 서비스 계층의 빈을 자동 등록 대상으로 만들 때 사용한다.   
 
@@ -240,7 +255,9 @@ public class TestApplicationContext {
 트랜잭션의 시작 선언(setAutoCommiot(false))하고 트랜잭션을 종료하는 하는 작업(commit(), rollback())을 트랜잭션 경계 설정이라 한다.   
 transaction 경계 설정은 Connection을 열고 사용한 뒤 닫는 사이에서 일어난다.   
 Service 계층에서 트랜잭션 경계를 설정하는 작업을 하고 쿼리 실행을 위해 DAO에 Connection을 전달해야 한다.   
-</br>
+
+<br/>
+
 그러면 아래 코드와 같이 DAO는 데이터 엑세스 기술에 독립적이지 않게 된다.   
 왜냐하면 트랜잭션 경계 설정을 JDBC 방식으로 Service 계층에서 구현하고 Connection 객체를 DAO 까지 전달하기 때문이다.   
 JTA나 Hibernate로 DAO 구현 방식을 변경하려면 Connection 대신 JTA에서 사용하는 EntityManager나 Hibernate에서 사용하는 Session 객체를 DAO가 전달 받도록 수정해야 한다.   
@@ -390,7 +407,9 @@ public void upgradeLevels() {
 JDBC의 로컬 트랜잭션을 이용한다면 PlatformTransactionManager을 구현한 DataSourceTransactionManager를 사용하면 된다.   
 getTransaction() 메소드는 PlatformTransactionManager에서 트랜잭션을 가져와 시작하는 요청이다.   
 DefaultTransactionDefinition 객체는 트랜잭션에 대한 디폴트 속성을 담고 있다.   
-</br>
+
+<br/>
+
 스프링의 트랜잭션 추상화 기술은 트랜잭션 동기화를 사용한다.   
 PlatformTransactionManager로 시작한 트랜잭션은 트랜잭션 동기화 저장소에 저장된다.   
 DataSourceTransactionManager 오브젝트는 JdbcTemplate에서 사용될 수 있는 방식으로 트랜잭션을 관리해 준다.    
