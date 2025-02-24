@@ -57,6 +57,7 @@ HttpMessageConverter 인스턴스는 RestClient와 같은 클라이언트나 Spr
 주요 MIME 형식을 구현한 HttpMessageConverter 구현체들을 Spring framework에서 RestClient, RestTemplate 같은 클라이언트 또는 서버 쪽의 RequestappingHandlerAdater에 적용한다.   
 
 MessageConverter 구현체
+
 |MessageConverer|설명|
 |:---|:---|
 |StringHttpMessageConverter|HTTP request, response에서 String 형식을 읽고 쓴다.|
