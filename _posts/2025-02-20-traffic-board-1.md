@@ -523,3 +523,58 @@ DefaultTransactionDefinition의 기본 설정은 timeout 제한시간이 없다.
 DefaultTransactionDefinition를 사용하는 대신 트랜잭션 정의를 수정하려면,
 TransactionDefinition 오브젝트를 DI 받아서 DefaultTransactionDefinition 대신 사용하도록 만들면 된다.
 
+# 5. 트랜잭션 애노테이션
+
+@Transactional 애노테이션을 활용해 트랜잭션의속성과 경계 설정을 선언적으로 할 수 있다.
+
+```java
+// 애노테이션을 사용할 대상을 메소드와 타입(클래스, 인터페이스)으로 설정
+@Target({ElementType.METHOD, ElementType.TYPE})
+// 애노테이션 정보가 런타임 때 까지 사용할 수 있도록 설정
+@Retention(RetentionPolicy.RUNTIME)
+// 상속을 통해서도 애노테이션 정보를 얻을 수 있도록 설정
+@Inherited
+@Documented
+public @interface Transactional {
+    // 트랜잭션 속성의 모든 항목을 엘리먼트로 지정
+    String value() default "";
+    Propagation propagation() default Propagation.REQUIRED;
+    Isolation isolation() default Isolation.DEFAULT;
+    int timeout() default TransactionDefinition.TIMEOUT_DEFAULT;
+    boolean readOnly() default false;
+    Class<? extends Throwable>[] rollbackFor() default {};
+    String[] rollbackForClassName() default {};
+    Class<? extends Throwable>[] noRollbackFor() default {};
+    String[] noRollbackForClassName() default {};
+}
+```
+
+@Transactional 애노테이션은 타깃 메소드, 타깃 클래스, 선언 메소드, 선언 타입 순서에 따라서 적용한다.    
+아래 코드의 [1]~[6] 여섯 군데에서 애노테이션을 선언할 수 있다.   
+그리고 [5], [6] -> [4] -> [2], [3] -> [1] 우선 순위로 애노테이션이 적용된다.
+```java
+[1]
+public interface Service {
+    [2]
+    void method1();
+    [3]
+    void method2();
+}
+[4]
+public class ServiceImple implements Service {
+    [5]
+    public void method1() {
+    }
+    [6]
+    public void method2() {
+    }
+}
+```
+
+트랜잭션의 자유로운 전파와 유연한 개발이 가능할 수 있었던 배경에는 AOP와 트랜잭션 추상화이다.   
+AOP를 통해 트랜잭션 부가기능을 @Transactional 애노테이션으로 간단히 애플리케이션에 선언적으로 적용할 수 있다.   
+그리고 트랜잭션 추상화 덕분에 데이터 액세스와 트랜잭션 기술에 상관 없이 DAO에서 일어나는 작업들을 하나의 트랜잭션으로 묶어 추상 레벨에서 관리할 수 있었다.   
+트랜잭션 추상화 기술의 핵심은 트랜잭션 매니저와 트랜잭션 동기화이다.   
+PlatformTransactionManager 인터페이스를 구현한 트랜잭션 매니저를 통해 구체적인 트랜잭션 기술의 종류와 상관 없이 일관된 트랜잭션 제어가 가능하다.   
+그리고 트랜잭션 동기화 기술 덕분에 트랜잭션 정보를 저장소에 보관했다가 DAO에서 사용할 수 있다.   
+
