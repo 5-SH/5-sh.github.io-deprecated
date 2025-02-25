@@ -467,3 +467,59 @@ public class UserService {
     <property name="dataSource" ref="dataSource" />
 </bean>
 ```
+
+# 4. 트랜잭션 속성
+아래는 AOP를 활용해 메소드에서 트랜잭션 경계를 설정하는 코드이다.   
+트랜잭션을 가져올 떄 DefaultTransactionDefinition을 파라메터로 넘겨주는데, 이 객체는 트랜잭션의 동작방식에 영향을 줄 수 있는 네 가지 속성을 정의한다.   
+
+```java
+public Object invoke(MethodInvocation invocation) throws Throwable {
+    TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+    try {
+        Object ret = invocation.proceed();
+        this.transactionManager.commit(status);
+    } catch (RuntimeException e) {
+        this.transctionManager.rollback(status);
+        throw e;
+    }
+}
+```
+
+## 4-1. 트랜잭션 전파
+트랜잭션 전파는 독자적인 트랜잭션 경계를 가진 코드에 대해 이미 진행 중인 트랜잭션이 어떻게 영향을 미칠 수 있는가를 정의한다.   
+
+- PROPAGATION_REQUIRED: 진행 중인 트랜잭션이 없으면 새로 시작하고, 이미 시작된 트랜잭션이 있으면 이에 참여한다.
+- PROPAGATION_REQUIRES_NEW: 항상 새로운 트랜잭션을 시작한다.
+- PROPAGATION_NOT_SUPPORTED: 트랜잭션 없이 동작한다.
+
+트랜잭션 없이 동작하는 PROPAGATION_NOT_SUPPORTED 속성은 다음과 같은 상황에 사용한다.   
+트랜잭션 경계설정은 AOP를 이용해 한 번에 많은 메소드에 적용한다.   
+이 때 특별한 메소드만 트랜잭션 적용에서 제외 하려면, 모든 메소드에 트랜잭션 AOP가 적용되게 하고 특정 메소드의 트랜잭션 전파 속성만 PROPAGATION_NOT_SUPPORTED로 설정해서 트랜잭션 없이 동작하게 만들 수 있다.   
+
+<br/>
+
+### 4-1-1. getTransaction()으로 트랜잭션을 시작하는 이유
+
+트랜잭션 매니저에서 트랜잭션을 시작하려 할 때 getTransaction() 메소드를 사용한다.    
+트랜잭션 매니저의 getTransaction() 메소드는 항상 트랜잭션을 새로 시작하는 것이 아니다.    
+트랜잭션 전파 속성과 현재 진행 중인 트랜잭션이 존재하는지 여부에 따라서 새로운 트랜잭션을 시작 하거나 이미 진행 중인 트랜잭션에 참여한다.    
+
+## 4-2. 격리수준
+
+서버 환경에서 여러 트랜잭션이 동시에 진행될 수 있다.   
+이 때 격리수준으로 특정 트랜잭션이 다른 트랜잭션에서 변경하거나 조회하는 데이터를 볼 수 있게 허용할지 말지를 결정해, 가능한 한 많은 트랜잭션을 동시에 진행시키면서도 문제가 발생하지 않게 제어한다.   
+
+<br/>
+
+격리 수준에는 READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE 이 있다.
+
+## 4-3. 제한시간
+트랜잭션을 수행하는 timeout.    
+DefaultTransactionDefinition의 기본 설정은 timeout 제한시간이 없다.   
+
+## 4-4. 읽기전용
+
+읽기전용으로 설저해두면 트랜잭션 내에서 데이터를 조작하는 시도를 막아줄 수 있다.   
+DefaultTransactionDefinition를 사용하는 대신 트랜잭션 정의를 수정하려면,
+TransactionDefinition 오브젝트를 DI 받아서 DefaultTransactionDefinition 대신 사용하도록 만들면 된다.
+
