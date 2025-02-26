@@ -775,3 +775,50 @@ LocalDateTime localDateTime = Instant.ofInstant(
 - Duration.ofDays(long days): 인자로 받은 크기 만큼의 날을 표현한다. 하루는 24시간으로 계산한다.
 - Duration.plusDays(long dayToAdd): 인자로 받은 크기 만큼의 날을 더한다. dayToAdd * 86400 한 값을 더한다.
 - Duration.between(Temporal startInclusive, Temporal endExclusive): 시작 시간(startInclusive)과 끝 시간(endExclusive) 사이의 간격을 계산한다. Temporal은 LocalDateTime, Instant 객체를 주로 사용한다.
+
+# 8. CountDownLatch
+
+다른 스레드에서 동작 중인 작업들이 끝날 때 까지 하나 이상의 스레드가 기다리도록 해주는 동기화 도구이다.   
+CountDownLatch는 세려는 값을 인자로 받아 초기화 된다.     
+await() 함수는 countDown() 함수를 통해 현재 카운트가 0이 될 때 까지 blocking 하고 0이 되면 즉시 리턴한다.   
+CounDownLatch의 카운트 값은 다시 초기화 될 수 없다.    
+카운트를 초기화 해 여러 번 수행이 필요한 경우 CountDownLatch 대신 CyclicBarrier를 고려한다.   
+
+<br/>
+
+아래 코드는 N개의 작업자 스레드가 startSignal이 0이 될 때 까지 기다린 후 작업을 완료할 때 까지 main 함수가 동작하는 스레드가 기다리는 예제이다.
+```java
+class Driver { // ...
+    void main() throws InterruptedException {
+        CountDownLatch startSignal = new CountDownLatch(1);
+        CountDownLatch doneSignal = new CountDownLatch(N);
+
+    for (int i = 0; i < N; ++i) // create and start threads
+        new Thread(new Worker(startSignal, doneSignal)).start();
+
+        doSomethingElse();            // don't let run yet
+        startSignal.countDown();      // let all threads proceed
+        doSomethingElse();
+        doneSignal.await();           // wait for all to finish
+    }
+}
+
+class Worker implements Runnable {
+    private final CountDownLatch startSignal;
+    private final CountDownLatch doneSignal;
+    Worker(CountDownLatch startSignal, CountDownLatch doneSignal) {
+        this.startSignal = startSignal;
+        this.doneSignal = doneSignal;
+    }
+    public void run() {
+        try {
+            startSignal.await();
+            doWork();
+            doneSignal.countDown();
+        } catch (InterruptedException ex) {} // return;
+    }
+
+    void doWork() { ... }
+ }
+```
+
