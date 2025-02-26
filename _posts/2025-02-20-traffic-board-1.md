@@ -666,3 +666,112 @@ public void publishEvent(OutboxEvent outboxEvent) {
 }
 ```
 
+# 6. Logging
+
+Spring Boot는 apache Common Loggings를 내부 로깅 모듈로 사용한다.   
+spring boot starter에서 기본 설정으로 Logback이 사용된다.   
+
+## 6-1. Spring Log Format
+
+Spring Boot의 기본 로깅 포맷은 아래와 같다.
+
+```
+2025-02-20T14:15:52.373Z  INFO 125657 --- [myapp] [           main] o.s.b.d.f.logexample.MyApplication       : Starting MyApplication using Java 17.0.14 with PID 125657 (/opt/apps/myapp.jar started by myuser in /opt/apps/)
+2025-02-20T14:15:52.385Z  INFO 125657 --- [myapp] [           main] o.s.b.d.f.logexample.MyApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-02-20T14:15:55.401Z  INFO 125657 --- [myapp] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-20T14:15:55.479Z  INFO 125657 --- [myapp] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+```
+
+- Date, Time
+- Log Level: ERROR, WARN, INFO, DEBUF, TRACE
+- Process ID
+- '---' seperator
+- Application name: spring.application.name 설정이 있는 경우 표기
+- Application group: spring.application.group 설정이 있는 경우 표기
+- Thread name
+- Correlatoin ID: tracing이 허용된 경우 로깅(위 예시에는 없음)
+- Logger name: 주로 약어 표기가 포함된 소스의 클래스 이름
+- Log message
+
+## 6-2. Slf4j
+로깅 라이브러리는 Logback, Log4j2, Java Util Logging 등 다양하다.   
+Slf4j는 다양한 로깅 라이브러리들을 같은 방식으로 사용할 수 있도록 인터페이스를 제공하는 파사드이다.   
+애플리케이션은 Slf4j를 사용해 어떤 로깅 라이브러리를 사용해도 코드에서 같은 방법으로로깅을 할 수 있다.   
+따라서 로깅 라이브러리를 교체해도 Slf4j 인터페이스에 맞춰 개발한 애플리케이션의 코드는 수정이 필요없다.   
+
+<br/>
+
+※ 만약 애플리케이션이 서블릿 컨테이너나 애플리케이션 서버에서 동작한다면, Java Util Logging API로 실행되는 로깅들은 애플리케이션 로그에 남지 않는다.   
+
+<br/>
+
+## 6-3. @Slf4j 애노테이션
+
+Slf4j를 사용하기 위해 선언을 해줘야 하지만 @Slf4j 애노테이션을 사용하면 lombok에서 자동으로 선언해 준다.
+
+```java
+// @Slf4j 사용 전
+public class Slf4jSample {
+    private static final Logger log = LoggerFactory.getLogger(Slf4jSample.class);
+
+    public static void main(String[] args) {
+        log.info("logging");
+    }
+}
+```
+
+```java
+// @Slf4j 사용
+@Slf4j
+public class Slf4jSample {
+    public static void main(String[] args) {
+        log.info("logging");
+    }
+}
+```
+
+# 7. LocalDateTime/Duration
+
+## 7-1. LocalDateTime
+
+### 7-1-1. LocalDateTime.now()
+현재 로컬 컴퓨터의 날짜와 시간을 반환   
+
+```java
+// 2025-02-23T11:58:20.551705
+LocalDateTime.now();
+```
+
+## 7-1-2. 비교
+- isAfter(LocalDateTime): 인자보다 미래 시간이면 true 반환
+- isBefore(LocalDateTime): 인자보다 과거 시간이면 true 반환
+- isEqual(LocalDateTime): 인자와 같은 시간이면 true 반환
+- compareTo(LocalDateTime)
+    - > 0: 인자보다 미래 시간
+    - < 0: 인자보다 과거 시간
+    - == 0: 인자와 같은 시간
+
+## 7-1-3. ofInstant(Instant, Zone)
+java.time.Instant는 1740372254736과 같이 시간을 정수로 표기한 정보를 가진다.    
+Date에서 LocalDateTime으로 바로 전환이 불가능 하므로 아래 코드와 같이 Instant를 활용해 변환한다.   
+Instant.toEpochMilli() 의 반환 값인 epoch초는 1970년 1월 1일 표준 자바 epoch 시간 부터 측정된 값이다.   
+
+```java
+Date date = new Date();
+LocalDateTime localDateTime = Instant.ofInstant(
+    Instant.ofEpochMilli(date.getTime()),
+    ZoneId.systemDefault()
+);
+```
+
+## 7-2. Duration
+시간 간격을 초와 나노초로 표현한다. 간격을 계산하는데 시, 분을 사용할 수 있다.   
+시간 간격은 long 타입의 최대값 만큼 저장할 수 있다.    
+
+**자주 사용하는 함수**
+
+- Duration.ofSeconds(long seconds): 인자로 받은 크기 만큼의 초를 표현한다.
+- Duration.plusSeconds(long secondsToAdd): 인자로 받은 크기 만큼의 초를 더한다.
+- Duration.ofDays(long days): 인자로 받은 크기 만큼의 날을 표현한다. 하루는 24시간으로 계산한다.
+- Duration.plusDays(long dayToAdd): 인자로 받은 크기 만큼의 날을 더한다. dayToAdd * 86400 한 값을 더한다.
+- Duration.between(Temporal startInclusive, Temporal endExclusive): 시작 시간(startInclusive)과 끝 시간(endExclusive) 사이의 간격을 계산한다. Temporal은 LocalDateTime, Instant 객체를 주로 사용한다.
