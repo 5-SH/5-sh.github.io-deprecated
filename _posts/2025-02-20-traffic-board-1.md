@@ -303,7 +303,7 @@ Service 계층에서 트랜잭션 시작을 위해 만든 Connection을 특별�
 ![Image](https://github.com/user-attachments/assets/b7136271-aceb-47f6-b5a7-217dd7349bb2)
 
 - (1)에서 커넥션을 생성하고 (2)에서 트랜잭션 동기화 저장소에 저장한다.
-- dao.update()를 호출하면(3) DAO는 트랜잭션 동기화 저장소에서 Connection을 가져오고(4) Connectio을 사용해 쿼리를 실행한다(5)
+- dao.update()를 호출하면(3) DAO는 트랜잭션 동기화 저장소에서 Connection을 가져오고(4) Connection을 사용해 쿼리를 실행한다(5)
 - 나머지 두 번의 dao.update 호출은 같은 방식으로 동작한다. (6)-(7)-(8), (9)-(10)-(11)
 - 서비스에서 작업이 완료되면 커넥션을 반환한다.
 
@@ -380,6 +380,8 @@ Hibernate는 Connection을 직접 사용하지 않고 Session이라는 것을 �
 
 ### 3-2-1. PlatformTransactionManager
 스프링은 트랜잭션 기술의 공통점을 담은 트랜잭션 추상화 기술인 PlatformTransactionManager을 제공한다.   
+PlatformTransactionManager 구현 클래스로 DataSourceTransactionManager, JpaTransactionManager, HibernateTransactionManager, JtaTransactionManager가 있다.   
+
 ![Image](https://github.com/user-attachments/assets/e266ae38-d06a-4569-a861-7753bc3adbf6)
 
 
@@ -467,6 +469,64 @@ public class UserService {
     <property name="dataSource" ref="dataSource" />
 </bean>
 ```
+
+### 3-2-3. 코드에 의한 트랜잭션 경계 설정
+
+PlatformTransactionManager을 사용해서 코드에서 직접 트랜잭션을 처리할 수 있다.   
+이 경우 try/catch 블록을 매번 써야 하는 번거로움이 있어 템플릿/콜백 방식의 TrasactionTemplate를 사용한다.   
+보통 @Transactional 애노테이션을 사용해 선언적으로 설정하지만, 에러 발생 시 디버깅 또는 테스트 코드 작성을 할 때 코드에 의한 트랜잭션 경계 설정 방법을 사용할 수 있다.   
+
+```java
+public class MemberService {
+    @Autowired private MemberDao memberDao;
+    private TransactionTemplate transactionTemplate;
+
+    @Autowired
+    public void init(PlatformTransactionManager transactionManager) {
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+    }
+
+    public void addMembers(final List<Member> members) {
+        this.transactionTemplate.execute(new TransactionCallback {
+            public Object doInTransaction(TransactionStatus status) {
+                // 트랜잭션 안에서 동작하는 코드
+                for (Member m : members) {
+                    memberDao.addMember(m);
+                }
+                /**
+                 * 작업을 마치고 리턴되면 트랜잭션은 커밋된다.
+                 * 만약 이전에 시작한 트랜잭션에 참여 했다면 해당 트랜잭션의 작업을 모두 마칠 때까지 커밋은 보류된다.
+                 * 리턴되기 이전에 예외가 발생하면 트랜잭션은 롤백된다.
+                 */
+                return null;
+            }
+        });
+    }
+}
+```
+
+### 3-2-4. 선언적 트랜잭션 경계 설정
+
+선언적 트랜잭션을 사용해 코드 작성 없이 원하는 메소드 실행 전 후에 트랜잭션이 시작되고 종료되거나 기존 트랜잭션에 참여하도록 만들 수 있다.   
+이를 위해서 트랜잭션 프록시 빈을 사용하는데 간단한 설정으로 특정 부가기능을 타깃 오브젝트에 부여할 수 있는 프록시 AOP를 주로 사용한다.   
+aop 스키마의 태그와 tx 스키마의 태그를 사용해 아래와 같이 선언적으로 트랜잭션 경계를 설정할 수 있다.   
+AOP에서 빈 오브젝트에 적용하려는 부가기능을 "어드바이스"라고 하고 어드바이스를 적용할 선정 대상을 "포인트컷"이라고 한다.   
+그리고 "어드바이스"와 "포인트컷"을 결합해 "어드바이저"라고 부른다.
+
+```xml
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+        <tx:method name="*">
+    </tx:attributes>
+</tx:advice>
+
+<aop:config>
+    <aop:pointcut id="txPointcut" expression="execution(* *..MemberDao.*(..))">
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+</aop:config>
+```
+
+또는 @Transactional 애노테이션을 사용해 간단하게 선언할 수 있다.
 
 # 4. 트랜잭션 속성
 아래는 AOP를 활용해 메소드에서 트랜잭션 경계를 설정하는 코드이다.   
@@ -577,4 +637,32 @@ AOP를 통해 트랜잭션 부가기능을 @Transactional 애노테이션으로 
 트랜잭션 추상화 기술의 핵심은 트랜잭션 매니저와 트랜잭션 동기화이다.   
 PlatformTransactionManager 인터페이스를 구현한 트랜잭션 매니저를 통해 구체적인 트랜잭션 기술의 종류와 상관 없이 일관된 트랜잭션 제어가 가능하다.   
 그리고 트랜잭션 동기화 기술 덕분에 트랜잭션 정보를 저장소에 보관했다가 DAO에서 사용할 수 있다.   
+
+## 5-1. @TransactionalEventListener
+
+Spring에서 @EventListener 애노테이션을 통해 이벤트가 발생 했을때 동작할 기능을 등록할 수 있다.    
+그리고 트랜잭션에 관련된 이벤트가 발생 했을때 동작할 기능을 @TransactionalEventListener으로 등록할 수 있다.   
+트랜잭션 관련 이벤트가 발생하는 시점은 아래 4가지 이다.
+
+- BEFORE_COMMIT: 커밋이 되기 전
+- AFTER_COMMIT: 커밋이 된 후
+- AFTER_ROLLBACK: 롤백이 된 후
+- AFTER_COMPLETION: 커밋 또는 롤백이 된 후
+
+@EventListener 또는 @TransactionalEventListener 등록된 리스너는 동기적으로 실행되어 현재 실행 중인 스레드에서 동작한다.    
+@Async 애노테이션을 적용해 별도의 스레드에서 비동기 적으로 동작하도록 할 수 있다.   
+
+```java
+@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+public void createdOutbox(OutboxEvent outboxEvent) {
+    log.info("[MessageRelay.createOutbox] outboxEvent={}", outboxEvent);
+    outboxRepository.save(outboxEvent.getOutbox());
+}
+
+@Async("messageRelayPublishEventExecutor")
+@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+public void publishEvent(OutboxEvent outboxEvent) {
+    publishEvent(outboxEvent.getOutbox());
+}
+```
 
