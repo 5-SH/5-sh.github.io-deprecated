@@ -1078,4 +1078,109 @@ public class MessageRelay {
 }
 ```
 
+# 12. Optional\<T\>
 
+코드 작성 중 null 값을 가지는 경우를 처리하기 위해 번거로운 조건문 코드를 작성하는 일이 종종 생긴다.   
+그리고 NullPointExeption이 발생해 기능이 정상적으로 동작하지 않는 경우가 종종 발생한다.   
+Java 8 이후로 null을 가질 수 있는 값을 감싸는 wrapper 클래스인 Optional\<T\>을 지원해 이런 문제들을 해결한다.   
+
+
+- empty() : 빈 값을 가지는 Optional 인스턴스를 반환한다.
+```java
+Optional.empty()
+```
+
+- equals(Object obj) : obj를 갖는지 확인한다.
+
+- filter(Predicate<? super T> predicate) : 값이 존재하고 주어진 Predicate와 일치하면 값을 갖는 Optional을 반환하고 아니면 비어있는 Optional을 반환한다.
+```java
+commentRepository.indById(parentCommentId).filter(not(Comment::getDeleted))
+```
+
+- get() : Optional에 값이 있으면 값을 리턴하고 아니면 NoSuchElementException 예외를 던진다.
+
+- ifPresent(Consumer<? super T> consumer): 값이 존재하면 전달된 Consumer를 실행하고 없으면 아무 일도 하지 않는다.
+```java
+commentRepository.findById(commentId)
+                .filter(not(Comment::getDeleted))
+                .ifPresent(comment -> {
+                    if (hasChildren(comment)) {
+                        comment.delete();
+                    } else {
+                        delete(comment);
+                    }
+                })
+```
+
+- isPresent() : 값이 있으면 true를 반환하고 없으면 false를 반환한다.
+
+- map(Function<? super T,? extends U> mapper) : 값이 있으면 제공된 매핑 함수를 해당 값에 적용하고, 결과가 null이 아니면 결과를 설명하는 Optional을 반환한다.
+```java
+@Getter
+@ToString
+public class ArticleLikeResponse {
+    ...
+
+    public static ArticleLikeResponse from(ArticleLike articleLike) {
+        ArticleLikeResponse response = new ArticleLikeResponse();
+        ...
+        return response;
+    }
+}
+
+articleLikeRepository.findByArticleIdAndUserId(articleId, userId)
+                .map(ArticleLikeResponse::from)
+                .orElseThrow();
+```
+
+- of(T value) : null이 아닌 값을 갖는 Optional을 반환한다
+
+- ofNullable(T value) : null이 아니면 지정된 값을 갖는 Optional을 반환하고, 그렇지 않으면 빈 Optional을 반환한다.
+```java
+Optional.ofNullable(articleResponse);
+```
+
+- orElse(T other) : 값이 있으면 반환하고 그렇지 않으면 other를 반환한다.
+```java
+articleLikeCountRepository.findById(articleId)
+                .map(ArticleLikeCount::getLikeCount)
+                .orElse(0L);
+```
+
+- orElseGet(Supplier<? extends T> other) : 값이 있으면 반환하고 그렇지 않으면 Supplier other의 결과를 반환한다.
+```java
+ArticleLikeCount articleLikeCount = articleLikeCountRepository.findLockedByArticleId(articleId)
+                .orElseGet(() -> ArticleLikeCount.init(articleId, 0L));
+```
+
+- orElseThrow(Supplier<? extends X> exceptionSupplier) : 값이 있으면 반환하고 없으면 예외를 던진다
+```java
+ArticleResponse.from(articleRepository.findById(articleId).orElseThrow());
+```
+
+# 13. Predicate
+인자를 받아 boolean 값을 반환하는 함수형 인터페이스이다.
+
+- test(T t) : 주어진 인자를 검증한다
+
+- and(Predicate<? super T> other) : 다른 Predicate와 AND 조건으로 연결한다.
+
+- or(Predicate<? super T> other) : 다른 Predicate와 OR 조건으로 연결한다.
+
+- Predicate<T> not(Predicate<? super T> target) : 
+
+```java
+private boolean hasChildren(Comment comment) {
+        return commentRepository.countBy(comment.getArticleId(), comment.getCommentId(), 2L) == 2;
+    }
+
+public void delete(Comment comment) {
+    commentRepository.delete(comment);
+    if (!comment.isRoot()) {
+        commentRepository.findById(comment.getParentCommentId())
+                .filter(Comment::getDeleted)
+                .filter(Predicate.not(this::hasChildren))
+                .ifPresent(this::delete);
+    }
+}
+```
