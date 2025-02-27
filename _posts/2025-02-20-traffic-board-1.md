@@ -822,3 +822,260 @@ class Worker implements Runnable {
  }
 ```
 
+# 9. @Scheduled, @EnableScheduling
+
+@Scheduled 애노테이션으로 주기적인 작업을 실행하기 위해 @Configuration 애노테이션이 등록된 클래스에 @EnableScheduiling 애노테이션을 추가해야 한다.   
+
+```java
+@EnableAsync
+@Configuration
+@ComponentScan("traffic.board.common.outboxmessagerelay")
+@EnableScheduling
+public class MessageRelayConfig {
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String bootstrapServers;
+...
+```
+
+@Scheduled 애노테이션이 붙은 메서드는 스프링 컨테이너가 주기적으로 실행한다.   
+각 작업은 중복되어 실행되지 않고 하나의 작업만 실행된다.   
+@Scheduled 애노테이션의 fixedDelay, fixedRate 속성을 통해 작업의 주기를 설정할 수 있다.   
+fixedDelay 속성은 이전 작업이 종료되면 주어진 시간 만큼 기다린 후 다음 작업을 실행한다.
+fixedRate 속성은 주어진 시간 만큼 기다린 후 다음 작업을 실행한다.    
+만약 다음 작업을 실행하기 위해 기다린 시간 보다 작업에 수행된 시간이 더 오래 걸리는 경우,   
+수행할 작업을 대기열에 보관하고 진행 중인 작업이 완료되면 바로 다음 작업을 실행한다.   
+initialDelay 속성은 첫 작업이 실행하기 전에 기다릴 시간을 설정한다.   
+아래 코드는 Redis에 접근해 데이터를 추가, 조회하는 작업을 이전 작업이 끝나고 3초 뒤에 실행한다.
+
+```java
+private final int PING_INTERVAL_SECONDS = 3;
+
+@Scheduled(fixedDelay = PING_INTERVAL_SECONDS, timeUnit = TimeUnit.SECONDS)
+public void ping() {
+    redisTemplate.executePipelined((RedisCallback<?>) action -> {
+        StringRedisConnection conn = (StringRedisConnection) action;
+        String key = generateKey();
+        conn.zAdd(key, Instant.now().toEpochMilli(), APP_ID);
+        conn.zRemRangeByScore(
+                key,
+                Double.NEGATIVE_INFINITY,
+                Instant.now().minusSeconds(PING_INTERVAL_SECONDS * PING_FAILURE_THRESHOLD).toEpochMilli()
+        );
+        return null;
+    });
+}
+```
+
+# 10. @Async, @EnableAsync
+
+@Async 애노테이션으로 비동기 작업을 처리하기 위해 @Configuration 애노테이션이 등록된 클래스에 @EnableAsync 애노테이션을 추가해야 한다.   
+
+```java
+@EnableAsync
+@Configuration
+@ComponentScan("traffic.board.common.outboxmessagerelay")
+@EnableScheduling
+public class MessageRelayConfig {
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String bootstrapServers;
+...
+```
+
+메소드에 @Async 애노테이션을 추가해 비동기 적으로 작업을 처리할 수 있다.   
+애노테이션이 붙은 메소드 Caller는 즉시 리턴을 받고 비동기 작업은 Spring TaskExecutor에 전달되어 실행된다.   
+별도의 설정이 없는 경우 디폴트로 SimpleAsyncTaskExecutor를 사용해 비동기 작업을 수행한다.   
+SimpleAsyncTaskExecutor는 실행될 때 마다 새로운 스레드를 생성해 사용하고 스레드를 재사용하지 않는다.    
+보통 비동기 작업은 리턴 값이 없지만, 비동기 작업을 호출하는 명시적인 Caller가 있기 때문에 필요한 경우 Future 타입을 리턴해 Caller가 사용할 수 있다.   
+
+```java
+@Async
+Future<String> returnSomething(int i) {
+    // this will be run asynchronously
+}
+```
+
+@Async 애노테이션을 통한 비동기 작업은 Spring AOP의 프록시를 통해 동작한다.    
+@Async가 붙은 메소드를 프록시로 Wrapping 하고 Caller가 메소드를 호출할 때 실제로는 Wrapping된 프록시가 호출되어 비동기 작업을 수행하게 된다.   
+따라서 @Async가 붙은 메소드가 접근 제한자로 private를 사용하면 프록시로 Wrapping 하지 못해 비동기로 작업을 실행할 수 없다.   
+그리고 메소드가 등록된 클래스 내에서 자가 호출을 하면 Wrapping된 프록시를 거치지 않기 때문에 정상적으로 실행 되지 않는다.   
+아래 코드에선 작업이 비동기적으로 수행되지 않고 publishEventInner1() 메소드가 실행된 후 publishEventInner2() 메소드가 동기적으로 실행된다.
+
+```java
+public class MessageRelay {
+    pubilc void publishEvent() {
+        this.publishEventInner1();
+        this.publishEventInner2();
+    }
+
+    @Async
+    public void publishEventInner1() {
+        // this will be run asynchronously
+    }
+
+    @Async
+    public void publishEventInner2() {
+        // this will be run asynchronously
+    }
+}
+```
+
+비동기 작업을 실행하기 위한 TaskExecutor를 지정할 수 있다.   
+아래 코드와 같이 별도의 스레드풀을 만들고 컨테이너에 빈으로 등록하고 @Async 애노테이션의 파라메터로 전달해 지정할 수 있다.   
+
+```java
+@EnableAsync
+@Configuration
+@ComponentScan("traffic.board.common.outboxmessagerelay")
+@EnableScheduling
+public class MessageRelayConfig {
+    ...
+    @Bean
+    public Executor messageRelayPublishEventExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(20);
+        executor.setMaxPoolSize(50);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("mr-pub-event-");
+        return executor;
+    }
+    ...
+}
+
+@Async("messageRelayPublishEventExecutor")
+@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+public void publishEvent(OutboxEvent outboxEvent) {
+    publishEvent(outboxEvent.getOutbox());
+}
+```
+
+# 11. ApplicationEventPublisher
+
+애플리케이션을 개발할 때 주요 비즈니스 로직과 부가적인 비즈니스 로직이 결합되어 코드가 복잡해지는 경우가 종종 발생한다.   
+이 때 부가적인 비즈니스 로직은 이벤트로 처리하도록 개발해 관심사를 분리할 수 있다.   
+예를 들어 게시글 등록 비즈니스 로직에는 게시글을 저장하는 주요 비즈니스 로직과 추가된 게시글의 캐싱 처리, 통계 처리와 같은 부가적인 비즈니스 로직이있다.    
+게시글의 캐싱, 통계 처리는 게시글이 등록되었다는 이벤트가 발생 했을 때 처리 되도록 주요 비즈니스 로직과 분리해 개발할 수 있다.   
+
+<br/>
+
+스프링에서 이벤트는 ApplicationEventPublisher 객체를 통해 발행할 수 있다.   
+ApplicationEventPublisher는 스프링 컨테이너에서 관리하는 빈이고 publishEvent() 메소드를 통해 이벤트를 전달할 수 있다.   
+Spring 4.2 버전 이전에는 발행되는 Event 객체는 ApplicationEvent를 extends 해야 했지만,   
+4.2 버전 부터는 모든 객체를 Event로 받는 publishEvent() 메서드가 추가되었다.   
+
+<br/>
+
+ApplicationEventPublisher에서 발급한 이벤트를 @EventLisetner 애노테이션이 적용된 메소드에서 처리할 수 있다.   
+기본적으로 동기적으로 처리하기 때문에 이벤트를 발행한 스레드가 이벤트를 핸들링한 다음 그 이후의 코드를 실행한다.   
+@Async 애노테이션을 같이 적용하면 이벤트 리스너를 비동기적으로 처리할수 있다.   
+
+<br/>
+
+@TransactionalEventListener는 @EventListener와 같이 이벤트를 처리하는 기능과 트랜잭션 관리하는 기능이 결합되어, 트랜잭션이 완료된 후에 발급된 이벤트를 처리하도록 동작한다.   
+애노테이션의 속성으로 AFTER_COMMIT(default), AFTER_ROLLBACK, AFTER_COMPLETION, BEFORE_COMMIT을 갖는다.    
+@EventLisetner가 적용된 핸들러는 트랜잭션과 상관 없이 이벤트가 발생하면 즉시 처리된다.   
+@TransactionEventListener는 트랜잭션이 처리된 후에 이벤트를 처리하는데, 주로 데이테베이스 변경이 확정된 후에 후속 작업을 수행할 떄 사용한다.   
+
+```java
+@Service
+@RequiredArgsConstructor
+public class ArticleService {
+    private final Snowflake snowflake = new Snowflake();
+    private final ArticleRepository articleRepository;
+    private final OutboxEventPublisher outboxEventPublisher;
+    private final BoardArticleCountRepository boardArticleCountRepository;
+
+    // 게시글 등록 요청을 처리하기 위한 서비스스
+    // 트랜잭션 동기화를 위해 @Transactional 애노테이션 사용
+    @Transactional
+    public ArticleResponse create(ArticleCreateRequest request) {
+        // 게시글을 데이터베이스에 등록하는 주요 비즈니스 로직
+        Article article = articleRepository.save(
+                Article.create(snowflake.nextId(), request.getTitle(), request.getContent(), request.getBoardId(), request.getWriterId())
+        );
+        int result = boardArticleCountRepository.increase(request.getBoardId());
+        if (result == 0) {
+            boardArticleCountRepository.save(
+                    BoardArticleCount.init(request.getBoardId(), 1L)
+            );
+        }
+
+        // 게시글 작성 이벤트 발급 요청
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_CREATED,
+                ArticleCreatedEventPayload.builder()
+                        .articleId(article.getArticleId())
+                        .title(article.getTitle())
+                        .content(article.getContent())
+                        .boardId(article.getBoardId())
+                        .writerId(article.getWriterId())
+                        .createdAt(article.getCreatedAt())
+                        .modifiedAt(article.getModifiedAt())
+                        .boardArticleCount(count(article.getBoardId()))
+                        .build(),
+                article.getBoardId()
+        );
+
+        return ArticleResponse.from(article);
+    }
+    ...
+}
+
+// 서비스의 메소드에서 요청한 이벤트 발행을 처리
+@Component
+@RequiredArgsConstructor
+public class OutboxEventPublisher {
+    private final Snowflake outboxIdSnowflake = new Snowflake();
+    private final Snowflake eventIdSnowflake = new Snowflake();
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    public void publish(EventType type, EventPayload payload, Long sharedKey) {
+        Outbox outbox = Outbox.create(
+                outboxIdSnowflake.nextId(),
+                type,
+                Event.of(
+                        eventIdSnowflake.nextId(), type, payload
+                ).toJson(),
+                sharedKey & MessageRelayConstants.SHARD_COUNT
+        );
+        // Spring 이벤트 발행
+        applicationEventPublisher.publishEvent(OutboxEvent.of(outbox));
+    }
+}
+
+// Spring 이벤트 핸들러
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class MessageRelay {
+    private final OutboxRepository outboxRepository;
+    private final MessageRelayCoordinator messageRelayCoordinator;
+    private final KafkaTemplate<String, String> messageRelayKafkaTemplate;
+
+    ...
+
+    // 발급한 이벤트를 비동기적으로 핸들링
+    // 트랜잭션이 커밋된 다음 이벤트를 처리함
+    @Async("messageRelayPublishEventExecutor")
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void publishEvent(OutboxEvent outboxEvent) {
+        publishEvent(outboxEvent.getOutbox());
+    }
+
+    private void publishEvent(Outbox outbox) {
+        try {
+            messageRelayKafkaTemplate.send(
+                    outbox.getEventType().getTopic(),
+                    String.valueOf(outbox.getShardKey()),
+                    outbox.getPayload()
+            ).get(1, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("[MessageRelay.publishEvent] outbox={}", outbox, e);
+            throw new RuntimeException(e);
+        }
+        outboxRepository.delete(outbox);
+    }
+    ...
+}
+```
+
+
