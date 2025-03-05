@@ -1399,3 +1399,201 @@ public class Outbox {
 Entity에 이 애노테이션을 등록하는 이유는 JPA가 Entity를 위해 Proxy 객체를 생성하기 때문이다.     
 JPA는 Entity의 Proxy 객체를 통해 접근하고 Proxy 객체를 통해 1차 캐시, 쓰기 지연, 변경 감지 등의 기능을 지원한다.   
 
+# 15. Spring Data Redis
+
+## 15-1. RedisConnection, RedisConnectionFactory
+
+RedisConnection을 사용해 Java 애플리케이션과 Redis를 연결한다.   
+RedisConnectionFactory는 RedisConnection을 만들고 Spring DataAccessException 계층 예외로 번역하는 PersistenceExceptionTranslator 역할을 수행한다.   
+아래와 같이 Lettuce나 Jedis Connection Factory를 빈으로 추가해 Redis와의 연결을 만들 수 있다.   
+
+```java
+@Configuration
+class AppConfig {
+
+    @Beanpublic LettuceConnectionFacory LettuceConnectionFacory() {
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+                .useSsl().and()
+                .commandTimeout(Duration.ofSeconds(2))
+                .shutdownTimeout(Duration.ZERO)
+                .build();
+        return new LettuceConnectionFactory(new RedisStandaloneConfiguration("localhost", 6379), clientConfig);
+    }
+}
+```
+
+Spring boot는 Redis에 대해 auto configuration이 되어 있어 application.propierties나 application.yml에 설정만 하면 Redis와 통신할 수 있다.    
+Redis 연결 뿐만 아니라 Redis 데이터를 다루는 다양한 기능을 제공하는 헬퍼 클래스인 RedisTemplate를 빈으로 자동으로 생성하므로 간단히 주입을 받아 사용할 수 있다.   
+Redis 연결을 위한 설정은 아래와 같다.   
+
+```yml
+server.port: 9004
+spring:
+  application:
+    name: traffic-board-hot-article-service
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+...
+```
+
+## 15-2. RedisTemplate
+RedisTemplate는 Redis 데이터를 다루는 다양한 기능을 제공하는 헬퍼 클래스이다.    
+자바 객체와 레디스 데이터 사이의 직렬화/역직렬화를 지원한다. 직렬화/역직렬화는 default로 JdkSerializationRedisSerializer를 사용하고 변경 가능하다.   
+그리고 RedisTemplate는 thread-safe 하다.    
+데이터를 문자열 위주로 다룬다면 StringRedisTemplate를 사용할 수 있다.   
+Spring boot에선 아래와 같이 주입을 받아 사용할 수 있다.
+
+```java
+@Repository
+@RequiredArgsConstructor
+public class ArticleViewCountRepository {
+    private final StringRedisTemplate redisTemplate;
+
+    // view::article::{article_id}::view_count
+    private static final String KEY_FORMAT = "view::article::%s::view_count";
+
+    public Long read(long articleId) {
+        String result = redisTemplate.opsForValue().get(generateKey(articleId));
+        return result == null ? 0L : Long.valueOf(result);
+    }
+    ...
+}
+```
+
+RedisTemplate에서 데이터를 다루기 위해 아래 메소드들을 주로 사용한다.
+
+### 15-2-1. RedisTemplate.opsForValue()
+
+```java
+public ValueOperations<K, V> opsForValue()
+```
+
+```java
+@Repository
+@RequiredArgsConstructor
+public class ArticleLikeCountRepository {
+    private final StringRedisTemplate redisTemplate;
+    ...
+
+    public Long read(Long articleId) {
+        String result =  redisTemplate.opsForValue().get(generateKey(articleId));
+        return result == null ? 0L : Long.valueOf(result);
+    }
+    ...
+```
+
+Simple value(Redis의 String)에 대한 Redis operation(ValueOperations)을 반환한다.    
+ValueOperation에서 주로 사용하는 메서드는 아래와 같다.   
+setIfAbsent 메소드는 원자적으로 동작한다.    
+
+|Modifier and Type|Method|Description|
+|:---|:---|:---|
+|V|get(Object key)|"key"에 해당하는 값을 가져온다|
+|void|set(K key, V value)|"key"에 "value"를 저장한다|
+|Long|increment(K key)|"key"로 가져온 정수 값에 1을 더하고 문자열로 저장한다|
+|Boolean|setIfAbsent(K key, V value, Duration timeout)|"key"에 해당하는 값이 없거나 "timeout"이 지나 만료되면 value를 저장한다|
+|Boolean|setIfPresent(K key, V value)|"key"에 해당하는 값이 있으면 "value"를 저장한다|
+
+### 15-2-2. RedisTemplate.opsForZSet()
+
+```java
+public ZSetOperations<K, V> opsForZSet()
+```
+
+```java
+@Repository
+@RequiredArgsConstructor
+public class ArticleIdListRepository {
+    private final StringRedisTemplate redisTemplate;
+
+    // article-read::board::{boardId}::article-list
+    private static final String KEY_FORMAT = "article-read::board::%s::article-list";
+
+    ...
+
+    public void delete(Long boardId, Long articleId) {
+        redisTemplate.opsForZSet().remove(generateKey(boardId), toPaddedString(articleId));
+    }
+
+    public List<Long> readAll(Long boardId, Long offset, Long limit) {
+        return redisTemplate.opsForZSet()
+                .reverseRange(generateKey(boardId), offset, offset + limit -1)
+                .stream().map(Long::valueOf).toList();
+    }
+
+    public List<Long> readAllInfiniteScroll(Long boardId, Long lastArticleId, Long limit) {
+        return redisTemplate.opsForZSet().reverseRangeByLex(
+                generateKey(boardId),
+                lastArticleId == null ?
+                        Range.unbounded() :
+                        Range.leftUnbounded(Range.Bound.exclusive(toPaddedString(lastArticleId))),
+                Limit.limit().count(limit.intValue())
+        ).stream().map(Long::valueOf).toList();
+    }
+    ...
+}
+
+@Slf4j
+@Repository
+@RequiredArgsConstructor
+public class HotArticleListRepository {
+    private final StringRedisTemplate redisTemplate;
+
+    // hot-article::list::{yyyyMMdd}
+    private static final String KEY_FORMAT = "hot-article::list::%s";
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+    ...
+
+    public List<Long> readAll(String dateStr) {
+        return redisTemplate.opsForZSet()
+                .reverseRangeWithScores(generateKey(dateStr), 0, -1).stream()
+                .peek(tuple ->
+                        log.info("[HotArticleListRepository.readAll] articleId={}, score={}", tuple.getValue(), tuple.getScore()))
+                .map(ZSetOperations.TypedTuple::getValue)
+                .map(Long::valueOf)
+                .toList();
+    }
+}
+```
+
+zset에 대한 Redis Operation(ZSetOperations)을 반환한다.   
+Redis의 Sorted Set(zset) 자료 구조는 하나의 key에 여러 개의 score와 value로 구성된다.
+ZSetOperations에서 주로 사용하는 메서드는 아래와 같다.   
+
+|Modifier and Type|Method|Description|
+|:---|:---|:---|
+|Long|remove(K key, Object ... values)|"key"에 해당하는 값에서 values 들을 지운다|
+|Set<V>|reverseRange(K key, long start, long end)|"key"에 해당하는 값에서 내림차순 순서로 start에서 end까지 해당하는 값을 가져온다|
+|Set<V>|reverseRangeByLex(K key, Range<String> range)|Range.getLowerBound()와 Range.getUpperBound() 사이의 값을 가진 key에서 zset의 역방향 사전식 순서로 모든 요소를 가져온다|
+|Set<ZSetOperations.TypedTuple<V>>|reverseRangeWithScores(K key, long start, long end)|start 에서 end 범위 내의 튜플 집합을 내림차순으로 정렬하여 가져온다.|
+
+### 15-2-3. RedisTemplate.executePipelined(RedisCallback<?> action)
+
+Redis는 응답을 기다리지 않고 여러 요청을 Redis에 요청을 보내고 한번에 응답을 받는 파이프라인을 지원한다.   
+여러 요청을 연속으로 보내야할 때 주로 사용한다.   
+
+```java
+@Repository
+@RequiredArgsConstructor
+public class ArticleIdListRepository {
+    private final StringRedisTemplate redisTemplate;
+
+    // article-read::board::{boardId}::article-list
+    private static final String KEY_FORMAT = "article-read::board::%s::article-list";
+
+    public void add(Long boardId, Long articleId, Long limit) {
+        redisTemplate.executePipelined((RedisCallback<?>) action -> {
+            StringRedisConnection conn = (StringRedisConnection) action;
+            String key = generateKey(boardId);
+            conn.zAdd(key, 0, toPaddedString(articleId));
+            conn.zRemRange(key, 0, - limit - 1);
+            return null;
+        });
+    }
+    ...
+}
+```
