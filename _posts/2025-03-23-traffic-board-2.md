@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  대규모 시스템으로 설계된 게시판에 사용된 Spring 문법과 요소 기술들
+title: 대규모 시스템으로 설계된 게시판의 구조
 date: 2025-03-23 08:00:00 + 0900
 categories: Spring
 ref: java, Spring, board, traffic
