@@ -15,7 +15,7 @@ ref: java, Spring, board, traffic
 |No|서비스|목적|기술|
 |---|---|---|---|
 |1|Article|게시글 관리|DB Index(clustered, secondary, covering index), 페이징(limit, offset)|
-|2|Comment|댓글 관리|2 depth(인접리스트), 무한 depth(경로열거)|
+|2|Comment|댓글 관리|2 depth(인접리스트), 무한 depth(경로 열거)|
 |3|Like|좋아요 관리|일관성(Transaction), 동시성(pessimistic, optimistic lock, 비동기 순차처리)|
 |4|View|조회수 관리|Redis, TTL을 통한 Distributed Lock|
 |5|Hot Article|인기글 관리|Consumer-Event Driven Architecture / Producer-Transactional Message(Transactional Outbox), shard key coordinator|
@@ -57,8 +57,13 @@ N번 페이지의 M개의 게시글 정보는 limit와 offset 연산으로 조�
   <figcaption></figcaption>
 </figure>
 
-
 #### 1-1-2. 무한 스크롤
+무한 스크롤 방식을 현재 페이지(N), 페이지 당 게시글 개수(M)를 사용하는 페이지 번호 방식으로 구현하면,    
+스크롤을 요청하는 사이에 게시글의 등록, 삭제가 일어 났을 때 게시글 조회가 누락되는 문제가 발생한다.   
+그래서 offset 연산 없이 article_id를 기준으로 limit 연산을 하도록 구현한다.   
+<br/>
+페이지 번호 방식은 offset, limit 연산을 하기 때문에 offset이 커질 수록 조회 성능이 떨어진다.   
+그러나 무한 스크롤 방식은 article_id를 기준으로 limit 연산을 하기 때문에 매번 조회 성능이 동일한 특징이 있다.    
 
 ### 1-2. Index
 #### 1-2-1. Clustered Index
@@ -129,3 +134,261 @@ Covering Index를 사용해 offset이 커졌을 때 조회 성능을 개선했�
 그러나 offset이 더 커진다면 Secondary Index를 스캔하는 절대적인 시간 자체가 늘어나 느려질 수 있다.    
 이런 경우는 스캔하는 양을 줄여야 하기 때문에 연도 별로 테이블을 나눠 게시글을 저장하거나,    
 일정 offset 이상의 조회는 어뷰징으로 판단하고 지원하지 않도록 정책적으로 해결해야 한다.   
+
+## 2. Comment
+Comment 서비스는 게시글에 등록된 댓글들을 관리한다.   
+댓글은 2단 depth 구조를 갖거나 무한 depth 구조를 가질 수 있다.   
+
+### 2-1. 2 depth Comment
+2단 detph 구조를 갖는 댓글은 테이블에 댓글 정보를 인접리스트 형식으로 저장해 구현할 수 있다.   
+parent_commet_id 컬럼을 사용해 상위 댓글과 연결된다.
+
+[Comment 테이블 - 2 depth]   
+
+|이름|타입|
+|---|---|
+|commet_id|bigint|
+|content|varchar(3000)|
+|article_id|bigint|
+|parent_commet_id|bigint|
+|writer_id|bigint|
+|deleted|BOOL|
+|created_at|datetime|
+
+### 2-2. 무한 detph Comment
+무한 depth 구조를 갖는 댓글은 경로 열거 방식으로 구현할 수 있다.   
+각 경로를 depth 별로 5개의 문자로 표현한다. 숫자만을 사용하면 depth 별로 표현할 수 있는 가지수가 10^5 밖에 안된다.    
+0-9A-Za-z 문자를 사용해 62^5 가지를 지원할 수 있다.    
+문자의 대소를 비교하기 위해 테이블의 collation을 수정해야 한다.    
+MySQL의 기본 collation은 utf8mb4_0900_ai_ci이고 대소문자의 비교를 지원하지 않는다.    
+0~9 < A-Z < a-z 순서로 대소를 구분하는 utf8mb4_bin로 수정한다.    
+아래 테이블에선 path 컬럼의 길이가 5*5 이므로 5 depth 까지 댓글을 달 수 있다.
+
+[Comment 테이블 - 무한 depth]   
+
+|이름|타입|
+|---|---|
+|commet_id|bigint|
+|content|varchar(3000)|
+|article_id|bigint|
+|writer_id|bigint|
+|path|varchar(25)|
+|deleted|BOOL|
+|created_at|datetime|
+
+## 3. Like
+게시글에 대한 좋아요를 관리하기 위해 article_like 테이블과 article_like_count 테이블을 사용한다.   
+한 사용자가 한 게시글에 하나의 좋아요만 누를 수 있도록 article_like 테이블을 사용하고    
+좋아요 수를 조회하는 비용을 줄이기 위해해 article_like_count 테이블을 사용한다.   
+사용자가 게시글에 좋아요 버튼을 누르면 article_like 테이블에 좋아요 정보를 등록하고 article_like_count 테이블에서 article_id에 해당하는 row의 like_count에 1을 더한다.   
+<br/>
+article 테이블에 좋아요 수를 관리하도록 설계할 수 있다. 그러나 좋아요 수 요청과 게시글 등록, 삭제, 수정 요청은 다른 Lifecycle의 요청이다.   
+그리고 좋아요 수에 1을 더하기 위해 record lock을 설정하기 때문에 좋아요 요청으로 인해 게시글 요청이 처리되지 않을 수 있다.   
+관심사가 다르기 때문에 게시글과 좋아요 수를 정규화해 다른 테이블로 관리하도록 설계했다.   
+
+[article_like 테이블]   
+
+|이름|타입|
+|---|---|
+|article_like_id|bigint|
+|article_id|bigint|
+|user_id|bigint|
+|created_at|bigint|
+
+[article_like_count 테이블]   
+
+|이름|타입|
+|---|---|
+|article_id|bigint|
+|like_count|bigint|
+
+### 3-1. 일관성 문제
+article_like 테이블에 좋아요 정보를 추가, 삭제하는 것과 article_like_count 테이블에 좋아요 수를 1 더하는 것은 원자적으로 동작해야 한다.    
+좋아요 정보가 추가되고 좋아요 수를 1을 더하거나 아니면 모두 실패해야 한다.    
+두 요청이 Transactional 하게 동작하도록 @Transactional 애노테이션을 활용해 개발한다.
+
+```java
+@Service
+@RequiredArgsConstructor
+public class ArticleLikeService {
+    private final Snowflake snowflake = new Snowflake();
+    private final ArticleLikeRepository articleLikeRepository;
+    private final OutboxEventPublisher outboxEventPublisher;
+    private final ArticleLikeCountRepository articleLikeCountRepository;
+    
+    ...
+
+    /**
+     * update 구문
+     */
+    @Transactional
+    public void likePessimisticLock1(Long articleId, Long userId) {
+        ArticleLike articleLike = articleLikeRepository.save(
+                ArticleLike.create(
+                        snowflake.nextId(),
+                        articleId,
+                        userId
+                )
+        );
+
+        int result = articleLikeCountRepository.increase(articleId);
+        if (result == 0) {
+            // 최초 요청 시에는 update 되는 레코드가 없으므로, 1로 초기화 한다.
+            // 트래픽이 순식간에 몰릴 수 있는 상황에는 유실될 수 있으므로, 게시글 생성 시점에 미리 0으로 초기화 해둘 수도 있다.
+            articleLikeCountRepository.save(ArticleLikeCount.init(articleId, 1L));
+        }
+
+        outboxEventPublisher.publish(
+                EventType.ARTICLE_LIKED,
+                ArticleLikedEventPayload.builder()
+                        .articleLikeId(articleLike.getArticleLikeId())
+                        .articleId(articleLike.getArticleId())
+                        .userId(articleLike.getUserId())
+                        .createdAt(articleLike.getCreatedAt())
+                        .articleLikeCount(count(articleLike.getArticleId()))
+                        .build(),
+                articleLike.getArticleId()
+        );
+    }
+
+    @Transactional
+    public void unlikePessimisticLock1(Long articleId, Long userId) {
+        articleLikeRepository.findByArticleIdAndUserId(articleId, userId)
+                .ifPresent(articleLike -> {
+                    articleLikeRepository.delete(articleLike);
+                    articleLikeCountRepository.decrease(articleId);
+
+                    outboxEventPublisher.publish(
+                            EventType.ARTICLE_UNLIKED,
+                            ArticleUnlikedEventPayload.builder()
+                                    .articleLikeId(articleLike.getArticleLikeId())
+                                    .articleId(articleLike.getArticleId())
+                                    .userId(articleLike.getUserId())
+                                    .createdAt(articleLike.getCreatedAt())
+                                    .articleLikeCount(count(articleLike.getArticleId()))
+                                    .build(),
+                            articleLike.getArticleId()
+                    );
+                });
+    }
+...
+}
+```
+
+### 3-2. 동시성 문제
+한 게시글에 좋아요 요청이 동시에 들어오는 경우 좋아요 수 추가가 누락되는 경우가 발생할 수 있다.    
+이런 동시성 문제를 Lock이나 비동기 순차처리 방법을 사용해 해결할 수 있다.    
+Lock은 동시성 문제가 발생할 것으로 간주하고 개발하는 Pessimistic Lock과 발생하지 않을 것으로 간주하는 Optimistic Lock 두 가지 방법이 있다.
+
+#### 3-2-1. Pessimistic Lock
+동시성 문제가 발생한다고 간주하는 Pessimistic Lock(비관적 락)은 좋아요 수를 더할 때 트랜잭션에서 해당하는 row에 Record Lock을 걸어 다른 트랜잭션은 기다리도록 한다.   
+Lock은 Update 문을 사용하거나 select ... for update 문을 사용해 사용할 수 있다.
+
+##### 3-2-1-1. Update
+
+Update 문을 사용하면 Record Lock이 설정된다.
+
+```java
+@Repository
+public interface ArticleLikeCountRepository extends JpaRepository<ArticleLikeCount, Long> {
+
+    // select ... for update
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<ArticleLikeCount> findLockedByArticleId(Long articleId);
+
+    @Query(
+            value = "update article_like_count set like_count = like_count + 1 where article_id = :articleId",
+            nativeQuery = true
+    )
+    @Modifying
+    int increase(@Param("articleId") Long articleId);
+
+    @Query(
+            value = "update article_like_count set like_count = like_count - 1 where article_id = :articleId",
+            nativeQuery = true
+    )
+    @Modifying
+    int decrease(@Param("articleId") Long articleId);
+}
+```
+##### 3-2-1-2. select ... for update
+JPA의 @Lock(LockModeType.PESSIMISTIC_WRITE) 애노테이션을 사용하면 트랜잭션에서 좋아요 수를 더하려는 row에 Record Lock을 설정한다.   
+이어서 해당하는 row의 좋아요 수를 더한다.   
+
+```java
+@Repository
+public interface ArticleLikeCountRepository extends JpaRepository<ArticleLikeCount, Long> {
+
+    // select ... for update
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<ArticleLikeCount> findLockedByArticleId(Long articleId);
+
+    @Query(
+            value = "update article_like_count set like_count = like_count + 1 where article_id = :articleId",
+            nativeQuery = true
+    )
+    @Modifying
+    int increase(@Param("articleId") Long articleId);
+
+    @Query(
+            value = "update article_like_count set like_count = like_count - 1 where article_id = :articleId",
+            nativeQuery = true
+    )
+    @Modifying
+    int decrease(@Param("articleId") Long articleId);
+}
+```
+
+#### 3-2-2. Optimistic Lock
+Optimistic Lock(낙관적 락)은 version 컬럼을 사용한다.   
+좋아요 수를 더할 때 version 컬럼의 값을 같이 비교해 다른 트랜잭션에서 좋아요 수를 수정하지 않았는지 확인한다.    
+다른 트랜잭션에서 수정했을 경우 version 값이 다르기 때문에 쿼리가 실패한다.   
+다른 트랜잭션들을 기다리도록해 좋아요 수를 더하는 비관적 락과 다르게 낙관적 락은 쿼리가 실패할 수 있기 때문에,    
+실패했을 때 롤백을 하거나 사용자에게 알리는 등 추가적인 개발이 필요하다.   
+<br/>
+JPA에서 제공하는 @Version 애노테이션을 사용하면 별도의 구현없이 낙관적 락을 사용할 수 있다.    
+그리고 좋아요 수를 더하고 뺄 때 쿼리는 내부적으로 아래와 같이 동작한다.
+
+```sql
+update article_like_count
+set like_count = like_count + 1
+where article_id = :articeId and version = :version
+```
+
+```java
+@Table(name = "article_like_count")
+@Getter
+@Entity
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ArticleLikeCount {
+    @Id
+    private Long articleId; // shard key
+    private Long likeCount;
+    @Version
+    private Long version;
+
+    public static ArticleLikeCount init(Long articleId, Long likeCount) {
+        ArticleLikeCount articleLikeCount = new ArticleLikeCount();
+        articleLikeCount.articleId = articleId;
+        articleLikeCount.likeCount = likeCount;
+        articleLikeCount.version = 0L;
+        return articleLikeCount;
+    }
+
+    public void increase() {
+        this.likeCount++;
+    }
+
+    public void decrease() {
+        this.likeCount--;
+    }
+}
+```
+
+#### 3-2-3. 비동기 순차처리
+
+좋아요 요청이 들어오면 순차적으로 대기열에 담고 사용자에게 응답을 먼저 한 뒤, 싱글 스레드에서 하나씩 처리하도록 개발할 수 있다.   
+대기열에 담긴 요청들을 싱글 스레드로 하나씩 처리하기 때문에 동시성 문제가 발생하지 않는다.   
+그러나 문제가 생겨 요청 처리를 실패한 경우 사용자에게 실패했다는 알림을 주는 방법이 고안되어야 하고    
+비동기 순차처리를 위한 대기열과 비동기 처리 구현이 필요하기 때문에 개발과 관리에 어려움이 있을 수 있다.
