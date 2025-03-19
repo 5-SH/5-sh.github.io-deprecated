@@ -392,3 +392,116 @@ public class ArticleLikeCount {
 대기열에 담긴 요청들을 싱글 스레드로 하나씩 처리하기 때문에 동시성 문제가 발생하지 않는다.   
 그러나 문제가 생겨 요청 처리를 실패한 경우 사용자에게 실패했다는 알림을 주는 방법이 고안되어야 하고    
 비동기 순차처리를 위한 대기열과 비동기 처리 구현이 필요하기 때문에 개발과 관리에 어려움이 있을 수 있다.
+
+## 4. View
+조회수 정보는 게시글이 조회된 횟수만 저장하면 되고 어뷰징 방지를 위해 각 사용자는 게시글 당 10분에 1번만 조회수가 집계될 수 있어야 한다.    
+조회수 정보는 매번 영구 보관하지 않고 정해진 개수 마다 백업한다.   
+<br/>
+조회수 정보는 쓰기 트래픽이 많아 처리 속도가 중요하고 비교적 덜 중요한 자료라서 최신 값을 영구 보관할 필요가 없다.   
+RDBMS는 일관성을 보장하고 최신 값을 영구 보관할 수 있지만 디스크 접근 비용과 트랜잭션 관리 비용이 들어 조회수 정보를 저장하는데 적절하지 않다.   
+그리고 조회수 정보는 트래픽이 많아 디스크 접근이 자주 발생해 속도가 느릴 수 있다.   
+<br/>
+디스크 보다 빠르게 접근할 수 있는 메모리를 저장소로 사용하고 싱글 스레드를 사용해 동시성 문제가 없는 Redis를 조회수 정보를 저장하는데 사용한다.   
+그리고 어뷰징 방지 기능을 Redis에서 지원하는 TTL(Time To Live)을 사용해 구현할 수 있다.   
+
+[article_view_count 테이블]
+
+|이름|타입|
+|---|---|
+|article_id|bigint|
+|view_count|bigint|
+
+### 4-1. 어뷰징 방지, 조회수 백업 기능
+view 서비스는 MSA로 만들어졌기 때문에 여러 서비스 인스턴스에서 요청이 들어올 수 있다.    
+분산 환경에서 조회수 어뷰징을 막기 위해 분산 락을 사용한다.    
+게시글의 조회수를 올리기 전 사용자가 10분 사이에 이 게시글을 읽었는지 확인하기 위해 분산 락을 설정한다.   
+
+<br/>
+
+Redis에 articleId와 userId를 포함하는 키를 TTL 10분으로 설정해 저장한다.    
+설정할 때 setIfAbsent 함수를 사용해 키가 없으면 추가하고 true를 반홚고 있으면 false를 반환한다.    
+false를 받으면 분산 락이 있는 것이고 10분 내에 사용자가 이 게시글을 읽은 것 이므로 조회수를 올리지 않는다.   
+분산 락을 설정해 true를 받으면 articleViewCountRepository.increase 함수를 통해 조회수를 올린다.   
+increase 함수는 RedisTemplate의 increment 함수를 호출하는데, increment 함수는 원자적으로 동작하기 때문에 동시성 문제가 발생하지 않는다.   
+
+<br/>
+
+마지막으로 조회수가 Redis에 1000개가 되면 articleViewCountBackUpProcessor.backUp 메소드를 통해 RDBMS에 백업한다.
+```java
+@Service
+@RequiredArgsConstructor
+public class ArticleViewService {
+    private final ArticleViewCountRepository articleViewCountRepository;
+    private final ArticleViewCountBackUpProcessor articleViewCountBackUpProcessor;
+    private final ArticleViewDistributedLockRepository articleViewDistributedLockRepository;
+
+    private static final int BACK_UP_BATCH_SIZE = 1000;
+    private static Duration TTL = Duration.ofMinutes(10);
+
+    public Long increase(Long articleId, Long userId) {
+        if (!articleViewDistributedLockRepository.lock(articleId, userId, TTL)) {
+            return articleViewCountRepository.read(articleId);
+        }
+
+        Long count = articleViewCountRepository.increase(articleId);
+        if (count % BACK_UP_BATCH_SIZE == 0) {
+            articleViewCountBackUpProcessor.backUp(articleId, count);
+        }
+        return count;
+    }
+
+    ...
+}
+
+@Repository
+@RequiredArgsConstructor
+public class ArticleViewDistributedLockRepository {
+    private final StringRedisTemplate redisTemplate;
+
+    // view::article::{article_id}::user::{user_id}::lock
+    private static final String KEY_FORMAT = "view::article::%s::user::%s::lock";
+
+    public boolean lock(Long articleId, Long userId, Duration ttl) {
+        String key = generateKey(articleId, userId);
+        // setIfAbsent는 원자적으로 동작
+        return redisTemplate.opsForValue().setIfAbsent(key, "", ttl);
+    }
+    ..
+}
+
+@Repository
+@RequiredArgsConstructor
+public class ArticleViewCountRepository {
+    private final StringRedisTemplate redisTemplate;
+
+    // view::article::{article_id}::view_count
+    private static final String KEY_FORMAT = "view::article::%s::view_count";
+
+    ...
+
+    public Long increase(Long articleId) {
+        return redisTemplate.opsForValue().increment(generateKey(articleId));
+    }
+
+    ...
+}
+
+@Component
+@RequiredArgsConstructor
+public class ArticleViewCountBackUpProcessor {
+    private final OutboxEventPublisher outboxEventPublisher;
+    private final ArticleViewCountBackUpRepository articleViewCountBackUpRepository;
+
+    @Transactional
+    public void backUp(Long articleId, Long viewCount) {
+        int result = articleViewCountBackUpRepository.updateViewCount(articleId, viewCount);
+        if (result == 0) {
+            articleViewCountBackUpRepository.findById(articleId)
+                    .ifPresentOrElse(ignored -> { },
+                            () -> articleViewCountBackUpRepository.save(ArticleViewCount.init(articleId, viewCount)));
+        }
+
+        ...
+    }
+}
+```
