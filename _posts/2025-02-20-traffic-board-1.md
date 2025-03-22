@@ -1597,3 +1597,16 @@ public class ArticleIdListRepository {
     ...
 }
 ```
+
+# 16. Spring Data Kafka
+
+Spring은 카프카에 메시지를 보내기 위해 KafkaTemplate를 제공한다.
+그리고 카프카 메시지를 다루기 위해 KafkaMessageListenerContainer와 @KafkaListener를 제공한다.
+
+## 16-1. KafkaTemplate
+
+
+
+## 16-2. KafkaMessageListenerContainer
+
+## 16-3. @KafkaListener
