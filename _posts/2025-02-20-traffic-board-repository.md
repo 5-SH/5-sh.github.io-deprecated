@@ -217,6 +217,50 @@ public class Outbox {
 
 ### 1-4-2. @Lock/@Version
 
+하나의 값을 여러 스레드에서 동시 수정할 때 수정 사항이 제대로 반영되지 않는 동시성 문제를 해결하기 위해 비관적 락이나 낙관적 락을 사용할 수 있다.    
+
+#### 1-4-2-1. 비관적 락
+
+비관적 락은 동시성 문제가 발생할 것으로 가정하고 RDBMS에서 수정하려는 레코드에 쓰기 잠금을 걸어 동시에 들어온 다른 요청은 락을 점유한 요청이 수정을 완료할 때 까지 기다리게 된다.   
+MySQL에서 UPDATE 쿼리를 실행할 때 수정되는 레코드에 쓰기 잠금이 걸리게 된다.    
+또는 SELECT... FOR UPDATE 구문을 사용해 명시적으로 레코드에 쓰기 잠금을 걸 수 있다.   
+Spring JPA에선 @Lock 애노테이션을 사용해 비관적 락을 설정할 수 있다.   
+
+```java
+@Repository
+public interface ArticleLikeCountRepository extends JpaRepository<ArticleLikeCount, Long> {
+
+    // select ... for update
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<ArticleLikeCount> findLockedByArticleId(Long articleId);
+    ...
+}
+```
+
+#### 1-4-2-2. 낙관적 락
+
+낙관적 락은 동시성 문제가 발생하지 않을 것으로 가정하고 동시성 문제가 발생하면 롤백이나 예외 처리 등을 한다.   
+롤백이나 예외 처리 같은 후속 처리에 대한 부분은 따로 구현이 필요하다.   
+동시성 문제가 발생할 것으로 예상되는 테이블에 version 컬럼을 추가하고 레코드에 수정을 할 때 version이 같은지 비교한다.    
+만약 version 정보가 다르면 다른 요청이 레코드를 수정한 것 이므로 쿼리 실패가 발생해 동시성 문제가 발생한 것을 인지할 수 있다.   
+테이블에 version 컬럼을 추가하고 값을 수정하는 쿼리에 version을 비교하는 조건을 추가 하도록 개발해야 하는데,   
+Spring JPA에선 엔티티를 정의할 때 version 속성에 @Version 애노테이션을 추가해 사용할 수 있다.   
+
+```java
+@Table(name = "article_like_count")
+@Getter
+@Entity
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ArticleLikeCount {
+    @Id
+    private Long articleId; // shard key
+    private Long likeCount;
+    @Version
+    private Long version;
+    ...
+}
+``` 
 
 ### 1-4-3. @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
@@ -423,15 +467,185 @@ public class ArticleIdListRepository {
 }
 ```
 
+## 2-3. Redis Cache
+
+### 2-3-1. @EnableCaching
+
+CacheConfig 빈에서 캐시 이름, TTL 같이 Redis Cache에 대한 설정을 하고 @EnableCache를 등록해 캐시 기능을 활성화 한다.    
+
+```java
+@Configuration
+@EnableCaching
+public class CacheConfig {
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        return RedisCacheManager.builder(connectionFactory)
+                .withInitialCacheConfigurations(
+                        Map.of(
+                                "articleViewCount", 
+                                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(1))
+                        )
+                )
+                .build();
+    }
+}
+```
+
+### 2-3-2. @Cacheable
+
+@Cacheable 애노테이션이 등록된 메서드는 동적 프록시가 적용되어 메서드 실행 전 애노테이션의 value 값에 해당하는 Redis Cache에서    
+key 정보로 캐싱된 값이 있는지 찾고 있으면 리턴하고 없으면 메서드를 실행해 데이터를 가져온 뒤 메서드에서 응답하는 값을    
+Redis Cache에 key 정보로 저장한다.   
+
+```java
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class ViewClient {
+    private RestClient restClient;
+    @Value("${endpoints.traffic-board-view-service.url}")
+    private String viewServiceUrl;
+
+    @PostConstruct
+    public void initRestClient() {
+        restClient = RestClient.create(viewServiceUrl);
+    }
+
+    /**
+     * 레디스에서 데이터를 조회해본다.
+     * 레디스에 데이터가 없었다면, count 메소드 내부 로직이 호출 되면서, viewService로 원본 데이터를 요청한다. 그리고 레디스에 데이터를 넣고 응답한다.
+     * 레디스에 데이터가 있었다면 그 데이터를 그대로 반환한다.
+     */
+    @Cacheable(key = "#articleId", value = "articleViewCount")
+    public long count(Long articleId) {
+        log.info("[ViewClient.count] articleId={}", articleId);
+        try {
+            return restClient.get()
+                    .uri("/v1/article-views/articles/{articleId}/count", articleId)
+                    .retrieve()
+                    .body(Long.class);
+        } catch (Exception e) {
+            log.error("[ViewClient.count] articleId={}", articleId, e);
+            return 0;
+        }
+    }
+}
+```
+
 # 3. Spring Data Kafka
 
-Spring은 카프카에 메시지를 보내기 위해 KafkaTemplate를 제공한다.
-그리고 카프카 메시지를 다루기 위해 KafkaMessageListenerContainer와 @KafkaListener를 제공한다.
+Kafka는 분산형 스트리밍 플랫폼으로 대용량의 데이터(이벤트)를 Publish 하거나 Subscribe 하는데 사용된다.   
+디스크에 로그 형태로 데이터를 저장해 데이터 손실을 방지한다.    
+Kafka는 로그 수집, 실시간 데이터 처리, 이벤트 드리븐 아키텍처 구현 등에 사용된다.   
+
+<br/>
+
+Kafka는 Broker, Topic, Zookeeper로 구성되어 있고 Topic을 다루기 위해 partition, replication, offset과 같은 기능을 제공한다.   
+
+- Broker: Kafka 서버(노드)이다. 여러 개의 Broker가 클러스터를 이뤄 동작할 수 있다.
+- Topic: 데이터를 분류하는 단위이고 메시지 큐의 역할을 한다.
+- Partition: Topic을 여러 부분으로 나눠 병렬 처리와 확장성을 제공한다. 이벤트에 순서 처리가 필요한 경우 같은 Topic 같은 partition에 저장한다.
+    - Offset: 각 Partition에는 Offset이 존재하는데, Consumer group 마다 자산의 Offset을 관리해 원하는 위치 부터 메시지를 읽을 수 있다.   
+    - Replication: Partition 데이터는 Replicatin Factor를 설정해 복제해 저장할 수 있다. Leader Partition은 데이터를 읽고 쓰는 주 역할이고 Follower Partition은 Leader의 데이터를 복제하고 장애 발생 시 대체한다.   
+
+<br/>
+
+카프카는 Producer가 메시지(이벤트)가 제대로 전달된 것을 확인하기 위해 ACK를 사용하고 ACK는 0, 1, 2 단계로 설정해 사용할 수 있다.
+
+- 0: Broker에 데이터가 전달 되었는지 확인 안 함
+- 1: Leader에만 전달하면 성공
+- 2: Leader와 min.insync.replicas 만큼의 follower에 기록되면 성공
 
 ## 3-1. KafkaTemplate
 
+Spring은 카프카에 메시지를 보내기 위해 KafkaTemplate를 제공한다.   
+KafkaTemplate.send(topic, key, message) 메서드는 key를 통해 topic의 특정 파티션에 message를 전송한다.    
+Kfaka는 기본적으로 같은 키 값은 같은 파티션으로 배치하므로 동일한 키를 가진 메시지는 항상 같은 파티션에 저장된다.   
+메시지(이벤트)의 순서 보장이 필요한 경우 같은 key를 사용해 전송하면 topic의 partition 내에서 순서를 보장해 준다.   
 
+```java
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class MessageRelay {
+    private final OutboxRepository outboxRepository;
+    private final MessageRelayCoordinator messageRelayCoordinator;
+    private final KafkaTemplate<String, String> messageRelayKafkaTemplate;
 
-## 3-2. KafkaMessageListenerContainer
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void createdOutbox(OutboxEvent outboxEvent) {
+        log.info("[MessageRelay.createOutbox] outboxEvent={}", outboxEvent);
+        outboxRepository.save(outboxEvent.getOutbox());
+    }
+
+    @Async("messageRelayPublishEventExecutor")
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void publishEvent(OutboxEvent outboxEvent) {
+        publishEvent(outboxEvent.getOutbox());
+    }
+
+    private void publishEvent(Outbox outbox) {
+        try {
+            messageRelayKafkaTemplate.send(
+                    outbox.getEventType(). getTopic(),
+                    String.valueOf(outbox.getShardKey()),
+                    outbox.getPayload()
+            ).get(1, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("[MessageRelay.publishEvent] outbox={}", outbox, e);
+            throw new RuntimeException(e);
+        }
+        outboxRepository.delete(outbox);
+    }
+    ...
+}
+```
+
+## 3-2. ConcurrentKafkaListenerContainerFactory
+
+ConcurrentKafkaListenerContainerFactory는 Spring에서 @KafkaListener를 사용해 메시지를 소비할 때 필요한 Consumer 컨테이너를 생성하는 Factory 클래스이다.    
+ConcurrentKafkaListenerContainerFactory를 빈으로 등록하면 @KafkaListener가 내부적으로 사용해 Kafka로 부터 메시지를 수신 받는다.   
+ConcurrentKafkaListenerContainerFactory는 멀티스레드 기반의 병렬 처리를 지원하고 setConcurrency(int concurrency)메서드를 통해 설정할 수 있다.      
+
+```java
+@Configuration
+public class KafkaConfig {
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(
+            ConsumerFactory<String, String> consumerFactory
+    ) {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        return factory;
+    }
+}
+```
 
 ## 3-3. @KafkaListener
+
+Spring에서 @KafkaListener 애노테이션을 통해 Kafka Consumer를 정의할 수 있다.    
+내부적으로 ConcurrentKafkaListenerContainerFactory를 사용해 Consumer를 실행한다.   
+
+```java
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class ArticleReadEventConsumer {
+    private final ArticleReadService articleReadService;
+
+    @KafkaListener(topics = {
+            EventType.Topic.KUKE_BOARD_ARTICLE,
+            EventType.Topic.KUKE_BOARD_COMMENT,
+            EventType.Topic.KUKE_BOARD_LIKE
+    })
+    public void listen(String message, Acknowledgment ack) {
+        log.info("[ArticleReadEventConsumer.listen] message={}", message);
+        Event<EventPayload> event = Event.fromJson(message);
+        if (event != null) {
+            articleReadService.handleEvent(event);
+        }
+        ack.acknowledge();
+    }
+}
+```
