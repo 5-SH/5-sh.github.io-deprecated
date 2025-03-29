@@ -38,7 +38,6 @@ category_dir: category/
 tag_dir: tag/
 future: true
 published: true
-
 markdown: kramdown
 kramdown:
   parse_block_html: true
