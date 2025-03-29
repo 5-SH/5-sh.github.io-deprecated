@@ -427,6 +427,7 @@ increase 함수는 RedisTemplate의 increment 함수를 호출하는데, increme
 <br/>
 
 마지막으로 조회수가 Redis에 1000개가 되면 articleViewCountBackUpProcessor.backUp 메소드를 통해 RDBMS에 백업한다.
+
 ```java
 @Service
 @RequiredArgsConstructor
