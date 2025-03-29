@@ -41,8 +41,10 @@ published: true
 markdown: kramdown
 kramdown:
   input: GFM
-  hard_wrap: false
   parse_block_html: true
+  syntax_highlighter_opts:
+    block:
+      wrap: false
 
 
 # Exclude from processing.
