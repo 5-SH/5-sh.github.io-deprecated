@@ -1,5 +1,10 @@
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      mermaid.init(undefined, document.querySelectorAll(".mermaid"));
+    document.addEventListener("DOMContentLoaded", function () {
+        const mermaidScript = document.createElement("script");
+        mermaidScript.src = "https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.0/mermaid.min.js";
+        mermaidScript.onload = function () {
+            mermaid.initialize({ startOnLoad: true });
+        };
+        document.body.appendChild(mermaidScript);
     });
-</script>  
+</script>
