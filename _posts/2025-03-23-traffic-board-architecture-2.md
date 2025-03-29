@@ -83,7 +83,7 @@ Kafka의 Topic에 이벤트가 들어오면 Topic을 구독하고 있는 Subscri
 
 {::nomarkdown}
 <div class="mermaid">
-graph LR
+graph TD
     subgraph Producer[Producer]
         direction LR
         subgraph Entity ["Entity(Article)"]
