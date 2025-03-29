@@ -140,10 +140,10 @@ graph LR
 #### 1-2-1. Producer의 이벤트 전달 방법
 
 각 서비스에서 비즈니스 로직이 실행되면 EventPayload를 만든다.    
-예를 들어 게시글 서비스에서 게시글이 생성되면 EventPayload를 구현한 ArticleCreatedEventPayload를 생성한다.
+예를 들어 게시글 서비스에서 게시글이 생성되면 EventPayload를 구현한 ArticleCreatedEventPayload를 생성한다.   
 
 ```java
-Service
+@Service
 @RequiredArgsConstructor
 public class ArticleService {
     ...
