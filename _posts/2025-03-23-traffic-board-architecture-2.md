@@ -23,14 +23,14 @@ ref: java, Spring, board, traffic
 
 ## 1. Hot Article
 
-```mermaid
+<div class="mermaid">
 graph TD;
   A[시작] --> B{결정};
   B -->|예| C[진행];
   B -->|아니오| D[종료];
-```
+</div>
 
-```mermaid
+<div class="mermaid">
 graph TD;
   subgraph Gateway
     A[API Gateway]
@@ -53,6 +53,6 @@ graph TD;
   B -->|데이터 저장| E
   C -->|세션 캐싱| F
   D -->|결제 정보 저장| E
-```
+</div>
 
 ## 2. Article Read
