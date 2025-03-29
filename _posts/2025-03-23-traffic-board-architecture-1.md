@@ -205,7 +205,7 @@ article 테이블에 좋아요 수를 관리하도록 설계할 수 있다. 그�
 ### 3-1. 일관성 문제
 article_like 테이블에 좋아요 정보를 추가, 삭제하는 것과 article_like_count 테이블에 좋아요 수를 1 더하는 것은 원자적으로 동작해야 한다.    
 좋아요 정보가 추가되고 좋아요 수를 1을 더하거나 아니면 모두 실패해야 한다.    
-두 요청이 Transactional 하게 동작하도록 @Transactional 애노테이션을 활용해 개발한다.
+두 요청이 Transactional 하게 동작하도록 @Transactional 애노테이션을 활용해 개발한다.    
 
 ```java
 @Service
@@ -286,7 +286,7 @@ Lock은 Update 문을 사용하거나 select ... for update 문을 사용해 사
 
 ##### 3-2-1-1. Update
 
-Update 문을 사용하면 Record Lock이 설정된다.
+Update 문을 사용하면 Record Lock이 설정된다.   
 
 ```java
 @Repository
@@ -347,7 +347,7 @@ Optimistic Lock(낙관적 락)은 version 컬럼을 사용한다.
 실패했을 때 롤백을 하거나 사용자에게 알리는 등 추가적인 개발이 필요하다.   
 <br/>
 JPA에서 제공하는 @Version 애노테이션을 사용하면 별도의 구현없이 낙관적 락을 사용할 수 있다.    
-그리고 좋아요 수를 더하고 뺄 때 쿼리는 내부적으로 아래와 같이 동작한다.
+그리고 좋아요 수를 더하고 뺄 때 쿼리는 내부적으로 아래와 같이 동작한다.   
 
 ```sql
 update article_like_count
@@ -426,7 +426,7 @@ increase 함수는 RedisTemplate의 increment 함수를 호출하는데, increme
 
 <br/>
 
-마지막으로 조회수가 Redis에 1000개가 되면 articleViewCountBackUpProcessor.backUp 메소드를 통해 RDBMS에 백업한다.
+마지막으로 조회수가 Redis에 1000개가 되면 articleViewCountBackUpProcessor.backUp 메소드를 통해 RDBMS에 백업한다.   
 
 ```java
 @Service
