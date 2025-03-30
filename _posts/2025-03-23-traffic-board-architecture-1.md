@@ -53,8 +53,8 @@ N번 페이지의 M개의 게시글 정보는 limit와 offset 연산으로 조�
 ((N - 1) / K + 1) * M * K + 1로 조회해 성능을 개선할 수 있다.
 
 <figure>
-  <img src="https://github.com/user-attachments/assets/5fb916e7-e170-44ab-95bf-4efb183e83af" height="100" />
-  <figcaption></figcaption>
+  <img src="https://i.imgur.com/24cOlX5.jpeg" height="100" />
+  <figcaption>▲ 구글 페이징</figcaption>
 </figure>
 
 #### 1-1-2. 무한 스크롤
@@ -112,8 +112,8 @@ Secondary Index에서 offset 만큼 스캔을 할 때 매번 Clustered Index의 
 그래서 offset 크기인 1,500,000번 만큼 실제 row를 가져오기 때문에 속도가 느려지게 된다.   
 
 <figure>
-  <img src="https://github.com/user-attachments/assets/e169d930-df7f-4ab2-86f1-52c2bbe2271a" height="350" />
-  <figcaption>▲ 출처: https://velog.io/%40minbo2002/coveringIndex</figcaption>
+  <img src="https://i.imgur.com/7eB1cHz.png" height="350" />
+  <figcaption>▲ 데이터블록 인덱스/출처: https://velog.io/%40minbo2002/coveringIndex</figcaption>
 </figure>
 
 Secondary Index의 컬럼 만으로 처리할 수 있는 인덱스를 Covering Index라고 한다.   
