@@ -409,10 +409,7 @@ Article Create/Delete 이벤트는 Redis에 Article 생성 시간에 관련된 �
 Article Liked/Unliked, Article Viewed, Comment Created/Deleted 이벤트는 Article이 오늘 생성 되었는지 확인하고 인기글 Score를 계산해,   
 Redis의 일자별로 인기글을 저장하고 있는 Sorted Set의 Score를 수정한다.   
 
-<figure>
-    <img src="https://github.com/user-attachments/assets/c8fef9c0-5eba-4777-8cfa-f271d974348d" height="350" />
-    <figcaption></figcaption>
-</figure>
+![image](https://github.com/user-attachments/assets/c8fef9c0-5eba-4777-8cfa-f271d974348d)
 
 ```java
 public interface EventHandler<T extends EventPayload> {
