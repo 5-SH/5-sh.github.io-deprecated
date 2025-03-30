@@ -2,7 +2,7 @@
 layout: post
 title: 대규모 시스템으로 설계된 게시판에 사용된 Spring 문법과 요소 기술 - Java
 date: 2025-03-25 23:00:00 + 0900
-categories: Spring
+categories: Traffic
 ref: java, Spring, board
 ---
 

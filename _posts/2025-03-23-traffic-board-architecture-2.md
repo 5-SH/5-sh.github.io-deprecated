@@ -2,7 +2,7 @@
 layout: post
 title: 대규모 시스템으로 설계된 게시판의 구조 - Hot Article
 date: 2025-03-27 23:50:00 + 0900
-categories: Spring
+categories: Traffic
 ref: java, Spring, board, traffic
 ---
 
