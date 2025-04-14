@@ -19,7 +19,7 @@ ref: java, Spring, board, traffic
 JavaScript 언어에 익숙하고 당장 게시판 서비스를 클라우드 환경에서 테스트할 계획은 없고 하나의 서버에서 여러 서비스를 실행할 계획이다.   
 따라서 성능, 부하 테스트를 위해 많이 사용하는 JMeter, Grinder 대신 K6를 사용한다.
 
-## Get Started
+## 1. Get Started
 
 k6 테스트 스크립트를 작성하기 위해 Default function과 options function을 작성해야 한다.   
 options function에는 virtual user, 테스트 기간, 반복, threshold 등 테스트 실행에 대한 설정을 할 수 있다.   
@@ -42,7 +42,7 @@ export default function () {
 }
 ```
 
-## Metrics
+## 2. Metrics
 
 시스템의 성능과 안전성을 평가하기 위해 아래와 같이 기본 메트릭들을 제공한다.    
 
@@ -63,7 +63,7 @@ export default function () {
 
 ![](https://i.imgur.com/nQoupDd.png)
 
-## Check
+## 3. Check
 
 테스트 중에 특정 조건을 검증하는데 사용된다. 
 check 함수는 HTTP 응답 값 같은 것들이 조건을 충족하는지 확인하고 테스트의 성공 여부를 평가할 수 있다.   
@@ -88,7 +88,7 @@ export default function () {
 
 ![](https://i.imgur.com/0EkkGG5.png)
 
-## Threshold
+## 4. Threshold
 
 테스트의 성공 여부를 판단하는 기준이다. threshold에 응답 시간, 실패율 등 조건을 설정하고 테스트가 조건을 충족하지 않으면 중단된다.
 threshold를 사용해 다음과 같은 테스트 조건을 만들 수 있다.
@@ -138,17 +138,17 @@ export default function () {
 
 ![](https://i.imgur.com/5cwbkE3.png)
 
-## Scenarios
+## 5. Scenarios
 
 virtual user, 요청 반복 계획, 실행 시간, 부하 패턴 등을 세부적으로 구성하는 방법을 제공해 다양한 트래픽 패턴을 구현할 수 있도록 한다.   
 scenario는 k6 스크립트의 options 객체 내에서 정의되고 executor를 통해 실행 방식을 정의한다.   
 
-## Executors
+## 6. Executors
 
 executors는 부하 테스트를 실행하는 방법을 정의한다. virtual user와 실행 방식을 제어해 다양한 부하 시나리오를 테스트 한다.   
 executors는 option의 scenario에서 설정할 수 있다.   
 
-### 1. shared-iterations
+### 6-1. shared-iterations
 
 고정된 요청 횟수를 virtual user가 나누어 실행
 
@@ -172,7 +172,7 @@ export const options = {
 ...
 ```
 
-### 2. per-vu-iterations
+### 6-2. per-vu-iterations
 각 virtual user가 고정된 수의 반복을 실행
 
 <figure>
@@ -195,7 +195,7 @@ export const options = {
 ...
 ```
 
-### 3. constant-vus     
+### 6-3. constant-vus     
 virtual user가 지정된 시간 만큼 최대한 많이 요청청
 
 <figure>
@@ -217,7 +217,7 @@ export const options = {
 ...
 ```
 
-### 4. ramping-vus          
+### 6-4. ramping-vus          
 virtual user의 수를 stage에 정의된 대로 점진적으로 증가시키거나 감소시킴
 
 <figure>
@@ -243,7 +243,7 @@ export const options = {
 ...
 ```
 
-### 5. constant-arrival-rate 
+### 6-5. constant-arrival-rate 
 정해진 시간 동안 정해진 요청(rate/timeunit)을 최소, 최대 virtual user 내에서 실행
 
 <figure>
@@ -268,7 +268,7 @@ export const options = {
 ...
 ```
 
-### 6. ramping-arrival-rate
+### 6-6. ramping-arrival-rate
 stages에 정의된 target 만큼의 요청을 duration 동안 수행함
 
 <figure>
@@ -297,7 +297,7 @@ export const options = {
 ...
 ```
 
-## Load Test Types
+## 7. Load Test Types
 
 | No | Load Test Type      | 설명                                                                                   |
 |----|---------------------|----------------------------------------------------------------------------------------|
