@@ -173,6 +173,7 @@ export const options = {
 ```
 
 ### 6-2. per-vu-iterations
+
 각 virtual user가 고정된 수의 반복을 실행
 
 <figure>
@@ -195,8 +196,9 @@ export const options = {
 ...
 ```
 
-### 6-3. constant-vus     
-virtual user가 지정된 시간 만큼 최대한 많이 요청청
+### 6-3. constant-vus
+
+virtual user가 지정된 시간 만큼 최대한 많이 요청
 
 <figure>
   <img src="https://grafana.com/media/docs/k6-oss/constant-vus.png"/>
@@ -217,7 +219,8 @@ export const options = {
 ...
 ```
 
-### 6-4. ramping-vus          
+### 6-4. ramping-vus
+
 virtual user의 수를 stage에 정의된 대로 점진적으로 증가시키거나 감소시킴
 
 <figure>
@@ -244,6 +247,7 @@ export const options = {
 ```
 
 ### 6-5. constant-arrival-rate 
+
 정해진 시간 동안 정해진 요청(rate/timeunit)을 최소, 최대 virtual user 내에서 실행
 
 <figure>
@@ -269,6 +273,7 @@ export const options = {
 ```
 
 ### 6-6. ramping-arrival-rate
+
 stages에 정의된 target 만큼의 요청을 duration 동안 수행함
 
 <figure>
