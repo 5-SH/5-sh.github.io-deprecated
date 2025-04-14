@@ -154,7 +154,7 @@ executors는 option의 scenario에서 설정할 수 있다.
 
 <figure>
   <img src="https://grafana.com/media/docs/k6-oss/shared-iterations.png" width="100%" />
-  <figcaption>▲ https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/shared-iterations/</figcaption>
+  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/shared-iterations/"</figcaption>
 </figure>
 
 ```javascript
@@ -178,7 +178,7 @@ export const options = {
 
 <figure>
   <img src="https://grafana.com/media/docs/k6-oss/per-vu-iterations.png" width="100%" />
-  <figcaption>▲ https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/per-vu-iterations/</figcaption>
+  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/per-vu-iterations/"</figcaption>
 </figure>
 
 ```javascript
@@ -202,7 +202,7 @@ virtual user가 지정된 시간 만큼 최대한 많이 요청
 
 <figure>
   <img src="https://grafana.com/media/docs/k6-oss/constant-vus.png" width="100%" />
-  <figcaption>▲ https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-vus/</figcaption>
+  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-vus/"</figcaption>
 </figure>
 
 ```javascript
@@ -225,7 +225,7 @@ virtual user의 수를 stage에 정의된 대로 점진적으로 증가시키거
 
 <figure>
   <img src="https://grafana.com/media/docs/k6-oss/ramping-vus.png" width="100%" />
-  <figcaption>▲ https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-vus/</figcaption>
+  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-vus/"</figcaption>
 </figure>
 
 ```javascript
@@ -252,7 +252,7 @@ export const options = {
 
 <figure>
   <img src="https://grafana.com/media/docs/k6-oss/constant-arrival-rate.png" width="100%" />
-  <figcaption>▲ https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-arrival-rate/</figcaption>
+  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-arrival-rate/"</figcaption>
 </figure>
 
 ```javascript
@@ -278,7 +278,7 @@ stages에 정의된 target 만큼의 요청을 duration 동안 수행함
 
 <figure>
   <img src="https://grafana.com/media/docs/k6-oss/ramping-arrival-rate.png" width="100%" />
-  <figcaption>▲ https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-arrival-rate/</figcaption>
+  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-arrival-rate/"</figcaption>
 </figure>
 
 ```javascript
@@ -315,5 +315,5 @@ export const options = {
 
 <figure>
   <img src="https://grafana.com/media/docs/k6-oss/chart-load-test-types-overview.png" width="100%" />
-  <figcaption>▲ https://grafana.com/load-testing/types-of-load-testing/</figcaption>
+  <figcaption>▲ "https://grafana.com/load-testing/types-of-load-testing/"</figcaption>
 </figure>
