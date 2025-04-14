@@ -152,10 +152,9 @@ executors는 option의 scenario에서 설정할 수 있다.
 
 고정된 요청 횟수를 virtual user가 나누어 실행
 
-<figure>
-  <img src="https://grafana.com/media/docs/k6-oss/shared-iterations.png" width="100%" />
-  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/shared-iterations/"</figcaption>
-</figure>
+![](https://grafana.com/media/docs/k6-oss/shared-iterations.png)
+*https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/shared-iterations/*
+
 
 ```javascript
 ...
@@ -176,10 +175,9 @@ export const options = {
 
 각 virtual user가 고정된 수의 반복을 실행
 
-<figure>
-  <img src="https://grafana.com/media/docs/k6-oss/per-vu-iterations.png" width="100%" />
-  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/per-vu-iterations/"</figcaption>
-</figure>
+![](https://grafana.com/media/docs/k6-oss/per-vu-iterations.png)
+*https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/per-vu-iterations/*
+
 
 ```javascript
 ...
@@ -200,10 +198,9 @@ export const options = {
 
 virtual user가 지정된 시간 만큼 최대한 많이 요청
 
-<figure>
-  <img src="https://grafana.com/media/docs/k6-oss/constant-vus.png" width="100%" />
-  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-vus/"</figcaption>
-</figure>
+![](https://grafana.com/media/docs/k6-oss/constant-vus.png)
+*https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-vus/*
+
 
 ```javascript
 ...
@@ -223,10 +220,9 @@ export const options = {
 
 virtual user의 수를 stage에 정의된 대로 점진적으로 증가시키거나 감소시킴
 
-<figure>
-  <img src="https://grafana.com/media/docs/k6-oss/ramping-vus.png" width="100%" />
-  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-vus/"</figcaption>
-</figure>
+![](https://grafana.com/media/docs/k6-oss/ramping-vus.png)
+*https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-vus/*
+
 
 ```javascript
 ...
@@ -250,10 +246,9 @@ export const options = {
 
 정해진 시간 동안 정해진 요청(rate/timeunit)을 최소, 최대 virtual user 내에서 실행
 
-<figure>
-  <img src="https://grafana.com/media/docs/k6-oss/constant-arrival-rate.png" width="100%" />
-  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-arrival-rate/"</figcaption>
-</figure>
+![](https://grafana.com/media/docs/k6-oss/constant-arrival-rate.png)
+*https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-arrival-rate/*
+
 
 ```javascript
 ...
@@ -276,10 +271,9 @@ export const options = {
 
 stages에 정의된 target 만큼의 요청을 duration 동안 수행함
 
-<figure>
-  <img src="https://grafana.com/media/docs/k6-oss/ramping-arrival-rate.png" width="100%" />
-  <figcaption>▲ "https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-arrival-rate/"</figcaption>
-</figure>
+![](https://grafana.com/media/docs/k6-oss/ramping-arrival-rate.png)
+*https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-arrival-rate/*
+
 
 ```javascript
 ...
@@ -313,7 +307,5 @@ export const options = {
 | 5  | Spike Testing       | 짧은 시간 동안 급격한 부하 변화를 시뮬레이션하여 시스템의 반응을 평가하기 위한 테스트 |
 | 6  | Break point Testing | 시스템의 한계를 찾기 위한 테스트. |
 
-<figure>
-  <img src="https://grafana.com/media/docs/k6-oss/chart-load-test-types-overview.png" width="100%" />
-  <figcaption>▲ "https://grafana.com/load-testing/types-of-load-testing/"</figcaption>
-</figure>
+![](https://grafana.com/media/docs/k6-oss/chart-load-test-types-overview.png)
+*https://grafana.com/load-testing/types-of-load-testing/*
