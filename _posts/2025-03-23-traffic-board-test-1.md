@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 대규모 시스템으로 설계된 게시판의 성능
+title: 대규모 시스템으로 설계된 게시판의 성능 - DB 조회
 date: 2025-04-01 23:50:00 + 0900
 categories: Traffic
 ref: java, Spring, board, traffic
