@@ -95,7 +95,7 @@ Facade 패턴은 __단순화된 인터페이스__ 를 제공해 서브시스템�
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/210588618-d158c58b-02df-4812-b30a-45688a8a2ec0.jpg" width="75%"/>
-  <p style="font-style: italic; color: gray;">어댑터 패턴></p>
+  <p style="font-style: italic; color: gray;">어댑터 패턴</p>
 </figure> 
 
 브릿지 패턴은 __구현 뿐만 아니라 추상화된 부분까지 변경__ 시켜야 하는 경우 브릿지 패턴을 사용합니다.    
@@ -104,12 +104,12 @@ Facade 패턴은 __단순화된 인터페이스__ 를 제공해 서브시스템�
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/210588823-9d8cb0b9-82f0-4711-8ffc-5c6cd3e4d078.jpg" width="75%"/>
-  <p style="font-style: italic; color: gray;">브릿지 패턴></p>
+  <p style="font-style: italic; color: gray;">브릿지 패턴</p>
 </figure> 
 
 데코레이터 패턴은 __서브클래스를 만드는 것을 통해 기능을 유연하게 확장__ 할 때 사용합니다.
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/210588947-5b906aa5-8fcf-4659-9169-19188ad4b3f5.jpg" width="75%"/>
-  <p style="font-style: italic; color: gray;">데코레이터 패턴></p>
+  <p style="font-style: italic; color: gray;">데코레이터 패턴</p>
 </figure> 
