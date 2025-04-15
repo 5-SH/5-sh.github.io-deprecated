@@ -85,5 +85,4 @@ thread 는 내부에서 work queue 를 감시하는 loop 가 돌고있다.
 ## ■ 전체 구조
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/125668081-16f8506d-9304-4846-b8a5-f070ce70179d.png" height="600" />
-  <figcaption></figcaption>
 </figure>

@@ -23,7 +23,6 @@ eureka 는 서비스가 죽었는지 수시로 확인해 목록을 동적으로 
 그리고 API gateway 에서도 로드밸런싱을 위해 종종 사용한다.   
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/132364769-8c4928d9-99e8-4e7f-8dae-739bfa80b881.png" height="300" />
-  <figcaption></figcaption>
 </figure>
 
 ## 3. hystrix
@@ -42,5 +41,5 @@ filter 는 요청 라우팅, Rate Limiting, 인증, 모니터링, 부하테스�
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/132366255-c9c560be-bfc6-483b-902b-dfdcbcaa2f9d.png" height="500" />
-  <figcaption>출처 – https://medium.com/netflix-techblog/announcing-zuul-edge-service-in-the-cloud-ab3af5be08ee</figcaption>
+  <p style="font-style: italic; color: gray;">출처 – https://medium.com/netflix-techblog/announcing-zuul-edge-service-in-the-cloud-ab3af5be08ee</p>
 </figure>
