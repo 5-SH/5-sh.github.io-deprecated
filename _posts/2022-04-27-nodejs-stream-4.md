@@ -9,7 +9,7 @@ ref: node.js stream
 # 1. Duplex 스트림
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/165446769-bbe66198-e214-44cb-b139-cd9ad9f6945d.png" height="250" />
-  <figcaption>▲ Duplex 스트림</figcaption>
+  <p style="font-style: italic; color: gray;">▲ Duplex 스트림</p>
 </figure>
 Duplex 스트림은 네트워크 소켓과 같이 데이터 소스 이면서 데이터 목적지인 엔티티이다.    
 stream.Readable 과 stream.Writable 두 스트림의 함수를 상속한다.    
@@ -22,7 +22,7 @@ allowHalfOpen 은 true 를 기본 값으로 가지고 false 로 설정하면 Rea
 # 2. Transform 스트림
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/165446757-78aba061-5333-4a78-8bb7-17e94f5cbe17.png" height="250" />
-  <figcaption>▲ Duplex 스트림</figcaption>
+  <p style="font-style: italic; color: gray;">▲ Duplex 스트림</p>
 </figure>
 데이터 변환을 처리하도록 설계된 특수한 종류의 Duplex 스트림이다.   
 Duplex 스트림은 스트림에서 읽은 데이터와 스트림에 쓴 데이터 사이에 관계가 없다.   

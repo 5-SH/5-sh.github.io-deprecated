@@ -54,7 +54,7 @@ N번 페이지의 M개의 게시글 정보는 limit와 offset 연산으로 조�
 
 <figure>
   <img src="https://i.imgur.com/24cOlX5.jpeg" height="100" />
-  <figcaption>▲ 구글 페이징</figcaption>
+  <p style="font-style: italic; color: gray;">▲ 구글 페이징</p>
 </figure>
 
 #### 1-1-2. 무한 스크롤
@@ -113,7 +113,7 @@ Secondary Index에서 offset 만큼 스캔을 할 때 매번 Clustered Index의 
 
 <figure>
   <img src="https://i.imgur.com/7eB1cHz.png" height="350" />
-  <figcaption>▲ 데이터블록 인덱스/출처: https://velog.io/%40minbo2002/coveringIndex</figcaption>
+  <p style="font-style: italic; color: gray;">▲ 데이터블록 인덱스/출처: https://velog.io/%40minbo2002/coveringIndex</p>
 </figure>
 
 Secondary Index의 컬럼 만으로 처리할 수 있는 인덱스를 Covering Index라고 한다.   

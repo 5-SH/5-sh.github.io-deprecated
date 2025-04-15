@@ -66,7 +66,7 @@ node.js 애플리케이션을 실행한다고 가정할 때, pm2 에서 fork 모
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/137768696-4ef8e80b-bbcb-42ce-8f49-871d6f23ad7f.png" />
-  <figcaption>출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</p>
 </figure>
 
 ### 1-2. pm2 scale
@@ -112,7 +112,7 @@ $ pm2 reload app
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/137770333-1c3c8ec9-0307-4868-b9ca-d84828893575.png" />
-  <figcaption>출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</p>
 </figure>
 
 - pm2 reload 를 실행하면 기존 App 을 Old App 에 옮기고 새로운 App 을 만든다.
@@ -128,7 +128,7 @@ $ pm2 reload app
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/137771954-78aeaf74-9228-4285-ab6f-ca5dbbf2f04f.png" />
-  <figcaption>출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</p>
 </figure>
 
 - 위와 같이 새로 만들어진 App 의 구동이 완료되기 전에 ready 이벤트를 보내고 이전 프로세스가 종료되어 사용자의 요청을 처리할 수 없는 상황이 발생할 수 있다.
@@ -169,14 +169,14 @@ ready 이벤트 설정 변경 후 아래 그림과 같다.
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/137773276-7f951585-da2e-4099-b65c-b8823dc9e9e4.png" />
-  <figcaption>출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</p>
 </figure>
 
 ### 3-2. 클라이언트 요청을 처리하는 도중에 프로세스가 죽어버리는 경우
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/137774178-da169301-6f93-4668-8825-a45f348612aa.png" />
-  <figcaption>출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</p>
 </figure>
 
 - reload 명령어를 실행할 때, 기존 App 은 프로세스가 종료되기 전까지 계속해서 요청을 받는다.
@@ -232,7 +232,7 @@ process.on(‘SIGINT’, function () {
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/137774946-4df4e0d2-a78f-4152-90b3-2573b05366df.png" />
-  <figcaption>출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://engineering.linecorp.com/ko/blog/pm2-nodejs/</p>
 </figure>
 
 SIGINT 시그널을 받았을 때 Connection:close 를 설정해 클라이언트 요청을 종료하는 방법을 활용해 해결한다.

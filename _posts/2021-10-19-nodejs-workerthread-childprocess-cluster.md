@@ -48,7 +48,7 @@ const fibonacci = n => {
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/137780289-6b9098c9-3397-4ebe-95a8-b43854d641de.jpg" />
-  <figcaption>출처 - https://alvinlal.netlify.app/blog/single-thread-vs-child-process-vs-worker-threads-vs-cluster-in-nodejs</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://alvinlal.netlify.app/blog/single-thread-vs-child-process-vs-worker-threads-vs-cluster-in-nodejs</p>
 </figure>
 
 
@@ -272,7 +272,7 @@ app.listen(7777, () => console.log("listening on port 7777"))
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/137784919-d6866af4-f5b7-44e1-8304-b50c5efcb4a1.jpg" />
-  <figcaption>출처 - https://alvinlal.netlify.app/blog/single-thread-vs-child-process-vs-worker-threads-vs-cluster-in-nodejs</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://alvinlal.netlify.app/blog/single-thread-vs-child-process-vs-worker-threads-vs-cluster-in-nodejs</p>
 </figure>
 
 

@@ -36,7 +36,7 @@ SERIALIZABLE 또한 DB 동시성 보장을 위해 거의 사용되지 않습니�
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183227977-f1f412f0-1c77-4cdf-936a-326d249bd240.png" width="55%"/>
-  <figcaption>▲ READ UNCOMMITTED</figcaption>
+  <p style="font-style: italic; color: gray;">▲ READ UNCOMMITTED</p>
 </figure>
 
 READ UNCOMMITTED 격리 수준은 __커밋되지 않은 레코드도 읽습니다.__    
@@ -52,7 +52,7 @@ READ UNCOMMITTED 는 정합성에 문제가 많은 격리 수준으로 DB 에서
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183228248-c8297b3c-3a50-4e35-adff-07e67e77e58e.png" width="55%"/>
-  <figcaption>▲ READ COMMITTED</figcaption>
+  <p style="font-style: italic; color: gray;">▲ READ COMMITTED</p>
 </figure>
 
 READ COMMITTED 는 __커밋이 완료된 데이터만 다른 트랜잭션에서 조회할 수 있는 격리 수준__ 으로,   
@@ -67,7 +67,7 @@ READ COMMITTED 는 __커밋이 완료된 데이터만 다른 트랜잭션에서 
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183228795-3386d795-5f9b-4a93-bdfd-33529ad09bb2.png" width="55%"/>
-  <figcaption>▲ NON-REPEATABLE READ</figcaption>
+  <p style="font-style: italic; color: gray;">▲ NON-REPEATABLE READ</p>
 </figure>
 
 사용자 B 세션에서 __SELECT FROM employees WHERE first_name='Toto'__ 쿼리를 두 번 실행할 때 결과가 다르게 나타납니다.     
@@ -77,7 +77,7 @@ READ COMMITTED 는 __커밋이 완료된 데이터만 다른 트랜잭션에서 
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183229362-92bc0a75-247b-4f09-be60-0bab690f9860.png" width="55%"/>
-  <figcaption>▲ REPEATABLE READ</figcaption>
+  <p style="font-style: italic; color: gray;">▲ REPEATABLE READ</p>
 </figure>
 
 REPEATABLE READ 는 MySQL ㄱ의 InnoDB 스토리지 엔진에서 기본으로 사용되는 격리 수준입니다.   
@@ -100,7 +100,7 @@ REPEATABLE READ 는 NON_REPEATABLE READ 문제를 해결하지만
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183229479-a674373d-2c92-4970-934e-be4d9a6041da.png" width="55%"/>
-  <figcaption>▲ PHANTOM READ</figcaption>
+  <p style="font-style: italic; color: gray;">▲ PHANTOM READ</p>
 </figure>
 
 사용자 A 가 INSERT 를 하는 도중에 사용자 B 가 __SELECT ... FOR UPDATE__ 쿼리로 employees 테이블을 두 번 조회했을 때     

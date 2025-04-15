@@ -10,12 +10,12 @@ ref: node.js stream
 ## 1. 버퍼링 대 스트리밍
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/165419761-102507ec-cce3-46b4-9865-6a0be77d08fb.png" height="450" />
-  <figcaption>▲ 버퍼 모드</figcaption>
+  <p style="font-style: italic; color: gray;">▲ 버퍼 모드</p>
 </figure>
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/165419764-c8a492c9-e205-4354-bf35-a664b241b5cd.png" height="450" />
-  <figcaption>▲ 스트림 모드</figcaption>
+  <p style="font-style: italic; color: gray;">▲ 스트림 모드</p>
 </figure>
 
 버퍼 모드는 리소스에서 들어오는 모든 데이터를 버퍼에 수집한다. 그런 다음 전체 버퍼를 소비하는 곳으로 전달한다.   
@@ -87,7 +87,7 @@ createReadStream(filename)
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/165425635-785c8463-0406-4d1b-90c8-92cc3dc6d9da.png" height="450" />
-  <figcaption>▲ 버퍼링과 스트림 비교</figcaption>
+  <p style="font-style: italic; color: gray;">▲ 버퍼링과 스트림 비교</p>
 </figure>
 
 버퍼링된 API 를 사용하면 프로세스가 완전히 순차적이다.   

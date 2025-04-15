@@ -15,7 +15,7 @@ Processor 는 Publisher 와 Subscriber 사이에 위치하며 데이터의 한 �
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/134385538-698888bb-9a57-419b-9846-2f0a3eeec880.jpg" />
-  <figcaption>출처 - https://jhleed.tistory.com/99</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://jhleed.tistory.com/99</p>
 </figure>
 
 
@@ -49,7 +49,6 @@ public static interface Flow.Processor<T, R> extends Flow.Subscriber<T>, Flow.Pu
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/134388511-7727b796-5cd3-4d6e-aaa9-e2fdf36a2ebf.png" height="450" />
-  <figcaption></figcaption>
 </figure>
 
 ## 3. WebFlux

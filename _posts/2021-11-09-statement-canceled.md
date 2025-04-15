@@ -19,11 +19,8 @@ statement timeout 은 statement 하나가 얼마나 오래 수행되어도 괜�
 티베로와 비슷한 오라클의 statement timeout 처리는 다음과 같다.
 
 <figure>
-
   <img src="https://user-images.githubusercontent.com/13375810/140767046-dd4b6b74-4632-41b0-adf0-44efa136131f.png" height=450/>
-
- <figcaption>출처 - https://d2.naver.com/helloworld/1321</figcaption>
-
+  <p style="font-style: italic; color: gray;">출처 - https://d2.naver.com/helloworld/1321</p>
 </figure>
 
 - Connection.createStatement() 메서드를 호출하여 Statement를 생성한다.
@@ -50,19 +47,12 @@ statement timeout 은 보통 잠금에 의한 쿼리 수행 지연이다.
 
 <figure>
     <img src="https://user-images.githubusercontent.com/13375810/140769803-424a8d93-f6f0-4ac3-9b3d-870da7086705.jpg" />
-
- <figcaption></figcaption>
-
 </figure>
 
 그리고 잠금의 종류와 잠금 관계는 다음과 같다.
 
 <figure>
     <img src="https://user-images.githubusercontent.com/13375810/140768651-49d7a481-af62-490b-a6ab-b06182090e7f.jpg" />
-
-
- <figcaption></figcaption>
-
 </figure>
 
 <br />

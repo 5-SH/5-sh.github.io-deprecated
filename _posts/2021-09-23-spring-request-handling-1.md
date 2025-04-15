@@ -10,7 +10,6 @@ ref: Spring, Servlet
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/134381785-9ba80f37-4068-4afd-8660-a3fda3376ea6.png" height="450" />
-  <figcaption></figcaption>
 </figure>
 
 1. request 가 Servlet 을 통해 Dispatcher Servlet 의 doDispatch() 로 들어간다.

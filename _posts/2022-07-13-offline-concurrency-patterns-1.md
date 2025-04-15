@@ -12,7 +12,6 @@ ref: Patterns, concurrency, lock
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/178661312-4ea92dbb-d330-45bd-a166-1e42d4e70da0.jpg" width="75%"/>
-  <figcaption></figcaption>
 </figure>
 
 ### 1-1

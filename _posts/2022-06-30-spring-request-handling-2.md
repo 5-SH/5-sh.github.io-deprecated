@@ -10,7 +10,7 @@ ref: Spring, Servlet
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/176543993-fdaa03fd-3a00-4c70-a996-c25e99b1d14a.png" />
-  <figcaption></figcaption>
+  <p style="font-style: italic; color: gray;"></p>
 </figure>
 
 ## 1. 핸들러 매핑

@@ -17,7 +17,7 @@ ref: Patterns, template, method, spring, jdbc
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/181702608-3b5f5ef1-fdb5-4120-91a8-100f5cda821b.png" width="75%"/>
-  <figcaption></figcaption>
+  <p style="font-style: italic; color: gray;"></p>
 </figure>
 
 ### 1-2. 코드

@@ -25,7 +25,7 @@ ref: Patterns, dispatcher, reactor
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/210794541-d1b698ea-8a11-402a-aa6b-ba148d3d0fe9.png" width="75%"/>
-  <figcaption>디스패처 패턴 구조도</figcaption>
+  <p style="font-style: italic; color: gray;">디스패처 패턴 구조도</p>
 </figure>  
 
 ### 1-2. 디스패처 패턴 예제
@@ -179,14 +179,14 @@ Dispatcher 의 demltiplex 에 switch 구문에 case 를 계속 추가해야 하�
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/210799185-4179db0a-f450-4611-b17b-45cc243d8b8e.png" width="75%"/>
-  <figcaption>리액터 패턴 구조도</figcaption>
+  <p style="font-style: italic; color: gray;">리액터 패턴 구조도</p>
 </figure>  
 
 핸들러 맵은 아래 그림과 같이 구성되어 있습니다.
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/210799457-27365498-efc4-4545-8b8d-6559859f4324.png" width="45%"/>
-  <figcaption>핸들러 맵 구조</figcaption>
+  <p style="font-style: italic; color: gray;">핸들러 맵 구조</p>
 </figure>  
 
 ### 2-2. 리액터 패턴 예제
@@ -372,7 +372,7 @@ public class Dispatcher {
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/210803022-e2b3e461-5803-450d-ac69-348daa5cdafa.png" width="75%"/>
-  <figcaption>스레드 풀을 활용한 구조</figcaption>
+  <p style="font-style: italic; color: gray;">스레드 풀을 활용한 구조</p>
 </figure>  
 
 소켓에서 연결을 맺고 메시지를 받아 분류하는 두 가지 작업이 디스패처에 모여 있습니다.    

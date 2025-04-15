@@ -19,7 +19,7 @@ ref: Patterns, dispatcher, reactor
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/212038614-c5583a65-3f06-47aa-901f-9f338b098ee7.png" width="75%"/>
-  <figcaption>Blocking / Sync</figcaption>
+  <p style="font-style: italic; color: gray;">Blocking / Sync</p>
 </figure>  
 
 연결을 처리하는 각각의 스레드가 오랫동안 블로킹 되면 스레드 풀에 사용 가능한 스레드가 없어 연결을 처리하지 못합니다.    
@@ -32,7 +32,7 @@ ref: Patterns, dispatcher, reactor
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/212041158-eb95f652-973e-442e-8529-b7fedde318c9.png" width="75%"/>
-  <figcaption>Non blocking / Sync</figcaption>
+  <p style="font-style: italic; color: gray;">Non blocking / Sync</p>
 </figure>  
 
 ## 3. Non blocking / Async - ready event
@@ -42,7 +42,7 @@ ref: Patterns, dispatcher, reactor
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/212043951-53fe80b5-b985-4ea3-9990-48b5a49c3584.png" width="75%"/>
-  <figcaption>Non blocking / Async</figcaption>
+  <p style="font-style: italic; color: gray;">Non blocking / Async</p>
 </figure>  
 
 이 시스템 콜은 블로킹 되어 있다가 읽기/쓰기 준비가 된 파일이 생기면 그 파일의 디스크립터를 반환합니다.      
@@ -52,7 +52,7 @@ ref: Patterns, dispatcher, reactor
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/212045289-2d0912bf-7c11-478a-817f-f94ecdebab9d.png" width="75%"/>
-  <figcaption>Non blocking / Async</figcaption>
+  <p style="font-style: italic; color: gray;">Non blocking / Async</p>
 </figure>  
 
 애플리케이션에서 ready 이벤트를 받으면 파일을 메모리에서 애플리케이션의 버퍼까지 가져오는 작업을 수행해야 합니다.    
@@ -70,7 +70,7 @@ epoll 시스템 콜을 활용한 비동기/논블로킹에 리액터 패턴을 �
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/212048112-a2d1bb86-b6f9-4abf-975e-f9c2dddd7a11.png" width="75%"/>
-  <figcaption>epoll()</figcaption>
+  <p style="font-style: italic; color: gray;">epoll</p>
 </figure>  
 
 ### 4-2. Java NIO 를 활용한 리액터 패턴
@@ -82,7 +82,7 @@ NIO 는 소켓, 파일과 같은 IO 대상을 __Channel__ 로 추상화 했고 �
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/211336950-a7aba4b0-2ce4-4799-90b3-38be8cc94514.jpg" width="75%"/>
-  <figcaption>동기 이벤트 디멀티플렉서를 활용한 리액터 패턴 구조도</figcaption>
+  <p style="font-style: italic; color: gray;">동기 이벤트 디멀티플렉서를 활용한 리액터 패턴 구조도</p>
 </figure>  
 
 ### 4-3. 코드

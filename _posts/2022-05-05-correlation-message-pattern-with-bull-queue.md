@@ -19,7 +19,7 @@ ref: Patterns, reactive programming, flow, flux
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/166848517-0d575c29-d826-4d2b-bcaa-a0be8d2fc7e0.png" height="350" />
-  <figcaption>▲ 상관 식별자를 사용한 요청/응답 메시지 교환</figcaption>
+  <p style="font-style: italic; color: gray;">▲ 상관 식별자를 사용한 요청/응답 메시지 교환</p>
 </figure>
 
 ## 2. Bull 메시지 큐
@@ -33,7 +33,7 @@ Bull 메시지 큐는 Job 이라 불리는 태스크 단위를 사용합니다.
 Job 은 메시지 큐에 추가되고 처리될 때 까지 아래 라이프 사이클을 가집니다.   
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/167081643-30fe8975-d5af-4877-8fa7-591a12c7bbe5.png" height="350" />
-  <figcaption>▲ Job 라이프 사이클</figcaption>
+  <p style="font-style: italic; color: gray;">▲ Job 라이프 사이클</p>
 </figure>
 
 ## 3. 각 요소들

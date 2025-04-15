@@ -14,7 +14,7 @@ ref: OS, critical section, monitor
 ## 1. 임계구역은 어떤 경우에 발생하는가?
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183125719-8bae2489-9508-4f8d-bd5a-57150e8dc47e.png" width="55%"/>
-  <figcaption>▲ 임계구역이 발생하는 경우</figcaption>
+  <p style="font-style: italic; color: gray;">▲ 임계구역이 발생하는 경우</p>
 </figure>
 
 ### 1-1
@@ -43,14 +43,14 @@ DB 같은 자료구조에 접근하는 경우 DBMS 에서 동시성 제어를 �
 ## 2. 전역 변수로 잠금(Spin Lock)
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183125401-09782064-91d3-4802-8765-cabddd21be95.png" width="55%"/>
-  <figcaption>▲ Spin Lock</figcaption>
+  <p style="font-style: italic; color: gray;">▲ Spin Lock</p>
 </figure>
 
 ## 3. 잘 알려진 해결 방법
 ### 3-1
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183134225-2af724ff-c0ef-4955-bf9c-0e6f5fc09017.png" width="55%"/>
-  <figcaption>▲ 스레드-큐 구조</figcaption>
+  <p style="font-style: italic; color: gray;">▲ 스레드-큐 구조</p>
 </figure>
 
 스레드 또는 프로세스에서 동기화 목표를 달성하기 위해서 __Queue__ 를 사용해야 합니다.   
@@ -64,7 +64,7 @@ DB 같은 자료구조에 접근하는 경우 DBMS 에서 동시성 제어를 �
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183226567-8cdf1aa1-4963-4baf-9825-ef3ba60fc0eb.png" width="55%"/>
-  <figcaption>▲ 좀 더 나은 스레드-큐 구조</figcaption>
+  <p style="font-style: italic; color: gray;">▲ 좀 더 나은 스레드-큐 구조</p>
 </figure>
 
 작업에 따라 코드를 분리하고 작업 큐를 별도로 둡니다.   
@@ -73,7 +73,7 @@ DB 같은 자료구조에 접근하는 경우 DBMS 에서 동시성 제어를 �
 ## 4. 모니터
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/183226546-ace52d83-4e11-466b-a06b-b61aec3a14c4.png" width="55%"/>
-  <figcaption>▲ Monitor</figcaption>
+  <p style="font-style: italic; color: gray;">▲ Monitor</p>
 </figure>
 
 - 세마포어를 실제로 구현했습니다.

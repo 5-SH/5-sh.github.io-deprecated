@@ -10,7 +10,7 @@ ref: Java, Collection
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/169449431-4d570e2f-ad09-4554-a839-d98457c7bb73.jpg" height="350" />
-  <figcaption>출처 - https://memostack.tistory.com/234</figcaption>
+  <p style="font-style: italic; color: gray;">출처 - https://memostack.tistory.com/234</p>
 </figure>
 
 ## 1. List

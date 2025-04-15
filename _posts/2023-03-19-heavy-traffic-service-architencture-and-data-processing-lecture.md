@@ -671,7 +671,7 @@ client #4   /  \    API server #4   /             \
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/227813602-f9f6aa99-c60c-404f-811f-77743e063528.jpg" height="250" />
-  <figcaption>▲ The Red : 4천만 MAU를 지탱하는 서비스 설계와 데이터 처리 기술</figcaption>
+  <p style="font-style: italic; color: gray;">▲ The Red : 4천만 MAU를 지탱하는 서비스 설계와 데이터 처리 기술</p>
 </figure>
 
 #### 3-3-7. Real-time DB
@@ -727,7 +727,7 @@ RDBMS, Pub/Sub 패턴, 실시간/시계열 DB, NoSQL 을 활용해 문제를 적
 
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/227813602-f9f6aa99-c60c-404f-811f-77743e063528.jpg" height="250" />
-  <figcaption>▲ The Red : 4천만 MAU를 지탱하는 서비스 설계와 데이터 처리 기술</figcaption>
+  <p style="font-style: italic; color: gray;">▲ The Red : 4천만 MAU를 지탱하는 서비스 설계와 데이터 처리 기술</p>
 </figure>
 
 #### 3-4-4. MapReduce 분산 프로그래밍 모델
