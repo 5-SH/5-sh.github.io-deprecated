@@ -150,6 +150,6 @@ TO-BE
 | P04  | DB       |
 
 <figure>
-  <img src="https://user-images.githubusercontent.com/13375810/139793350-f773432a-a10e-443b-aa74-3e540292dcf1.png" height="350"/
+  <img src="https://user-images.githubusercontent.com/13375810/139793350-f773432a-a10e-443b-aa74-3e540292dcf1.png" height="350"/>
 </figure>
 
