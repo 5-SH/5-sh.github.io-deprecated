@@ -14,9 +14,10 @@ ref: Nodejs, async, non-blocking, reactor-pattern
 보통 이 문제는 멀티스레드 사용해 해결한다.    
 각각의 스레드에서 I/O 작업이 처리되기 때문에 I/O 작업으로 인해 블로킹된 스레드가 다른 연결에 영향을 미치지 않는다.   
 
+
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/127773641-26c2d1b2-079f-4cea-8300-5d9ac9f87f13.png" height="250" />
-  <figcaption>▲ 다중 커넥션을 처리하기 위한 다중 스레드</figcaption>
+  <figcaption value="▲ 다중 커넥션을 처리하기 위한 다중 스레드" />
 </figure>
 
 ## 2. 논 블로킹 I/O
@@ -74,9 +75,10 @@ while (events = demultiplexer.watch(watchedList)) { // (2)
 2. 디멀티플렉서가 관찰될 리소스 그룹과 함께 설정된다. demultiplexer.watch() 는 동기식으로 관찰되는 리소스들 중에서 읽을 준비가 된 리소스가 있을 때까지 블로킹된다. 준비된 리소스가 생기면, 이벤트 디멀티플렉서는 처리를 위한 새로운 이벤트를 반환한다.
 3. 이벤트 디멀티플렉서에서 반환된 각 이벤트가 처리된다. 이때 각 이벤트와 관련된 리소스는 처리 중 중단되지 않는다. 모든 이벤트가 처리되고 나면, 다시 이벤트 디멀티플렉서가 처리 가능한 이벤트를 반환하기 전까지 블로킹 된다. 이를 __이벤트 루프__ 라고 한다.
 
+
 <figure>
   <img src="https://user-images.githubusercontent.com/13375810/127774782-13da8599-b51a-47fc-85a1-419b2f3801e8.png" height="250" />
-  <figcaption>▲ 다중 커넥션을 처리하기 위한 단일 스레드</figcaption>
+  <figcaption value="▲ 다중 커넥션을 처리하기 위한 단일 스레드" />
 </figure>
 
 ## 4. 리액터 패턴
