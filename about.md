@@ -7,7 +7,7 @@ permalink: /about/
 # ■ About Me
 ## Introduction
 >   - 안녕하세요.
->   - 8년차 IoT 플랫폼 개발자입니다.
+>   - 9년차 IoT 플랫폼 개발자입니다.
 >   - 현대오토에버에 재직 중 입니다.
 >   - 현대건설의 스마트홈 플랫폼인 "Hi-oT"을 개발했습니다.
 >   - 현대자동차그룹의 공정 데이터 처리 표준 스마트 팩토리 플랫폼인 "IoT 플랫폼"을 개발하고 있습니다.
@@ -28,21 +28,13 @@ permalink: /about/
 >   - Spring
 >   - Node.js
 > 
-> ### 데브옵스  
->   - Tomcat
->   - JEUS, WebToB
->   - MySQL, MSSQL, Tibero
-> 
 > ### 프론트엔드
 >   - Vue.js
->   - Nuxt.js
->   - VanillaJS
->   - HTML5, CSS
 > 
 > ### 협업
 >   - Git
 >   - Slack
->   - SVN
+>   - Redmine
 
 # ■ Work Experience & Projects
 ## [현대건설 스마트홈 IoT 서비스(Hi-oT)](https://www.hyundai.co.kr/story/CONT0000000000001088)
@@ -60,32 +52,28 @@ permalink: /about/
 >  - 홈 디바이스 제어 현장 테스트 수행 & 대응
 >  - 카투홈 품질확보 테스트 대응
 
-### 4. 연구
->  - EDA 플랫폼 도입 검토
->  - 스마트홈을 위한 EDA 플랫폼 PoC 개발
-
-## [현대자동차그룹 스마트 팩토리 플랫폼(IoT 플랫폼)](https://www.hyundai-autoever.com/kor/business-area/digital-transformation/smart-factory/contents.do?cntnSeq=352)
-### 1. 플랫폼 개발
->  - 플랫폼 아키텍트 검증, 개발
->  - DBMS 커넥터 개발(JDBC, ODBC)
->  - 텍스트 파일 처리 기능 개발
->  - BIT, BYTE, WORD 데이터 스트림 처리 기능 개발
->  - 개발 표준 수립(형상관리 전략, 개발, 환경 가이드)
->  - 부품사 정보계 공정 데이터 처리 기능 개발
->  - 완성차 지시계 공정 데이터 처리 기능 개발
+## [현대자동차그룹 스마트 팩토리 솔루션(IoT 플랫폼)](https://www.hyundai-autoever.com/kor/business-area/digital-transformation/smart-factory/contents.do?cntnSeq=352)
+### 1. 솔루션 개발
+>  - 부품사(모비스)의 정보계 공정 데이터 처리 솔루션 개발
+>  - 완성차(현대/기아자동차)의 지시계 공정 데이터 처리 솔루션 개발
+>  - 공정 데이터 읽기, 쓰기를 위한 DBMS, 파일 커넥터 개발
 >  - 메모리 누수 및 데이터 처리 성능 등 주요 이슈 해결
 
-### 2. 플랫폼 전개
->  - 현대자동차그룹 완성차, 부품사의 정보계 도입
+### 2. 프로토콜 개발
+>  - 주요 PLC 프로토콜(MC, S5, S7, AB, XGT, AROMAT) 개발
+>  - 주요 설비 프로토콜(화낙, 토요퍽) 개발
+>  - 반도체 프로토콜(SECS/GEM) 개발
+
+### 3. 솔루션 전개
+>  - 현대자동차그룹 완성차, 부품사의 정보계에 전개했습니다.
 >      - 현대모비스 김천, 대구, 울산 공장 적용
 >      - 현대모비스 진천 반도체 라인 적용 PoC
 >      - HMMC(체코) Factory BI 도입
->  - 현대자동차그룹 완성차의 지시계에 도입 되었습니다.
->      - HMGICS(싱가포르), KMX(멕시코), HMMC(체코), KaSK(슬로바키아), HMGMA(미국) 해외 공장 도입
->      - 아산, 전주 국내 공장 도입
+>  - 현대자동차그룹 완성차 공장의 지시계에 전개했습니다.
+>      - HMGICS(싱가포르), KMX(멕시코), HMMC(체코), KaSK(슬로바키아), HMGMA(미국), 인도MP 해외 공장 도입
+>      - 울산, 아산, 전주 국내 공장 도입
 
-### 3. 대시보드 개발
->  - 프론트엔드 기술 검증 (Angular, React, Vue.js)
+### 4. 대시보드 개발
 >  - 대시보드 웹서비스 개발 (Vue.js)
 
 # ■ Personal Education & Articles
@@ -99,15 +87,15 @@ permalink: /about/
 >   - [함수형 프로그래밍과 JavaScript ES6+ 기초편](https://github.com/5-SH/Objects)
 >   - [함수형 프로그래밍과 JavaScript ES6+ 응용편](https://github.com/5-SH/functional_promgramming_application)
  
-### 3. 프론트엔드
+### 3. 대용량 데이터 처리
+>   - [대규모 시스템으로 설계된 게시판의 구조 - repository](https://github.com/5-SH/high-traffic-board)
+>   - [대규모 시스템으로 설계된 게시판의 구조 - DB INDEX, 트랜잭션, 동시성, 분산 락](https://5-sh.github.io/traffic/2025/03/27/traffic-board-architecture-1.html)
+>   - [대규모 시스템으로 설계된 게시판의 구조 - 이벤트 드리븐 아키텍처](https://5-sh.github.io/traffic/2025/03/27/traffic-board-architecture-2.html)
+>   - [대규모 시스템으로 설계된 게시판의 구조 - CQRS](https://5-sh.github.io/traffic/2025/03/31/traffic-board-architecture-3.html)
+
+### 4. 프론트엔드
 >   - [VanillaJS, Node.js 로 만든 youtube 클론 코딩](https://github.com/5-SH/wetube)
 >   - [websocket.io 와 VanillaJS 로 만든 캐치마인드 게임](https://github.com/5-SH/guess-mine)
- 
-### 4. Articles
->   - [Node.js 에서 pool 을 사용하면 pool size 만큼 RDBMS 에서 활용하지 않는 이유](https://5-sh.github.io/nodejs/2021/06/23/unixODBC-pool-nodejs-session-pool.html)
->   - [자바스크립트 클로저 메모리 누수](https://5-sh.github.io/javascript/2021/04/27/javascript-closure-memory-leak.html)
->   - [Node.js addon 의 worker_thread 에서 v8 메모리에 엑세스 하는 방법](https://5-sh.github.io/nodejs/2021/07/16/how-not-to-access-nodejs-from-c-worker-thread.html)
->   - [V8 엔진의 heap 메모리 구조와 메모리 사용량이 계속 증가하는 이유](https://5-sh.github.io/nodejs/2021/05/13/v8-heap-memory-and-why-memory-usage-keep-on-growing.html)
 
 # ■ Awards
 ### 1. 스마트앱 어워드 2018 생활정보분야 최우수상 수상
