@@ -2,8 +2,8 @@
 layout: post
 title: JavaScript 이터레이션 프로토콜
 date: 2021-07-20 18:00:00 + 0900
-categories: Javascript
-ref: Javascript, iteration, iterator, iterable
+categories: [javascript]
+tags: [javascript, iteration, iterator, iterable]
 ---
 
 # JavaScript 이터레이션 프로토콜

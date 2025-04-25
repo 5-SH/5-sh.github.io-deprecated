@@ -2,8 +2,8 @@
 layout: post
 title: 템플릿 메소드(콜백) 패턴 (2)
 date: 2022-07-29 19:30:00 + 0900
-categories: Patterns
-ref: Patterns, template, method, spring, jdbc
+categories: [patterns]
+tags: [patterns, template, method, spring, jdbc]
 ---
 
 # 템플릿 메소드(콜백) 패턴 (2)

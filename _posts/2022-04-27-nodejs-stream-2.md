@@ -2,8 +2,8 @@
 layout: post
 title: Node.js stream (2) Readable 스트림  
 date: 2022-04-27 18:00:00 + 0900
-categories: Nodejs
-ref: node.js stream
+categories: [nodejs]
+tags: [nodejs stream]
 ---
 
 # Readable 스트림

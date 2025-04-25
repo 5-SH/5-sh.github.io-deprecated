@@ -2,8 +2,8 @@
 layout: post
 title: 가상 메모리와 실제 메모리
 date: 2021-04-23 16:10:00 + 0900
-categories: OS
-ref: OS, memory, swap
+categories: [os]
+tags: [os, memory, swap]
 ---
 
 # 가상 메모리와 실제 메모리

@@ -2,8 +2,8 @@
 layout: post
 title: Javascript prototype 과 상속
 date: 2021-04-07 01:10:00 + 0900
-categories: Javascript
-ref: Javascript, js, class
+categories: [javascript]
+tags: [javascript, js, class]
 ---
 
 #  Javascript prototype 과 상속

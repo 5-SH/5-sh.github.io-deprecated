@@ -2,8 +2,8 @@
 layout: post
 title: Node.js child process vs worker threads vs cluster
 date: 2021-10-19 11:30:00 + 0900
-categories: Nodejs
-ref: deployment, pm2
+categories: [nodejs]
+tags: [deployment, pm2]
 ---
 
 

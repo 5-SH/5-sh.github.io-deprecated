@@ -2,8 +2,8 @@
 layout: post
 title: V8 엔진의 heap 메모리 구조와 메모리 사용량이 계속 증가하는 이유
 date: 2021-05-13 22:00:00 + 0900
-categories: Nodejs
-ref: Dev, linux
+categories: [nodejs]
+tags: [dev, linux]
 ---
 
 # V8 엔진의 heap 메모리 구조와 메모리 사용량이 계속 증가하는 이유

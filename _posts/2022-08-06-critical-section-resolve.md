@@ -2,8 +2,8 @@
 layout: post
 title: 임계구역 해결 방법
 date: 2022-08-06 02:00:00 + 0900
-categories: OS
-ref: OS, critical section, monitor
+categories: [os]
+tags: [os, critical section, monitor]
 ---
 
 # 임계구역 해결 방법

@@ -2,8 +2,8 @@
 layout: post
 title: spring request handling 1
 date: 2021-09-23 23:00:00 + 0900
-categories: Spring
-ref: Spring, Servlet
+categories: [spring]
+tags: [spring, servlet]
 ---
 
 # 스프링 요청 처리 과정 1

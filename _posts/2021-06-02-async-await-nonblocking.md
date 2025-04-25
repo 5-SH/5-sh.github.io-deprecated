@@ -2,8 +2,8 @@
 layout: post
 title: async/await 는 Non-blocking 일까?
 date: 2021-06-02 23:00:00 + 0900
-categories: Javascript
-ref: Javascript, async, await, nonblocking
+categories: [javascript]
+tags: [javascript, async, await, nonblocking]
 ---
 
 # async/await 는 Non-blocking 일까?

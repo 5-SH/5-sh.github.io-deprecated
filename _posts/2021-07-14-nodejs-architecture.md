@@ -2,8 +2,8 @@
 layout: post
 title: Node.js 의 구조
 date: 2021-07-14 23:00:00 + 0900
-categories: Nodejs
-ref: Node.js, Architecture
+categories: [nodejs]
+tags: [nodejs, architecture]
 ---
 
 

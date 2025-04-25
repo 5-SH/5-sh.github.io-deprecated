@@ -2,8 +2,8 @@
 layout: post
 title: Statement canceled 에러의 원인과 해결
 date: 2021-11-09 23:00:00 + 0900
-categories: DB
-ref: DB, JDBC, 12040, Statement
+categories: [db]
+tags: [db, jdbc, '12040', statement]
 ---
 
 # Statement canceled 에러의 원인과 해결

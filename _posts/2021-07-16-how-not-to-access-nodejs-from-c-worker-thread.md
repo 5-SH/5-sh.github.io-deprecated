@@ -2,8 +2,8 @@
 layout: post
 title: Node.js addon 의 worker_thread 에서 v8 메모리에 엑세스 하는 방법
 date: 2021-07-16 20:00:00 + 0900
-categories: Nodejs
-ref: Nodejs, addon, async, callback
+categories: [nodejs]
+tags: [nodejs, addon, async, callback]
 ---
 
 출처 : https://nodeaddons.com/how-not-to-access-node-js-from-c-worker-threads/    

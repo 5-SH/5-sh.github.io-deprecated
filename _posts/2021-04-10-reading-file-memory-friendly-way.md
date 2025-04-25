@@ -2,8 +2,8 @@
 layout: post
 title: Node.js 에서 메모리를 효과적으로 사용해 파일을 읽는 방법
 date: 2021-04-12 23:30:00 + 0900
-categories: Nodejs
-ref: node.js, stearm, file
+categories: [nodejs]
+tags: [nodejs, stearm, file]
 ---
 
 출처 : https://betterprogramming.pub/a-memory-friendly-way-of-reading-files-in-node-js-a45ad0cc7bb6

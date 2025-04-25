@@ -2,8 +2,8 @@
 layout: post
 title: 자바의 비동기 기술
 date: 2021-04-19 21:00:00 + 0900
-categories: Java
-ref: Java, Asynchronous, Future
+categories: [java]
+tags: [java, asynchronous, future]
 ---
 
 출처: https://gunju-ko.github.io/java/2018/07/05/Future.html   

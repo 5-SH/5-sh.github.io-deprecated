@@ -2,8 +2,8 @@
 layout: post
 title: JTA 를 활용한 분산 트랜잭션 관리
 date: 2023-02-04 20:30:00 + 0900
-categories: DB
-ref: DB, transaction, transaction manager, jta
+categories: [db]
+tags: [db, transaction, transaction manager, jta]
 ---
 
 ## 1. 들어가기

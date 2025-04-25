@@ -2,8 +2,8 @@
 layout: post
 title: 오프라인 동시성 패턴 (1)
 date: 2022-07-13 15:30:00 + 0900
-categories: Patterns
-ref: Patterns, concurrency, lock
+categories: [patterns]
+tags: [patterns, concurrency, lock]
 ---
 
 # 오프라인 동시성 패턴 (1)

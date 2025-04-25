@@ -2,8 +2,8 @@
 layout: post
 title: 리눅스의 fork(), exec() 시스템 콜
 date: 2022-08-31 21:00:00 + 0900
-categories: OS
-ref: OS, fork, exec, wait, exit, linux
+categories: [os]
+tags: [os, fork, exec, wait, exit, linux]
 ---
 
 # 리눅스의 fork(), exec() 시스템 콜

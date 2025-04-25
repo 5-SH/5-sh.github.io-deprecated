@@ -2,8 +2,8 @@
 layout: post
 title: 자바스크립트 클로저 메모리 누수
 date: 2021-04-27 22:00:00 + 0900
-categories: Javascript
-ref: Javascript, closure, memory leak
+categories: [javascript]
+tags: [javascript, closure, memory leak]
 ---
 
 # 자바스크립트 클로저 메모리 누수

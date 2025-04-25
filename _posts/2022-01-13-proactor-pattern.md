@@ -2,8 +2,8 @@
 layout: post
 title: Proactor 패턴
 date: 2023-01-13 15:30:00 + 0900
-categories: Patterns
-ref: Patterns, dispatcher, proactor, async, non-blocking
+categories: [patterns]
+tags: [patterns, dispatcher, proactor, async, non-blocking]
 ---
 
 출처1 : https://www.javacodegeeks.com/2012/08/io-demystified.html    

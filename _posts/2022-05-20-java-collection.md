@@ -2,8 +2,8 @@
 layout: post
 title: 자바 컬렉션 종류와 특징
 date: 2022-05-20 14:00:00 + 0900
-categories: Java
-ref: Java, Collection
+categories: [java]
+tags: [java, collection]
 ---
 
 # 자바 컬렉션 종류와 특징

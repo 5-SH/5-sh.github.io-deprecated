@@ -2,8 +2,8 @@
 layout: post
 title: Kubernetes for appliation developers - 1. 쿠버네티스 구조
 date: 2022-03-08 18:10:00 + 0900
-categories: Kubernetes
-ref: kubernetes, container, docker
+categories: [kubernetes]
+tags: [kubernetes, container, docker]
 ---
 
 # Kubernetes for application developers(LFD459)
