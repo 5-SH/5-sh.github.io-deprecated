@@ -2,8 +2,8 @@
 layout: post
 title: Java 스레드8 - 스레드 풀과 Executor 프레임워크3
 date: 2024-09-26 19:00:00 + 0900
-categories: Java
-ref: Java, thread, multi-thread, thread pool, executor
+categories: [java]
+tags: [java, thread, multi-thread, thread pool, executor]
 ---
 
 ### 강의 : [김영한의 실전 자바 - 고급 1편, 멀티스레드와 동시성](https://www.inflearn.com/course/%EA%B9%80%EC%98%81%ED%95%9C%EC%9D%98-%EC%8B%A4%EC%A0%84-%EC%9E%90%EB%B0%94-%EA%B3%A0%EA%B8%89-1/dashboard)

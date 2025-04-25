@@ -2,8 +2,8 @@
 layout: post
 title: Wrapper facade 패턴
 date: 2023-01-04 20:30:00 + 0900
-categories: Patterns
-ref: Patterns, wrapper, facade
+categories: [patterns]
+tags: [patterns, wrapper, facade]
 ---
 
 출처1 : https://www.youtube.com/watch?v=q-KfKdLdXSM&list=PLs4Vf-D53YHm6MA7ZHnYoxD2sAn9NOBZr&ab_channel=YoungSuSon    

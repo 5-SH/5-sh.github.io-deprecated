@@ -2,8 +2,8 @@
 layout: post
 title: 자바스크립트의 비동기 순차 실행
 date: 2021-08-09 03:00:00 + 0900
-categories: Javascript
-ref: Javascript, async, sequential
+categories: [javascript]
+tags: [javascript, async, sequential]
 ---
 
 # 자바스크립트의 비동기 순차 실행

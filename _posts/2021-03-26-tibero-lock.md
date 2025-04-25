@@ -2,8 +2,8 @@
 layout: post
 title: 티베로 테이블의 데드락 해결
 date: 2021-03-26 13:10:00 +0900
-categories: DB
-ref: DB
+categories: [db]
+tags: [db]
 ---
 # 티베로 테이블의 데드락 해결
 

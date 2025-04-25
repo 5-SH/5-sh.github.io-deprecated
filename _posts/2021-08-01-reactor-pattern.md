@@ -2,8 +2,8 @@
 layout: post
 title: Node.js 의 리액터 패턴
 date: 2021-08-01 20:30:00 + 0900
-categories: Patterns
-ref: Nodejs, async, non-blocking, reactor-pattern
+categories: [patterns]
+tags: [nodejs, async, non-blocking, reactor-pattern]
 ---
 
 # Node.js 의 리액터 패턴

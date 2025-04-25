@@ -2,8 +2,8 @@
 layout: post
 title: JavaScript 의 실행 컨텍스트
 date: 2021-10-13 00:30:00 + 0900
-categories: Javascript
-ref: Javascript, AO, EC
+categories: [javascript]
+tags: [javascript, ao, ec]
 ---
 
 # 실행 컨텍스트(EC)

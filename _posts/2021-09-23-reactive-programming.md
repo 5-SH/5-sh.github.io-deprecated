@@ -2,8 +2,8 @@
 layout: post
 title: reactive programming
 date: 2021-09-23 23:30:00 + 0900
-categories: Patterns
-ref: Patterns, reactive programming, flow, flux
+categories: [patterns]
+tags: [patterns, reactive programming, flow, flux]
 ---
 
 # 리액티브 프로그래밍

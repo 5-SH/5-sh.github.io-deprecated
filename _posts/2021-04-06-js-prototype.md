@@ -2,8 +2,8 @@
 layout: post
 title: Javascript prototype
 date: 2021-04-06 20:15:00 + 0900
-categories: Javascript
-ref: Javascript, js
+categories: [javascript]
+tags: [javascript, js]
 ---
 # Javascript Prototype
 

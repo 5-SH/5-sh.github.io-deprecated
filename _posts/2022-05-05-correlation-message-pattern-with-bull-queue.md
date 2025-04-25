@@ -2,8 +2,8 @@
 layout: post
 title: Bull 메시지 큐를 활용한 요청/응답 메시지 패턴 구현
 date: 2022-05-05 08:30:00 + 0900
-categories: Patterns
-ref: Patterns, reactive programming, flow, flux
+categories: [patterns]
+tags: [patterns, reactive programming, flow, flux]
 ---
 
 # Bull 메시지 큐를 활용한 요청/응답 메시지 패턴 구현

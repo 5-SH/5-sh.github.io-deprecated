@@ -2,8 +2,8 @@
 layout: post
 title: JTA 를 활용한 분산 트랜잭션 관리 테스트
 date: 2023-02-05 22:00:00 + 0900
-categories: DB
-ref: DB, transaction, transaction manager, jta
+categories: [db]
+tags: [db, transaction, transaction manager, jta]
 ---
 
 __RoutingDataSource 를 사용한 분산 데이터베이스 환경에서 JTA 를 이용한 트랜잭션 처리__ 네이버 D2 문서를 읽고 필요한 내용을 추가하고 정리한 문서입니다.    

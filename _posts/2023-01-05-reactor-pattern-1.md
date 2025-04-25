@@ -2,8 +2,8 @@
 layout: post
 title: Reactor 패턴 (1)
 date: 2023-01-05 20:30:00 + 0900
-categories: Patterns
-ref: Patterns, dispatcher, reactor
+categories: [patterns]
+tags: [patterns, dispatcher, reactor]
 ---
 
 출처1 : SW 아키텍처 설계 강의(IMQA 손영수 상무)

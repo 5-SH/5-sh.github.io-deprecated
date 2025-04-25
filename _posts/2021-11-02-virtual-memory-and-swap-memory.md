@@ -2,8 +2,8 @@
 layout: post
 title: 가상 메모리와 스왑 메모리
 date: 2021-11-02 15:00:00 + 0900
-categories: OS
-ref: OS, memory, swap
+categories: [os]
+tags: [os, memory, swap]
 ---
 
 # 가상 메모리와 스왑 메모리

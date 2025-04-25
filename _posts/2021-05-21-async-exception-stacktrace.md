@@ -2,8 +2,8 @@
 layout: post
 title: 비동기 상황에서 예외와 스택 트레이스
 date: 2021-05-21 17:00:00 + 0900
-categories: Javascript
-ref: Javascript, exception, stacktrace
+categories: [javascript]
+tags: [javascript, exception, stacktrace]
 ---
 
 출처 : https://preamtree.tistory.com/168
