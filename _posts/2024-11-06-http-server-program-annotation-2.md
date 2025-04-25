@@ -1,6 +1,6 @@
 ---
 layout: post
-title: HTTP 서버 프로그램 - 애노테이션
+title: HTTP 서버 프로그램 - 애노테이션 (2)
 date: 2024-11-06 19:00:00 + 0900
 categories: Java
 ref: network, socket, http, annotation

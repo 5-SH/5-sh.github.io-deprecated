@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Java 애노테이션
+title: HTTP 서버 프로그램 - 애노테이션 (1)
 date: 2024-11-06 16:00:00 + 0900
 categories: Java
 ref: annotation
