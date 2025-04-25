@@ -2,8 +2,8 @@
 layout: post
 title: javascipt 의 객체란?
 date: 2021-03-31 23:05:00 +0900
-categories: Javascript
-ref: javascript
+categories: [javascript]
+tags: [javascript]
 ---
 
 # 객체(Object) 란?   

@@ -2,8 +2,8 @@
 layout: post
 title: 함수형 프로그래밍
 date: 2021-08-01 08:00:00 + 0900
-categories: Functional
-ref: functional programming, javascript
+categories: [functional]
+tags: [functional programming, javascript]
 ---
 
 # 함수형 프로그래밍

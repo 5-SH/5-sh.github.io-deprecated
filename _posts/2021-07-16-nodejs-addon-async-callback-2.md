@@ -2,8 +2,8 @@
 layout: post
 title: Node.js addon async callback 작성 방법 2
 date: 2021-07-16 17:00:00 + 0900
-categories: Nodejs
-ref: Nodejs, addon, async, callback
+categories: [nodejs]
+tags: [nodejs, addon, async, callback]
 ---
 
 출처 : https://nodeaddons.com/c-processing-from-node-js-part-4-asynchronous-addons/

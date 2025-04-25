@@ -2,8 +2,8 @@
 layout: post
 title: Kubernetes for appliation developers - 2. 빌드
 date: 2022-03-17 18:10:00 + 0900
-categories: Kubernetes
-ref: kubernetes, container, docker
+categories: [kubernetes]
+tags: [kubernetes, container, docker]
 ---
 
 # Kubernetes for application developers(LFD459)

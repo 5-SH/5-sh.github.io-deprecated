@@ -2,8 +2,8 @@
 layout: post
 title: DB 정규화
 date: 2021-11-02 14:00:00 + 0900
-categories: DB
-ref: DB, nomailzation
+categories: [db]
+tags: [db, nomailzation]
 ---
 
 # DB 정규화

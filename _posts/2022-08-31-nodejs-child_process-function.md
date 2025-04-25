@@ -2,8 +2,8 @@
 layout: post
 title: child_process - spawn(), exec(), execFile() fork() in Node.js
 date: 2022-08-31 19:00:00 + 0900
-categories: Nodejs
-ref: node.js, , child_process, spawn, exec, execFile, fork
+categories: [nodejs]
+tags: [nodejs, child_process, spawn, exec, execfile, fork]
 ---
 
 # child_process - spawn(), exec(), execFile() fork() in Node.js

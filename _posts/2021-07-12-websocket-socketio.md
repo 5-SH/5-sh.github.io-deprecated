@@ -2,8 +2,8 @@
 layout: post
 title: WebSocket 과 Socket.io
 date: 2021-07-12 23:00:00 + 0900
-categories: Web
-ref: WebSocket, Socket.io
+categories: [web]
+tags: [websocket, socket.io]
 ---
 
 # WebSocket 과 Socket.io

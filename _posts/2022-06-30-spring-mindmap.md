@@ -2,8 +2,8 @@
 layout: post
 title: 스프링 마인드맵
 date: 2022-06-30 05:30:00 + 0900
-categories: Spring
-ref: Spring
+categories: [spring]
+tags: [spring]
 ---
 
 # 스프링 마인드맵

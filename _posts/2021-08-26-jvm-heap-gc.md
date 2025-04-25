@@ -2,8 +2,8 @@
 layout: post
 title: JVM & JVM Heap & JVM GC
 date: 2021-08-26 19:00:00 + 0900
-categories: Java
-ref: Java, JVM, Heap, GC
+categories: [java]
+tags: [java, jvm, heap, gc]
 ---
 
 출처1 : https://www.youtube.com/watch?v=UzaGOXKVhwU&ab_channel=%EC%9A%B0%EC%95%84%ED%95%9CTech   

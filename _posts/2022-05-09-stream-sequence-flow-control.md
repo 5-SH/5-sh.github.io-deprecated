@@ -2,8 +2,8 @@
 layout: post
 title: 스트림을 활용한 비동기 순차 처리
 date: 2022-05-09 10:30:00 + 0900
-categories: Patterns
-ref: Patterns, reactive programming, flow, flux
+categories: [patterns]
+tags: [patterns, reactive programming, flow, flux]
 ---
 
 # 스트림을 활용한 비동기 순차 처리

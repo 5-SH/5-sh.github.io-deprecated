@@ -2,8 +2,8 @@
 layout: post
 title: JDBC Timeout
 date: 2021-04-05 17:00:00 + 0900
-categories: DB
-ref: DB, JDBC
+categories: [db]
+tags: [db, jdbc]
 ---
 
 # JDBC Timeout

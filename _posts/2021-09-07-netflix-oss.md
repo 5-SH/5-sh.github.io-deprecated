@@ -2,8 +2,8 @@
 layout: post
 title: Netflix OSS
 date: 2021-09-07 23:30:00 + 0900
-categories: Patterns
-ref: MSA, zuul, ribbon, eureka, hystrix
+categories: [patterns]
+tags: [msa, zuul, ribbon, eureka, hystrix]
 ---
 
 # Neflix OSS
